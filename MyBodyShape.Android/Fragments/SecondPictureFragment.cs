@@ -30,8 +30,6 @@ namespace MyBodyShape.Android.Fragments
         public override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-
-            // Create your fragment here
         }
 
         /// <summary>
@@ -43,10 +41,32 @@ namespace MyBodyShape.Android.Fragments
         /// <returns></returns>
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            // Use this to return your custom view for this Fragment
-            // return inflater.Inflate(Resource.Layout.YourFragment, container, false);
+            var view = inflater.Inflate(Resource.Layout.Picture2, container, false);
+            var takePictureButton = view.FindViewById<Button>(Resource.Id.takepicture2Button);
+            var loadPictureButton = view.FindViewById<Button>(Resource.Id.loadpicture2Button);
+            takePictureButton.Click += OnTakePicture2Button_Click;
+            loadPictureButton.Click += OnLoadPicture2Button_Click;
+            return view;
+        }
 
-            return base.OnCreateView(inflater, container, savedInstanceState);
+        /// <summary>
+        /// The take button event.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The event.</param>
+        private void OnTakePicture2Button_Click(object sender, System.EventArgs e)
+        {
+            //throw new System.NotImplementedException();
+        }
+
+        /// <summary>
+        /// The load button event.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The event.</param>
+        private void OnLoadPicture2Button_Click(object sender, System.EventArgs e)
+        {
+            //throw new System.NotImplementedException();
         }
     }
 }

@@ -33,6 +33,7 @@ namespace MyBodyShape.Android
             {
                 new FirstPictureFragment(),
                 new SecondPictureFragment(),
+                new GenerationFragment(),
                 new ResultsFragment(),
                 new Model3DFragment()
             };
@@ -42,8 +43,9 @@ namespace MyBodyShape.Android
             {
                 "Front Picture",
                 "Side Picture",
+                "Generate",
                 "Members weights",
-                "3D Models"
+                "3D Model"
             });
 
             // View pager and adapter

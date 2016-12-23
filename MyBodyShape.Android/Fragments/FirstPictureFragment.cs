@@ -3,6 +3,7 @@
 /**********************************************************/
 
 using Android.OS;
+using Android.Widget;
 using Android.Views;
 using V4App = Android.Support.V4.App;
 
@@ -20,8 +21,6 @@ namespace MyBodyShape.Android.Fragments
         public override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-
-            // Create your fragment here
         }
 
         /// <summary>
@@ -33,10 +32,32 @@ namespace MyBodyShape.Android.Fragments
         /// <returns></returns>
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            // Use this to return your custom view for this Fragment
-            // return inflater.Inflate(Resource.Layout.YourFragment, container, false);
+            var view = inflater.Inflate(Resource.Layout.Picture1, container, false);
+            var takePictureButton = view.FindViewById<Button>(Resource.Id.takepicture1Button);
+            var loadPictureButton = view.FindViewById<Button>(Resource.Id.loadpicture1Button);
+            takePictureButton.Click += OnTakePicture1Button_Click;
+            loadPictureButton.Click += OnLoadPicture1Button_Click;
+            return view;
+        }
 
-            return base.OnCreateView(inflater, container, savedInstanceState);
+        /// <summary>
+        /// The take button event.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The event.</param>
+        private void OnTakePicture1Button_Click(object sender, System.EventArgs e)
+        {
+            //throw new System.NotImplementedException();
+        }
+
+        /// <summary>
+        /// The load button event.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The event.</param>
+        private void OnLoadPicture1Button_Click(object sender, System.EventArgs e)
+        {
+            //throw new System.NotImplementedException();
         }
     }
 }
