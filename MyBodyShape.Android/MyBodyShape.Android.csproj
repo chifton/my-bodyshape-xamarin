@@ -59,6 +59,7 @@
     <Compile Include="Fragments\ResultsFragment.cs" />
     <Compile Include="Fragments\SecondPictureFragment.cs" />
     <Compile Include="Fragments\FirstPictureFragment.cs" />
+    <Compile Include="Helpers\BitmapHelpers.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

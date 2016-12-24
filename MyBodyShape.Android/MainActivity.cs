@@ -9,13 +9,14 @@ using MyBodyShape.Android.Fragments;
 using MyBodyShape.Android.Adapters;
 using V4App = Android.Support.V4.App;
 using V4View = Android.Support.V4.View;
+using Android.Content.PM;
 
 namespace MyBodyShape.Android
 {
     /// <summary>
     /// The main activity.
     /// </summary>
-    [Activity(Label = "MyBodyShape", MainLauncher = true, Icon = "@drawable/icon")]
+    [Activity(Label = "MyBodyShape", MainLauncher = true, Icon = "@drawable/icon", ScreenOrientation = ScreenOrientation.Portrait)]
     public class MainActivity : V4App.FragmentActivity
     {
         /// <summary>
