@@ -3,9 +3,6 @@
 /**********************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using Android.App;
 using Android.Content;
@@ -15,6 +12,9 @@ using Android.Util;
 using Android.Views;
 using Android.Widget;
 using V4App = Android.Support.V4.App;
+using Android.Webkit;
+using Android.Graphics;
+using MyBodyShape.Android.Helpers;
 
 namespace MyBodyShape.Android.Fragments
 {
@@ -24,14 +24,22 @@ namespace MyBodyShape.Android.Fragments
     public class GenerationFragment : V4App.Fragment
     {
         /// <summary>
+        /// The fragment view.
+        /// </summary>
+        private View fragmentView;
+
+        /// <summary>
+        /// The generate model button.
+        /// </summary>
+        private Button generateButton;
+
+        /// <summary>
         /// The OnCreate method.
         /// </summary>
         /// <param name="savedInstanceState"></param>
         public override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-
-            // Create your fragment here
         }
 
         /// <summary>
@@ -43,10 +51,42 @@ namespace MyBodyShape.Android.Fragments
         /// <returns></returns>
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            // Use this to return your custom view for this Fragment
-            // return inflater.Inflate(Resource.Layout.YourFragment, container, false);
+            if (fragmentView == null)
+            {
+                fragmentView = inflater.Inflate(Resource.Layout.Generate, container, false);
+                generateButton = fragmentView.FindViewById<Button>(Resource.Id.generateButton);
+                generateButton.Click += OnGenerateButton_Click;
+            }
 
-            return base.OnCreateView(inflater, container, savedInstanceState);
+            return fragmentView;
+        }
+
+        /// <summary>
+        /// The generate button event.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The event.</param>
+        private void OnGenerateButton_Click(object sender, EventArgs e)
+        {
+            // Send generation to API here
+            
+
+            // Rubik's Cube
+            var linearLayout = fragmentView.FindViewById<LinearLayout>(Resource.Id.layoutGenerateCenter);
+            linearLayout.RemoveAllViewsInLayout();
+
+            // New web view
+            WebView webView = new WebView(this.Context);
+            webView.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent);
+            webView.Visibility = ViewStates.Visible;
+            webView.LoadUrl(string.Format("file:///android_asset/RubiksCube.html"));
+            webView.SetBackgroundColor(new Color(0, 0, 0, 0));
+            webView.SetLayerType(LayerType.Software, null); 
+            linearLayout.AddView(webView);
+
+            // Disable the swipes
+            var viewPager = this.Activity.FindViewById<BodyShapeViewPager>(Resource.Id.bodyshapeViewPager);
+            viewPager.SetSwipeEnabled(false);
         }
     }
 }

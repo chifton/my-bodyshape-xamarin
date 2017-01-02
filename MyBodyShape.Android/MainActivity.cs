@@ -8,8 +8,8 @@ using Android.OS;
 using MyBodyShape.Android.Fragments;
 using MyBodyShape.Android.Adapters;
 using V4App = Android.Support.V4.App;
-using V4View = Android.Support.V4.View;
 using Android.Content.PM;
+using MyBodyShape.Android.Helpers;
 
 namespace MyBodyShape.Android
 {
@@ -50,7 +50,7 @@ namespace MyBodyShape.Android
             });
 
             // View pager and adapter
-            var viewPager = FindViewById<V4View.ViewPager>(Resource.Id.bodyshapeViewPager);
+            var viewPager = FindViewById<BodyShapeViewPager>(Resource.Id.bodyshapeViewPager);
             viewPager.Adapter = new MainAdapter(base.SupportFragmentManager, fragments, titles);
         }
     }

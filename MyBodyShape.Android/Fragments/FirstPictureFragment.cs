@@ -42,7 +42,7 @@ namespace MyBodyShape.Android.Fragments
         /// The fragment view.
         /// </summary>
         private View fragmentView;
-
+        
         /// <summary>
         /// The take picture button.
         /// </summary>
@@ -56,7 +56,22 @@ namespace MyBodyShape.Android.Fragments
         /// <summary>
         /// The request picture code.
         /// </summary>
-        private const int requestPictureCode = 11;
+        private const int takePictureCode = 11;
+
+        /// <summary>
+        /// The load picture code.
+        /// </summary>
+        private const int loadPictureCode = 21;
+
+        /// <summary>
+        /// The circle radius.
+        /// </summary>
+        private const int rootRadius = 30;
+
+        /// <summary>
+        /// The nearest distance.
+        /// </summary>
+        private const int nearestDistance = 50;
 
         /// <summary>
         /// The OnCreate method.
@@ -76,7 +91,7 @@ namespace MyBodyShape.Android.Fragments
         /// <returns></returns>
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            if(fragmentView == null)
+            if (fragmentView == null)
             {
                 fragmentView = inflater.Inflate(Resource.Layout.Picture1, container, false);
                 takePictureButton = fragmentView.FindViewById<Button>(Resource.Id.takepicture1Button);
@@ -84,7 +99,7 @@ namespace MyBodyShape.Android.Fragments
                 takePictureButton.Click += OnTakePicture1Button_Click;
                 loadPictureButton.Click += OnLoadPicture1Button_Click;
             }
-            
+
             return fragmentView;
         }
 
@@ -93,7 +108,7 @@ namespace MyBodyShape.Android.Fragments
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The event.</param>
-        private void OnTakePicture1Button_Click(object sender, System.EventArgs e)
+        private void OnTakePicture1Button_Click(object sender, EventArgs e)
         {
             if (IsThereAnAppToTakePictures())
             {
@@ -106,11 +121,13 @@ namespace MyBodyShape.Android.Fragments
                 Intent intent = new Intent(MediaStore.ActionImageCapture);
                 App1._file = new File(App1._dir, $"{ fileName }.png");
                 intent.PutExtra(MediaStore.ExtraOutput, AndroidNet.Uri.FromFile(App1._file));
-                StartActivityForResult(intent, requestPictureCode);
+                StartActivityForResult(intent, takePictureCode);
             }
             else
             {
-                // On affiche un message à l'utilisateur
+                var message = new AlertDialog.Builder(this.Activity);
+                message.SetMessage("Your mobile device has no app for taking pictures.");
+                message.Show();
             }
         }
 
@@ -119,9 +136,12 @@ namespace MyBodyShape.Android.Fragments
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The event.</param>
-        private void OnLoadPicture1Button_Click(object sender, System.EventArgs e)
+        private void OnLoadPicture1Button_Click(object sender, EventArgs e)
         {
-            //throw new System.NotImplementedException();
+            Intent intent = new Intent();
+            intent.SetType("image/*");
+            intent.SetAction(Intent.ActionGetContent);
+            StartActivityForResult(Intent.CreateChooser(intent, "Select Picture"), loadPictureCode);
         }
 
         /// <summary>
@@ -132,21 +152,22 @@ namespace MyBodyShape.Android.Fragments
         /// <param name="data">The picture data.</param>
         public override void OnActivityResult(int requestCode, int resultCode, Intent data)
         {
-            if(resultCode == -1)
+            if (resultCode == -1)
             {
+                // Delete buttons
+                var linearLayout = fragmentView.FindViewById<LinearLayout>(Resource.Id.layoutPicture1Container);
+                linearLayout.RemoveAllViewsInLayout();
+
+                // New image view
+                ImageView imageView = new ImageView(this.Context);
+                imageView.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent);
+                imageView.Visibility = ViewStates.Visible;
+                imageView.Touch += OnBodyShapeTouchEvent;
+                linearLayout.AddView(imageView);
+
                 // The take picture result
-                if (requestCode == requestPictureCode)
+                if (requestCode == takePictureCode)
                 {
-                    // Delete buttons
-                    var linearLayout = fragmentView.FindViewById<LinearLayout>(Resource.Id.layoutPicture1Container);
-                    linearLayout.RemoveAllViewsInLayout();
-
-                    // New image view
-                    ImageView imageView = new ImageView(this.Context);
-                    imageView.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent);
-                    imageView.Visibility = ViewStates.Visible;
-                    linearLayout.AddView(imageView);
-
                     // Result
                     base.OnActivityResult(requestCode, resultCode, data);
 
@@ -169,11 +190,68 @@ namespace MyBodyShape.Android.Fragments
                     // Memory
                     GC.Collect();
                 }
+                // The load picture result
+                else if (requestCode == loadPictureCode)
+                {
+                    if (data != null)
+                    {
+                        // Get the loaded image
+                        AndroidNet.Uri uri = data.Data;
+
+                        // Resize and display
+                        int height = Resources.DisplayMetrics.HeightPixels;
+                        int width = fragmentView.Width;
+                        Bitmap resizedBitmap = MediaStore.Images.Media.GetBitmap(this.Activity.ContentResolver, uri);
+                        var loadedBitmap = uri.Path.LoadInGalleryAndResizeBitmap(width, height, resizedBitmap);
+                        if (loadedBitmap != null)
+                        {
+                            imageView.SetImageBitmap(loadedBitmap);
+                            loadedBitmap = null;
+                        }
+
+                        // Memory
+                        GC.Collect();
+                    }
+                    else
+                    {
+                        var message = new AlertDialog.Builder(this.Activity);
+                        message.SetMessage("No picture was found.");
+                        message.Show();
+                    }
+                }
             }
             else
             {
+                var message = new AlertDialog.Builder(this.Activity);
+                message.SetMessage("An error occured during taking pictures.");
+                message.Show();
+            }
+        }
+       
+        /// <summary>
+        /// The OnBodyShapTouch event.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The event.</param>
+        private void OnBodyShapeTouchEvent(object sender, View.TouchEventArgs e)
+        {
+            var x = (int)e.Event.GetX();
+            var y = (int)e.Event.GetY();
 
-            }    
+            if (e.Event.Action == MotionEventActions.Down)
+            {
+                // Vibration
+                Vibrator vibrator = (Vibrator)Activity.GetSystemService(Context.VibratorService);
+                vibrator.Vibrate(50);
+            }
+            else if (e.Event.Action == MotionEventActions.Move)
+            {
+
+            }
+            else if (e.Event.Action == MotionEventActions.Up)
+            {
+
+            }
         }
 
         /// <summary>

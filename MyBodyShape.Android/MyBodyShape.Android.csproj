@@ -43,6 +43,10 @@
   <ItemGroup>
     <Reference Include="Mono.Android" />
     <Reference Include="mscorlib" />
+    <Reference Include="SkiaSharp, Version=1.55.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkiaSharp.1.55.1\lib\MonoAndroid\SkiaSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -59,6 +63,7 @@
     <Compile Include="Fragments\ResultsFragment.cs" />
     <Compile Include="Fragments\SecondPictureFragment.cs" />
     <Compile Include="Fragments\FirstPictureFragment.cs" />
+    <Compile Include="Helpers\BodyShapeViewPager.cs" />
     <Compile Include="Helpers\BitmapHelpers.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
@@ -75,6 +80,9 @@
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout\Picture2.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\Generate.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
@@ -94,6 +102,42 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\styles.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\loader.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\RubiksCube.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\JsCssContent\jquery-1.10.2.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\JsCssContent\jquery-ui.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\JsCssContent\bezier-spline.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\JsCssContent\jquery.simulate.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\JsCssContent\raphael.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\JsCssContent\jquery-glowing.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\JsCssContent\jquery.browser.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\JsCssContent\jquery.alerts.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\JsCssContent\jquery-ui.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\JsCssContent\Site.css" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -56,7 +56,12 @@ namespace MyBodyShape.Android.Fragments
         /// <summary>
         /// The request picture code.
         /// </summary>
-        private const int requestPictureCode = 12;
+        private const int takePictureCode = 12;
+
+        /// <summary>
+        /// The load picture code.
+        /// </summary>
+        private const int loadPictureCode = 22;
 
         /// <summary>
         /// The OnCreate method.
@@ -93,7 +98,7 @@ namespace MyBodyShape.Android.Fragments
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The event.</param>
-        private void OnTakePicture2Button_Click(object sender, System.EventArgs e)
+        private void OnTakePicture2Button_Click(object sender, EventArgs e)
         {
             if (IsThereAnAppToTakePictures())
             {
@@ -106,11 +111,13 @@ namespace MyBodyShape.Android.Fragments
                 Intent intent = new Intent(MediaStore.ActionImageCapture);
                 App2._file = new File(App2._dir, $"{ fileName }.png");
                 intent.PutExtra(MediaStore.ExtraOutput, AndroidNet.Uri.FromFile(App2._file));
-                StartActivityForResult(intent, requestPictureCode);
+                StartActivityForResult(intent, takePictureCode);
             }
             else
             {
-                // On affiche un message à l'utilisateur
+                var message = new AlertDialog.Builder(this.Activity);
+                message.SetMessage("Your mobile device has no app for taking pictures.");
+                message.Show();
             }
         }
 
@@ -119,9 +126,12 @@ namespace MyBodyShape.Android.Fragments
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The event.</param>
-        private void OnLoadPicture2Button_Click(object sender, System.EventArgs e)
+        private void OnLoadPicture2Button_Click(object sender, EventArgs e)
         {
-            //throw new System.NotImplementedException();
+            Intent intent = new Intent();
+            intent.SetType("image/*");
+            intent.SetAction(Intent.ActionGetContent);
+            StartActivityForResult(Intent.CreateChooser(intent, "Select Picture"), loadPictureCode);
         }
 
         /// <summary>
@@ -134,19 +144,19 @@ namespace MyBodyShape.Android.Fragments
         {
             if (resultCode == -1)
             {
+                // Delete buttons
+                var linearLayout = fragmentView.FindViewById<LinearLayout>(Resource.Id.layoutPicture2Container);
+                linearLayout.RemoveAllViewsInLayout();
+
+                // New image view
+                ImageView imageView = new ImageView(this.Context);
+                imageView.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent);
+                imageView.Visibility = ViewStates.Visible;
+                linearLayout.AddView(imageView);
+
                 // The take picture result
-                if (requestCode == requestPictureCode)
-                {
-                    // Delete buttons
-                    var linearLayout = fragmentView.FindViewById<LinearLayout>(Resource.Id.layoutPicture2Container);
-                    linearLayout.RemoveAllViewsInLayout();
-
-                    // New image view
-                    ImageView imageView = new ImageView(this.Context);
-                    imageView.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent);
-                    imageView.Visibility = ViewStates.Visible;
-                    linearLayout.AddView(imageView);
-
+                if (requestCode == takePictureCode)
+                {               
                     // Result
                     base.OnActivityResult(requestCode, resultCode, data);
 
@@ -169,10 +179,41 @@ namespace MyBodyShape.Android.Fragments
                     // Memory
                     GC.Collect();
                 }
+                // The load picture result
+                else if (requestCode == loadPictureCode)
+                {
+                    if (data != null)
+                    {
+                        // Get the loaded image
+                        AndroidNet.Uri uri = data.Data;
+
+                        // Resize and display
+                        int height = Resources.DisplayMetrics.HeightPixels;
+                        int width = imageView.Width;
+                        Bitmap resizedBitmap = MediaStore.Images.Media.GetBitmap(this.Activity.ContentResolver, uri);
+                        var loadedBitmap = uri.Path.LoadInGalleryAndResizeBitmap(width, height, resizedBitmap);
+                        if (loadedBitmap != null)
+                        {
+                            imageView.SetImageBitmap(loadedBitmap);
+                            loadedBitmap = null;
+                        }
+
+                        // Memory
+                        GC.Collect();
+                    }
+                    else
+                    {
+                        var message = new AlertDialog.Builder(this.Activity);
+                        message.SetMessage("No picture was found.");
+                        message.Show();
+                    }
+                }
             }
             else
             {
-
+                var message = new AlertDialog.Builder(this.Activity);
+                message.SetMessage("An error occured during taking pictures.");
+                message.Show();
             }
         }
 
