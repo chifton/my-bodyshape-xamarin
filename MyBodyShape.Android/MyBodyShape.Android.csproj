@@ -63,6 +63,8 @@
     <Compile Include="Fragments\ResultsFragment.cs" />
     <Compile Include="Fragments\SecondPictureFragment.cs" />
     <Compile Include="Fragments\FirstPictureFragment.cs" />
+    <Compile Include="Helpers\ZoomableImageView.cs" />
+    <Compile Include="Helpers\CircleArea.cs" />
     <Compile Include="Helpers\BodyShapeViewPager.cs" />
     <Compile Include="Helpers\BitmapHelpers.cs" />
     <Compile Include="MainActivity.cs" />
