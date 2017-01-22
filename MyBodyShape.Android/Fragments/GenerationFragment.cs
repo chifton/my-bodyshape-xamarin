@@ -3,18 +3,14 @@
 /**********************************************************/
 
 using System;
-
-using Android.App;
-using Android.Content;
 using Android.OS;
-using Android.Runtime;
-using Android.Util;
 using Android.Views;
 using Android.Widget;
 using V4App = Android.Support.V4.App;
 using Android.Webkit;
 using Android.Graphics;
 using MyBodyShape.Android.Helpers;
+using MyBodyShape.Android.Listeners;
 
 namespace MyBodyShape.Android.Fragments
 {
@@ -32,6 +28,36 @@ namespace MyBodyShape.Android.Fragments
         /// The generate model button.
         /// </summary>
         private Button generateButton;
+
+        /// <summary>
+        /// The minus height button.
+        /// </summary>
+        private Button minusHeightButton;
+
+        /// <summary>
+        /// The plus height button.
+        /// </summary>
+        private Button plusHeightButton;
+
+        /// <summary>
+        /// The height text view.
+        /// </summary>
+        private EditText heightTextEdit;
+
+        /// <summary>
+        /// The minus weight button.
+        /// </summary>
+        private Button minusWeightButton;
+
+        /// <summary>
+        /// The plus weight button.
+        /// </summary>
+        private Button plusWeightButton;
+
+        /// <summary>
+        /// The weight text view.
+        /// </summary>
+        private EditText weightTextEdit;
 
         /// <summary>
         /// The OnCreate method.
@@ -54,11 +80,100 @@ namespace MyBodyShape.Android.Fragments
             if (fragmentView == null)
             {
                 fragmentView = inflater.Inflate(Resource.Layout.Generate, container, false);
+
+                minusHeightButton = fragmentView.FindViewById<Button>(Resource.Id.height_btn_minus);
+                plusHeightButton = fragmentView.FindViewById<Button>(Resource.Id.height_btn_plus);
+                heightTextEdit = fragmentView.FindViewById<EditText>(Resource.Id.heightText);
+                minusHeightButton.Click += OnMinusHeightButton_Click;
+                plusHeightButton.Click += OnPlusHeightButton_Click;
+                minusHeightButton.SetOnTouchListener(new EditTextRepeatListener(minusHeightButton, heightTextEdit, 1000, 2000, (button) => {}, button => {}, (button, isLongPress) => {}));
+                plusHeightButton.SetOnTouchListener(new EditTextRepeatListener(plusHeightButton, heightTextEdit, 1000, 2000, (button) => { }, button => { }, (button, isLongPress) => { }));
+
+                minusWeightButton = fragmentView.FindViewById<Button>(Resource.Id.weight_btn_minus);
+                plusWeightButton = fragmentView.FindViewById<Button>(Resource.Id.weight_btn_plus);
+                weightTextEdit = fragmentView.FindViewById<EditText>(Resource.Id.weightText);
+                minusWeightButton.Click += OnMinusWeightButton_Click;
+                plusWeightButton.Click += OnPlusWeightButton_Click;
+                minusWeightButton.SetOnTouchListener(new EditTextRepeatListener(minusWeightButton, weightTextEdit, 1000, 2000, (button) => { }, button => { }, (button, isLongPress) => { }));
+                plusWeightButton.SetOnTouchListener(new EditTextRepeatListener(plusWeightButton, weightTextEdit, 1000, 2000, (button) => { }, button => { }, (button, isLongPress) => { }));
+
                 generateButton = fragmentView.FindViewById<Button>(Resource.Id.generateButton);
                 generateButton.Click += OnGenerateButton_Click;
             }
 
             return fragmentView;
+        }
+
+        /// <summary>
+        /// The minus height click.
+        /// </summary>
+        private void OnMinusHeightButton_Click(object sender, EventArgs e)
+        {
+            var currentButton = sender as Button;
+
+            int parsedNumber;
+            if (int.TryParse(this.heightTextEdit.Text, out parsedNumber))
+            {
+                if (parsedNumber > 70)
+                {
+                    heightTextEdit.Text = (parsedNumber - 1).ToString();
+                }
+            }
+        }
+        
+        /// <summary>
+        /// The plus height click.
+        /// </summary>
+        private void OnPlusHeightButton_Click(object sender, EventArgs e)
+        {
+            int parsedNumber;
+            if (int.TryParse(this.heightTextEdit.Text, out parsedNumber))
+            {
+                if(parsedNumber < 250)
+                {
+                    heightTextEdit.Text = (parsedNumber + 1).ToString();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The minus weight click.
+        /// </summary>
+        private void OnMinusWeightButton_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(weightTextEdit.Text))
+            {
+                weightTextEdit.Text = "0";
+            }
+
+            int parsedNumber;
+            if (int.TryParse(this.weightTextEdit.Text, out parsedNumber))
+            {
+                if (parsedNumber > 0)
+                {
+                    weightTextEdit.Text = (parsedNumber - 1).ToString();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The plus weight click.
+        /// </summary>
+        private void OnPlusWeightButton_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(weightTextEdit.Text))
+            {
+                weightTextEdit.Text = "0";
+            }
+
+            int parsedNumber;
+            if (int.TryParse(this.weightTextEdit.Text, out parsedNumber))
+            {
+                if (parsedNumber < 250)
+                {
+                    weightTextEdit.Text = (parsedNumber + 1).ToString();
+                }
+            }
         }
 
         /// <summary>

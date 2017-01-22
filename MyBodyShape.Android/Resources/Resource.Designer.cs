@@ -48,7 +48,31 @@ namespace MyBodyShape.Android
 			public const int blue_button = 2130837504;
 			
 			// aapt resource value: 0x7f020001
-			public const int Icon = 2130837505;
+			public const int down_button = 2130837505;
+			
+			// aapt resource value: 0x7f020002
+			public const int Icon = 2130837506;
+			
+			// aapt resource value: 0x7f020003
+			public const int next_button = 2130837507;
+			
+			// aapt resource value: 0x7f020004
+			public const int previous_button = 2130837508;
+			
+			// aapt resource value: 0x7f020005
+			public const int rotate = 2130837509;
+			
+			// aapt resource value: 0x7f020006
+			public const int rounded_border_edittext = 2130837510;
+			
+			// aapt resource value: 0x7f020007
+			public const int top_button = 2130837511;
+			
+			// aapt resource value: 0x7f020008
+			public const int zoomin = 2130837512;
+			
+			// aapt resource value: 0x7f020009
+			public const int zoomout = 2130837513;
 			
 			static Drawable()
 			{
@@ -63,14 +87,20 @@ namespace MyBodyShape.Android
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f060005
-			public const int bodyshapeViewPager = 2131099653;
+			// aapt resource value: 0x7f060009
+			public const int bodyshapeViewPager = 2131099657;
 			
-			// aapt resource value: 0x7f060004
-			public const int generateButton = 2131099652;
+			// aapt resource value: 0x7f060008
+			public const int generateButton = 2131099656;
+			
+			// aapt resource value: 0x7f060003
+			public const int heightText = 2131099651;
 			
 			// aapt resource value: 0x7f060002
-			public const int heightText = 2131099650;
+			public const int height_btn_minus = 2131099650;
+			
+			// aapt resource value: 0x7f060004
+			public const int height_btn_plus = 2131099652;
 			
 			// aapt resource value: 0x7f060000
 			public const int layoutGenerate = 2131099648;
@@ -78,26 +108,32 @@ namespace MyBodyShape.Android
 			// aapt resource value: 0x7f060001
 			public const int layoutGenerateCenter = 2131099649;
 			
-			// aapt resource value: 0x7f060006
-			public const int layoutPicture1Container = 2131099654;
+			// aapt resource value: 0x7f06000a
+			public const int layoutPicture1Container = 2131099658;
 			
-			// aapt resource value: 0x7f060009
-			public const int layoutPicture2Container = 2131099657;
+			// aapt resource value: 0x7f06000d
+			public const int layoutPicture2Container = 2131099661;
 			
-			// aapt resource value: 0x7f060008
-			public const int loadpicture1Button = 2131099656;
+			// aapt resource value: 0x7f06000c
+			public const int loadpicture1Button = 2131099660;
+			
+			// aapt resource value: 0x7f06000f
+			public const int loadpicture2Button = 2131099663;
 			
 			// aapt resource value: 0x7f06000b
-			public const int loadpicture2Button = 2131099659;
+			public const int takepicture1Button = 2131099659;
+			
+			// aapt resource value: 0x7f06000e
+			public const int takepicture2Button = 2131099662;
+			
+			// aapt resource value: 0x7f060006
+			public const int weightText = 2131099654;
+			
+			// aapt resource value: 0x7f060005
+			public const int weight_btn_minus = 2131099653;
 			
 			// aapt resource value: 0x7f060007
-			public const int takepicture1Button = 2131099655;
-			
-			// aapt resource value: 0x7f06000a
-			public const int takepicture2Button = 2131099658;
-			
-			// aapt resource value: 0x7f060003
-			public const int weightText = 2131099651;
+			public const int weight_btn_plus = 2131099655;
 			
 			static Id()
 			{

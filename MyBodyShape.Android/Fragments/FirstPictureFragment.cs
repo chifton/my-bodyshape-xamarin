@@ -66,6 +66,26 @@ namespace MyBodyShape.Android.Fragments
         private Bitmap tempBitmap;
 
         /// <summary>
+        /// The current x image.
+        /// </summary>
+        private int currentX;
+
+        /// <summary>
+        /// The current y image.
+        /// </summary>
+        private int currentY;
+
+        /// <summary>
+        /// The current scale indicator for the image.
+        /// </summary>
+        private double scaleIndicator;
+
+        /// <summary>
+        /// The image button dictionnary.
+        /// </summary>
+        private Dictionary<string, ImageButton> buttonDictionnary;
+
+        /// <summary>
         /// The circles list.
         /// </summary>
         private List<CircleArea> circlesList;
@@ -222,14 +242,15 @@ namespace MyBodyShape.Android.Fragments
             if (resultCode == -1)
             {
                 // Delete buttons
-                var linearLayout = fragmentView.FindViewById<LinearLayout>(Resource.Id.layoutPicture1Container);
-                linearLayout.RemoveAllViewsInLayout();
+                var frameLayout = fragmentView.FindViewById<FrameLayout>(Resource.Id.layoutPicture1Container);
+                frameLayout.RemoveAllViewsInLayout();
 
                 // New image view
                 imageView = new ZoomableImageView(this.Context);
                 imageView.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent);
                 imageView.Visibility = ViewStates.Visible;
-                linearLayout.AddView(imageView);
+                frameLayout.AddView(imageView);
+                buttonDictionnary = new Dictionary<string, ImageButton>();
 
                 // For further zooms
                 zoomPoint = new Point();
@@ -268,6 +289,108 @@ namespace MyBodyShape.Android.Fragments
 
                         // Draw front skeleton
                         this.DrawFrontSkeleton();
+
+                        // Buttons dimensions calculations
+                        var buttonWidthHeight = (int) height / 25;
+                        float calculatedDrawTop = 0;
+                        float calculatedDrawHeight = 0;
+                        float calculatedBitmapRatio = (float)tempBitmap.Width / tempBitmap.Height;
+                        float calculatedimageViewRatio = (float)fragmentView.Width / fragmentView.Height;
+                        calculatedDrawHeight = (calculatedimageViewRatio / calculatedBitmapRatio) * fragmentView.Height;
+                        calculatedDrawTop = (fragmentView.Height - calculatedDrawHeight) / 2;
+                        var downPosition = fragmentView.Height  - calculatedDrawTop;
+
+                        // Pictures buttons
+                        ImageButton leftButton = new ImageButton(this.Context);
+                        var leftParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
+                        leftButton.LayoutParameters = leftParams;
+                        leftButton.SetScaleType(ImageView.ScaleType.Center);
+                        leftButton.SetAdjustViewBounds(true);
+                        leftButton.SetBackgroundResource(Resource.Drawable.previous_button);
+                        leftButton.SetY(downPosition - buttonWidthHeight);
+                        leftButton.SetX(0);
+                        leftButton.Id = 1000;
+                        leftButton.Click += OnResizeFrontImage;
+                        leftButton.LongClick += OnLongResizeFrontImage;
+
+                        ImageButton rightButton = new ImageButton(this.Context);
+                        var rightParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
+                        rightButton.LayoutParameters = rightParams;
+                        rightButton.SetScaleType(ImageView.ScaleType.Center);
+                        rightButton.SetAdjustViewBounds(true);
+                        rightButton.SetBackgroundResource(Resource.Drawable.next_button);
+                        rightButton.SetY(downPosition - buttonWidthHeight);
+                        rightButton.SetX(3*buttonWidthHeight);
+                        rightButton.Id = 1001;
+                        rightButton.Click += OnResizeFrontImage;
+                        rightButton.LongClick += OnLongResizeFrontImage;
+
+                        ImageButton topButton = new ImageButton(this.Context);
+                        var topParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
+                        topButton.LayoutParameters = topParams;
+                        topButton.SetScaleType(ImageView.ScaleType.Center);
+                        topButton.SetAdjustViewBounds(true);
+                        topButton.SetBackgroundResource(Resource.Drawable.top_button);
+                        topButton.SetY(downPosition - 2*buttonWidthHeight);
+                        topButton.SetX(3 * buttonWidthHeight / 2);
+                        topButton.Id = 1002;
+                        topButton.Click += OnResizeFrontImage;
+                        topButton.LongClick += OnLongResizeFrontImage;
+
+                        ImageButton downButton = new ImageButton(this.Context);
+                        var downParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
+                        downButton.LayoutParameters = downParams;
+                        downButton.SetScaleType(ImageView.ScaleType.Center);
+                        downButton.SetAdjustViewBounds(true);
+                        downButton.SetBackgroundResource(Resource.Drawable.down_button);
+                        downButton.SetY(downPosition);
+                        downButton.SetX(3 * buttonWidthHeight / 2);
+                        downButton.Id = 1003;
+                        downButton.Click += OnResizeFrontImage;
+                        downButton.LongClick += OnLongResizeFrontImage;
+
+                        ImageButton zoomButton = new ImageButton(this.Context);
+                        var zoomParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
+                        zoomButton.LayoutParameters = zoomParams;
+                        zoomButton.SetScaleType(ImageView.ScaleType.Center);
+                        zoomButton.SetAdjustViewBounds(true);
+                        zoomButton.SetBackgroundResource(Resource.Drawable.zoomin);
+                        zoomButton.SetY(downPosition - buttonWidthHeight);
+                        zoomButton.SetX(2 * buttonWidthHeight);
+                        zoomButton.Id = 1004;
+                        zoomButton.Click += OnResizeFrontImage;
+                        zoomButton.LongClick += OnLongResizeFrontImage;
+
+                        ImageButton unZoomButton = new ImageButton(this.Context);
+                        var unzoomParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
+                        unZoomButton.LayoutParameters = unzoomParams;
+                        unZoomButton.SetScaleType(ImageView.ScaleType.Center);
+                        unZoomButton.SetAdjustViewBounds(true);
+                        unZoomButton.SetBackgroundResource(Resource.Drawable.zoomout);
+                        unZoomButton.SetY(downPosition - buttonWidthHeight);
+                        unZoomButton.SetX(buttonWidthHeight);
+                        unZoomButton.Id = 1005;
+                        unZoomButton.Click += OnResizeFrontImage;
+                        unZoomButton.LongClick += OnLongResizeFrontImage;
+
+                        buttonDictionnary.Add("left", leftButton);
+                        buttonDictionnary.Add("right", rightButton);
+                        buttonDictionnary.Add("top", topButton);
+                        buttonDictionnary.Add("down", downButton);
+                        buttonDictionnary.Add("zoom", zoomButton);
+                        buttonDictionnary.Add("unzoom", unZoomButton);
+
+                        frameLayout.AddView(buttonDictionnary["left"]);
+                        frameLayout.AddView(buttonDictionnary["right"]);
+                        frameLayout.AddView(buttonDictionnary["top"]);
+                        frameLayout.AddView(buttonDictionnary["down"]);
+                        frameLayout.AddView(buttonDictionnary["zoom"]);
+                        frameLayout.AddView(buttonDictionnary["unzoom"]);
+
+                        // First size coordinates
+                        currentX = 0;
+                        currentY = 0;
+                        scaleIndicator = 0;
                     }
 
                     // Memory
@@ -309,7 +432,55 @@ namespace MyBodyShape.Android.Fragments
                 message.Show();
             }
         }
-       
+
+        /// <summary>
+        /// The click event on sizing image buttons.
+        /// </summary>
+        private void OnResizeFrontImage(object sender, EventArgs e)
+        {
+            var imageButton = sender as ImageButton;
+            var scaling = false;
+            switch (imageButton.Id)
+            {
+                case 1000:
+                    currentX -= 20;
+                    scaleIndicator = 0;
+                    break;
+                case 1001:
+                    currentX += 20;
+                    scaleIndicator = 0;
+                    break;
+                case 1002:
+                    currentY -= 20;
+                    scaleIndicator = 0;
+                    break;
+                case 1003:
+                    currentY += 20;
+                    scaleIndicator = 0;
+                    break;
+                case 1004:
+                    scaleIndicator = 30;
+                    scaling = true;
+                    break;
+                case 1005:
+                    scaleIndicator = -30;
+                    scaling = true;
+                    break;
+                default:
+                    break;
+            }
+
+            this.ReDrawAll(currentX, currentY, scaleIndicator, scaling);
+            fragmentView.Invalidate();
+        }
+
+        /// <summary>
+        /// The long click event on sizing image buttons.
+        /// </summary>
+        private void OnLongResizeFrontImage(object sender, View.LongClickEventArgs e)
+        {
+        }
+
         /// <summary>
         /// The draw skeleton method.
         /// </summary>
@@ -353,16 +524,25 @@ namespace MyBodyShape.Android.Fragments
         /// <summary>
         /// The ReDrawAll method at every move.
         /// </summary>
-        private void ReDrawAll()
+        private void ReDrawAll(int x, int y, double scale, bool scaling)
         {
-            tempCanvas.DrawBitmap(App1.bitmap, 0, 0, tempPaint);
+            tempCanvas.DrawColor(Color.Black, PorterDuff.Mode.Clear);
+
+            if(scaling)
+            {
+                var ratio = (double) App1.bitmap.Width / App1.bitmap.Height;
+                var newHeight = (int)(App1.bitmap.Height + scale);
+                App1.bitmap = BitmapHelpers.ResizeCurrentBitmap(App1.bitmap, newHeight, (int) (newHeight * ratio));
+            }
+            
+            tempCanvas.DrawBitmap(App1.bitmap, x, y, tempPaint);
             foreach (CircleArea circle in circlesList)
             {
                 tempPaint.Color = circle.Color;
                 tempCanvas.DrawCircle(circle.PositionX, circle.PositionY, rootRadius, tempPaint);
             }            
         }
-
+        
         /// <summary>
         /// The OnBodyShapTouch event.
         /// </summary>
@@ -371,7 +551,6 @@ namespace MyBodyShape.Android.Fragments
         private void OnBodyShapeTouchEvent(object sender, View.TouchEventArgs e)
         {
             // Bitmap coordinates calculation
-
             var viewer = sender as ImageView;
             float calculatedDrawLeft = 0;
             float calculatedDrawTop = 0;
@@ -432,7 +611,7 @@ namespace MyBodyShape.Android.Fragments
                 {
                     // Redraw
                     currentCircle.UpdatePosition(x, y);
-                    this.ReDrawAll();
+                    this.ReDrawAll(currentX, currentY, scaleIndicator, false);
                 }
             }
             else if (e.Event.Action == MotionEventActions.Up)

@@ -7,50 +7,90 @@
   <RelativeLayout
         android:layout_width="0dip"
         android:layout_height="fill_parent"
-        android:layout_weight="0.15">
+        android:layout_weight="0.1">
     </RelativeLayout>
   <RelativeLayout
         android:layout_width="0dip"
         android:layout_height="fill_parent"
-        android:layout_weight="0.7">
+        android:layout_weight="0.8">
             <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:orientation="vertical"
+            android:gravity="center"
             android:id="@+id/layoutGenerateCenter">
-              <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Height "
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-                <EditText
-    android:id="@+id/heightText"
-    android:layout_width="fill_parent"
+              <TextView
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:inputType="number"/>
-              </LinearLayout>
-
+    android:text="Height (cm)"
+    android:textSize="15sp"
+    android:textStyle="bold" />
               <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Weight "
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="10dp">
+                <Button
+                   android:id="@+id/height_btn_minus"
+                   android:layout_width="50dp"
+                   android:layout_height="fill_parent"
+                   android:text="-"
+                   android:background="@drawable/blue_button"
+                   style="@style/button_text" />
                 <EditText
-      android:id="@+id/weightText"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:inputType="number"/>
+                   android:id="@+id/heightText"
+                   android:layout_width="150dp"
+                   android:gravity="center"
+                   android:text="170"
+                   android:layout_height="fill_parent"
+                   android:inputType="number"
+                   android:background="@drawable/rounded_border_edittext"/>
+                <Button
+                   android:id="@+id/height_btn_plus"
+                   android:layout_width="50dp"
+                   android:layout_height="fill_parent"
+                   android:text="+"
+                   android:background="@drawable/blue_button"
+                   style="@style/button_text" />
+              </LinearLayout>
+              <TextView
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="Weight (kg)"
+                  android:textSize="15sp"
+                  android:textStyle="bold"
+                  android:layout_marginTop="10dp"/>
+              <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp">
+                <Button
+                   android:id="@+id/weight_btn_minus"
+                   android:layout_width="50dp"
+                   android:layout_height="fill_parent"
+                   android:text="-"
+                   android:background="@drawable/blue_button"
+                   style="@style/button_text" />
+                            <EditText
+                   android:id="@+id/weightText"
+                   android:layout_width="150dp"
+                   android:gravity="center"
+                   android:text=""
+                   android:layout_height="fill_parent"
+                   android:inputType="number"
+                   android:background="@drawable/rounded_border_edittext"/>
+                            <Button
+                   android:id="@+id/weight_btn_plus"
+                   android:layout_width="50dp"
+                   android:layout_height="fill_parent"
+                   android:text="+"
+                   android:background="@drawable/blue_button"
+                   style="@style/button_text" />
               </LinearLayout>
 
                     <Button
@@ -60,12 +100,13 @@
                     android:layout_height="match_parent"
                     android:text="Generate your model"
                     android:layout_weight="0.7"
-                    style="@style/button_text"/>
+                    style="@style/button_text"
+                    />
               </LinearLayout>
 </RelativeLayout>
     <RelativeLayout
         android:layout_width="0dip"
         android:layout_height="fill_parent"
-        android:layout_weight="0.15">
+        android:layout_weight="0.1">
     </RelativeLayout>
 </LinearLayout>

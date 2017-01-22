@@ -111,5 +111,21 @@ namespace MyBodyShape.Android.Helpers
 
             return resizedBitmap;
         }
+
+        /// <summary>
+        /// Resizes the current bitmap.
+        /// </summary>
+        public static Bitmap ResizeCurrentBitmap(Bitmap bm, int newHeight, int newWidth)
+        {
+            int width = bm.Width;
+            int height = bm.Height;
+            float scaleWidth = ((float)newWidth) / width;
+            float scaleHeight = ((float)newHeight) / height;
+            Matrix matrix = new Matrix();
+            matrix.PostScale(scaleWidth, scaleHeight);
+            Bitmap resizedBitmap = Bitmap.CreateBitmap(bm, 0, 0, width, height, matrix, false);
+            bm.Dispose();
+            return resizedBitmap;
+        }
     }
 }

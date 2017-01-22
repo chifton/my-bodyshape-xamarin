@@ -67,9 +67,11 @@
     <Compile Include="Helpers\CircleArea.cs" />
     <Compile Include="Helpers\BodyShapeViewPager.cs" />
     <Compile Include="Helpers\BitmapHelpers.cs" />
+    <Compile Include="Listeners\EditTextRepeatListener.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Runnables\EditTextRunnable.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -140,6 +142,30 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\JsCssContent\Site.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\next_button.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\previous_button.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\rotate.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\top_button.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\zoomin.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\zoomout.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\down_button.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\rounded_border_edittext.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
