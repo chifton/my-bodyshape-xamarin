@@ -96,7 +96,7 @@ namespace MyBodyShape.Android.Listeners
             switch (e.Action)
             {
                 case MotionEventActions.Down:
-                    _repeatedHandler.PostDelayed(_editTextRunnable, 250);
+                    _repeatedHandler.PostDelayed(_editTextRunnable, 100);
                     _downView = v;
                     v.SetBackgroundColor(Color.RoyalBlue);
                     _timer.Enabled = true;

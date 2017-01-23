@@ -85,7 +85,7 @@ namespace MyBodyShape.Android.Listeners
                 }
             }
             
-            _repeatedHandler.PostDelayed(this, 250);
+            _repeatedHandler.PostDelayed(this, 100);
         }
     }
 }

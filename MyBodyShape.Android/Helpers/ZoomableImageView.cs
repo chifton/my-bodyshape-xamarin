@@ -5,7 +5,6 @@
 using Android.Content;
 using Android.Graphics;
 using Android.Widget;
-using MyBodyShape.Android.Fragments;
 
 namespace MyBodyShape.Android.Helpers
 {
@@ -41,7 +40,7 @@ namespace MyBodyShape.Android.Helpers
         /// </summary>
         public ZoomableImageView(Context context) : base(context)
         {
-            matrix = this.ImageMatrix;
+            matrix = new Matrix();
             mPaint = new Paint();
             currentPointZooming = new Point();
             currentPointBitmapZooming = new Point();
@@ -56,11 +55,14 @@ namespace MyBodyShape.Android.Helpers
 
             if (zooming)
             {
+                var ratioX = (double) currentPointBitmapZooming.X / currentPointZooming.X;
+                var ratioY = (double)currentPointBitmapZooming.Y / currentPointZooming.Y;
                 matrix.Reset();
-                matrix.PostScale(2f, 2f, currentPointZooming.X + 250, currentPointZooming.Y + 250);
+                matrix.PostScale(2f, 2f, currentPointBitmapZooming.X + currentPointZooming.X, currentPointBitmapZooming.Y + currentPointZooming.Y);
+                // , currentPointZooming.X * 2, currentPointZooming.Y * 2 - 200);
                 mPaint.Shader.SetLocalMatrix(matrix);
                 
-                canvas.DrawCircle(currentPointZooming.X, currentPointZooming.Y, 500, mPaint);
+                canvas.DrawCircle(currentPointZooming.X, currentPointZooming.Y, 400, mPaint);
             }
         }
 
