@@ -259,6 +259,7 @@ namespace MyBodyShape.Android.Fragments
                 frameLayout.RemoveAllViewsInLayout();
 
                 // New image view
+                bool drawOnPicture = false;
                 imageView = new ZoomableImageView(this.Context);
                 imageView.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent);
                 imageView.Visibility = ViewStates.Visible;
@@ -269,6 +270,9 @@ namespace MyBodyShape.Android.Fragments
                 // For further zooms
                 zoomPoint = new Point();
                 zoomBitmapPoint = new Point();
+
+                // The height
+                int height = Resources.DisplayMetrics.HeightPixels;
 
                 // The take picture result
                 if (requestCode == takePictureCode)
@@ -282,145 +286,13 @@ namespace MyBodyShape.Android.Fragments
                     mediaScanIntent.SetData(contentUri);
                     Context.SendBroadcast(mediaScanIntent);
 
-                    // Resize and display
-                    int height = Resources.DisplayMetrics.HeightPixels;
+                    // Resize image
                     int width = imageView.Width;
                     App1.bitmap = App1._file.Path.LoadAndResizeBitmap(width, height);
                     if (App1.bitmap != null)
                     {
-                        tempBitmap = Bitmap.CreateBitmap(App1.bitmap.Width, App1.bitmap.Height, Bitmap.Config.Rgb565);
-                        bitmapRatio = (float) tempBitmap.Height / tempBitmap.Width;
-                        tempCanvas = new Canvas(tempBitmap);
-                        tempCanvas.DrawBitmap(App1.bitmap, 0, 0, null);
-                        imageView.SetImageDrawable(new BitmapDrawable(this.Resources, tempBitmap));
-                        imageView.SetPaintShader(new BitmapShader(App1.bitmap, Shader.TileMode.Clamp, Shader.TileMode.Clamp));
-                        imageView.Touch += OnBodyShapeTouchEvent;
-                        
-                        // Original image dimensions
-                        Drawable drawable = imageView.Drawable;
-                        intrinsicWidth = drawable.IntrinsicWidth;
-                        intrinsicHeight = drawable.IntrinsicHeight;
-
-                        // Draw front skeleton
-                        this.DrawFrontSkeleton();
-
-                        // Buttons dimensions calculations
-                        var buttonWidthHeight = (int) height / 25;
-                        float calculatedDrawTop = 0;
-                        float calculatedDrawHeight = 0;
-                        float calculatedBitmapRatio = (float)tempBitmap.Width / tempBitmap.Height;
-                        float calculatedimageViewRatio = (float)fragmentView.Width / fragmentView.Height;
-                        calculatedDrawHeight = (calculatedimageViewRatio / calculatedBitmapRatio) * fragmentView.Height;
-                        calculatedDrawTop = (fragmentView.Height - calculatedDrawHeight) / 2;
-                        var downPosition = fragmentView.Height  - calculatedDrawTop;
-
-                        // Pictures buttons
-                        ImageButton leftButton = new ImageButton(this.Context);
-                        var leftParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
-                        leftButton.LayoutParameters = leftParams;
-                        leftButton.SetScaleType(ImageView.ScaleType.Center);
-                        leftButton.SetAdjustViewBounds(true);
-                        leftButton.SetBackgroundResource(Resource.Drawable.previous_button);
-                        leftButton.SetY(downPosition - buttonWidthHeight);
-                        leftButton.SetX(0);
-                        leftButton.Id = 1000;
-                        leftButton.Click += OnResizeFrontImage;
-                        leftButtonListener = new MoveRepeatListener(leftButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
-                        listenerDictionnary.Add("leftListen", leftButtonListener);
-                        leftButton.SetOnTouchListener(leftButtonListener);
-
-                        ImageButton rightButton = new ImageButton(this.Context);
-                        var rightParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
-                        rightButton.LayoutParameters = rightParams;
-                        rightButton.SetScaleType(ImageView.ScaleType.Center);
-                        rightButton.SetAdjustViewBounds(true);
-                        rightButton.SetBackgroundResource(Resource.Drawable.next_button);
-                        rightButton.SetY(downPosition - buttonWidthHeight);
-                        rightButton.SetX(3*buttonWidthHeight);
-                        rightButton.Id = 1001;
-                        rightButton.Click += OnResizeFrontImage;
-                        rightButtonListener = new MoveRepeatListener(rightButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
-                        listenerDictionnary.Add("rightListen", rightButtonListener);
-                        rightButton.SetOnTouchListener(rightButtonListener);
-
-                        ImageButton topButton = new ImageButton(this.Context);
-                        var topParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
-                        topButton.LayoutParameters = topParams;
-                        topButton.SetScaleType(ImageView.ScaleType.Center);
-                        topButton.SetAdjustViewBounds(true);
-                        topButton.SetBackgroundResource(Resource.Drawable.top_button);
-                        topButton.SetY(downPosition - 2*buttonWidthHeight);
-                        topButton.SetX(3 * buttonWidthHeight / 2);
-                        topButton.Id = 1002;
-                        topButton.Click += OnResizeFrontImage;
-                        topButtonListener = new MoveRepeatListener(topButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
-                        listenerDictionnary.Add("topListen", topButtonListener);
-                        topButton.SetOnTouchListener(topButtonListener);
-
-                        ImageButton downButton = new ImageButton(this.Context);
-                        var downParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
-                        downButton.LayoutParameters = downParams;
-                        downButton.SetScaleType(ImageView.ScaleType.Center);
-                        downButton.SetAdjustViewBounds(true);
-                        downButton.SetBackgroundResource(Resource.Drawable.down_button);
-                        downButton.SetY(downPosition);
-                        downButton.SetX(3 * buttonWidthHeight / 2);
-                        downButton.Id = 1003;
-                        downButton.Click += OnResizeFrontImage;
-                        downButtonListener = new MoveRepeatListener(downButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
-                        listenerDictionnary.Add("downListen", downButtonListener);
-                        downButton.SetOnTouchListener(downButtonListener);
-
-                        ImageButton zoomButton = new ImageButton(this.Context);
-                        var zoomParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
-                        zoomButton.LayoutParameters = zoomParams;
-                        zoomButton.SetScaleType(ImageView.ScaleType.Center);
-                        zoomButton.SetAdjustViewBounds(true);
-                        zoomButton.SetBackgroundResource(Resource.Drawable.zoomin);
-                        zoomButton.SetY(downPosition - buttonWidthHeight);
-                        zoomButton.SetX(2 * buttonWidthHeight);
-                        zoomButton.Id = 1004;
-                        zoomButton.Click += OnResizeFrontImage;
-                        zoomButtonListener = new MoveRepeatListener(zoomButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
-                        listenerDictionnary.Add("zoomListen", zoomButtonListener);
-                        zoomButton.SetOnTouchListener(zoomButtonListener);
-
-                        ImageButton unZoomButton = new ImageButton(this.Context);
-                        var unzoomParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
-                        unZoomButton.LayoutParameters = unzoomParams;
-                        unZoomButton.SetScaleType(ImageView.ScaleType.Center);
-                        unZoomButton.SetAdjustViewBounds(true);
-                        unZoomButton.SetBackgroundResource(Resource.Drawable.zoomout);
-                        unZoomButton.SetY(downPosition - buttonWidthHeight);
-                        unZoomButton.SetX(buttonWidthHeight);
-                        unZoomButton.Id = 1005;
-                        unZoomButton.Click += OnResizeFrontImage;
-                        unZoomButtonListener = new MoveRepeatListener(unZoomButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
-                        listenerDictionnary.Add("unZoomListen", unZoomButtonListener);
-                        unZoomButton.SetOnTouchListener(unZoomButtonListener);
-
-                        buttonDictionnary.Add("left", leftButton);
-                        buttonDictionnary.Add("right", rightButton);
-                        buttonDictionnary.Add("top", topButton);
-                        buttonDictionnary.Add("down", downButton);
-                        buttonDictionnary.Add("zoom", zoomButton);
-                        buttonDictionnary.Add("unzoom", unZoomButton);
-
-                        frameLayout.AddView(buttonDictionnary["left"]);
-                        frameLayout.AddView(buttonDictionnary["right"]);
-                        frameLayout.AddView(buttonDictionnary["top"]);
-                        frameLayout.AddView(buttonDictionnary["down"]);
-                        frameLayout.AddView(buttonDictionnary["zoom"]);
-                        frameLayout.AddView(buttonDictionnary["unzoom"]);
-
-                        // First size coordinates
-                        currentX = 0;
-                        currentY = 0;
-                        scaleIndicator = 0;
+                        drawOnPicture = true;
                     }
-
-                    // Memory
-                    GC.Collect();
                 }
                 // The load picture result
                 else if (requestCode == loadPictureCode)
@@ -431,17 +303,15 @@ namespace MyBodyShape.Android.Fragments
                         AndroidNet.Uri uri = data.Data;
 
                         // Resize and display
-                        int height = Resources.DisplayMetrics.HeightPixels;
                         int width = fragmentView.Width;
                         Bitmap resizedBitmap = MediaStore.Images.Media.GetBitmap(this.Activity.ContentResolver, uri);
                         var loadedBitmap = uri.Path.LoadInGalleryAndResizeBitmap(width, height, resizedBitmap);
                         if (loadedBitmap != null)
                         {
-                            imageView.SetImageBitmap(loadedBitmap);
+                            drawOnPicture = true;
+                            App1.bitmap = loadedBitmap;
+                            //imageView.SetImageBitmap(loadedBitmap);
                         }
-
-                        // Memory
-                        GC.Collect();
                     }
                     else
                     {
@@ -449,6 +319,142 @@ namespace MyBodyShape.Android.Fragments
                         message.SetMessage("No picture was found.");
                         message.Show();
                     }
+                }
+                
+                if(drawOnPicture)
+                {
+                    tempBitmap = Bitmap.CreateBitmap(App1.bitmap.Width, App1.bitmap.Height, Bitmap.Config.Rgb565);
+                    bitmapRatio = (float)tempBitmap.Height / tempBitmap.Width;
+                    tempCanvas = new Canvas(tempBitmap);
+                    tempCanvas.DrawBitmap(App1.bitmap, 0, 0, null);
+                    imageView.SetImageDrawable(new BitmapDrawable(this.Resources, tempBitmap));
+                    imageView.SetPaintShader(new BitmapShader(App1.bitmap, Shader.TileMode.Clamp, Shader.TileMode.Clamp));
+                    imageView.Touch += OnBodyShapeTouchEvent;
+
+                    // Original image dimensions
+                    Drawable drawable = imageView.Drawable;
+                    intrinsicWidth = drawable.IntrinsicWidth;
+                    intrinsicHeight = drawable.IntrinsicHeight;
+
+                    // Draw front skeleton
+                    this.DrawFrontSkeleton();
+
+                    // Buttons dimensions calculations
+                    var buttonWidthHeight = (int)height / 25;
+                    float calculatedDrawTop = 0;
+                    float calculatedDrawHeight = 0;
+                    float calculatedBitmapRatio = (float)tempBitmap.Width / tempBitmap.Height;
+                    float calculatedimageViewRatio = (float)fragmentView.Width / fragmentView.Height;
+                    calculatedDrawHeight = (calculatedimageViewRatio / calculatedBitmapRatio) * fragmentView.Height;
+                    calculatedDrawTop = (fragmentView.Height - calculatedDrawHeight) / 2;
+                    var downPosition = fragmentView.Height - calculatedDrawTop;
+
+                    // Pictures buttons
+                    ImageButton leftButton = new ImageButton(this.Context);
+                    var leftParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
+                    leftButton.LayoutParameters = leftParams;
+                    leftButton.SetScaleType(ImageView.ScaleType.Center);
+                    leftButton.SetAdjustViewBounds(true);
+                    leftButton.SetBackgroundResource(Resource.Drawable.previous_button);
+                    leftButton.SetY(downPosition - buttonWidthHeight);
+                    leftButton.SetX(0);
+                    leftButton.Id = 1000;
+                    leftButton.Click += OnResizeFrontImage;
+                    leftButtonListener = new MoveRepeatListener(leftButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
+                    listenerDictionnary.Add("leftListen", leftButtonListener);
+                    leftButton.SetOnTouchListener(leftButtonListener);
+
+                    ImageButton rightButton = new ImageButton(this.Context);
+                    var rightParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
+                    rightButton.LayoutParameters = rightParams;
+                    rightButton.SetScaleType(ImageView.ScaleType.Center);
+                    rightButton.SetAdjustViewBounds(true);
+                    rightButton.SetBackgroundResource(Resource.Drawable.next_button);
+                    rightButton.SetY(downPosition - buttonWidthHeight);
+                    rightButton.SetX(3 * buttonWidthHeight);
+                    rightButton.Id = 1001;
+                    rightButton.Click += OnResizeFrontImage;
+                    rightButtonListener = new MoveRepeatListener(rightButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
+                    listenerDictionnary.Add("rightListen", rightButtonListener);
+                    rightButton.SetOnTouchListener(rightButtonListener);
+
+                    ImageButton topButton = new ImageButton(this.Context);
+                    var topParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
+                    topButton.LayoutParameters = topParams;
+                    topButton.SetScaleType(ImageView.ScaleType.Center);
+                    topButton.SetAdjustViewBounds(true);
+                    topButton.SetBackgroundResource(Resource.Drawable.top_button);
+                    topButton.SetY(downPosition - 2 * buttonWidthHeight);
+                    topButton.SetX(3 * buttonWidthHeight / 2);
+                    topButton.Id = 1002;
+                    topButton.Click += OnResizeFrontImage;
+                    topButtonListener = new MoveRepeatListener(topButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
+                    listenerDictionnary.Add("topListen", topButtonListener);
+                    topButton.SetOnTouchListener(topButtonListener);
+
+                    ImageButton downButton = new ImageButton(this.Context);
+                    var downParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
+                    downButton.LayoutParameters = downParams;
+                    downButton.SetScaleType(ImageView.ScaleType.Center);
+                    downButton.SetAdjustViewBounds(true);
+                    downButton.SetBackgroundResource(Resource.Drawable.down_button);
+                    downButton.SetY(downPosition);
+                    downButton.SetX(3 * buttonWidthHeight / 2);
+                    downButton.Id = 1003;
+                    downButton.Click += OnResizeFrontImage;
+                    downButtonListener = new MoveRepeatListener(downButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
+                    listenerDictionnary.Add("downListen", downButtonListener);
+                    downButton.SetOnTouchListener(downButtonListener);
+
+                    ImageButton zoomButton = new ImageButton(this.Context);
+                    var zoomParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
+                    zoomButton.LayoutParameters = zoomParams;
+                    zoomButton.SetScaleType(ImageView.ScaleType.Center);
+                    zoomButton.SetAdjustViewBounds(true);
+                    zoomButton.SetBackgroundResource(Resource.Drawable.zoomin);
+                    zoomButton.SetY(downPosition - buttonWidthHeight);
+                    zoomButton.SetX(2 * buttonWidthHeight);
+                    zoomButton.Id = 1004;
+                    zoomButton.Click += OnResizeFrontImage;
+                    zoomButtonListener = new MoveRepeatListener(zoomButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
+                    listenerDictionnary.Add("zoomListen", zoomButtonListener);
+                    zoomButton.SetOnTouchListener(zoomButtonListener);
+
+                    ImageButton unZoomButton = new ImageButton(this.Context);
+                    var unzoomParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
+                    unZoomButton.LayoutParameters = unzoomParams;
+                    unZoomButton.SetScaleType(ImageView.ScaleType.Center);
+                    unZoomButton.SetAdjustViewBounds(true);
+                    unZoomButton.SetBackgroundResource(Resource.Drawable.zoomout);
+                    unZoomButton.SetY(downPosition - buttonWidthHeight);
+                    unZoomButton.SetX(buttonWidthHeight);
+                    unZoomButton.Id = 1005;
+                    unZoomButton.Click += OnResizeFrontImage;
+                    unZoomButtonListener = new MoveRepeatListener(unZoomButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
+                    listenerDictionnary.Add("unZoomListen", unZoomButtonListener);
+                    unZoomButton.SetOnTouchListener(unZoomButtonListener);
+
+                    buttonDictionnary.Add("left", leftButton);
+                    buttonDictionnary.Add("right", rightButton);
+                    buttonDictionnary.Add("top", topButton);
+                    buttonDictionnary.Add("down", downButton);
+                    buttonDictionnary.Add("zoom", zoomButton);
+                    buttonDictionnary.Add("unzoom", unZoomButton);
+
+                    frameLayout.AddView(buttonDictionnary["left"]);
+                    frameLayout.AddView(buttonDictionnary["right"]);
+                    frameLayout.AddView(buttonDictionnary["top"]);
+                    frameLayout.AddView(buttonDictionnary["down"]);
+                    frameLayout.AddView(buttonDictionnary["zoom"]);
+                    frameLayout.AddView(buttonDictionnary["unzoom"]);
+
+                    // First size coordinates
+                    currentX = 0;
+                    currentY = 0;
+                    scaleIndicator = 0;
+
+                    // Memory
+                    GC.Collect();
                 }
             }
             else
