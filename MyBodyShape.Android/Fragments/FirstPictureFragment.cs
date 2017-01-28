@@ -20,8 +20,10 @@ using Android.Graphics;
 using V4App = Android.Support.V4.App;
 
 using MyBodyShape.Android.Helpers;
+using MyBodyShape.Android.Listeners;
 using Android.App;
 using Android.Graphics.Drawables;
+using static Android.Views.View;
 
 namespace MyBodyShape.Android.Fragments
 {
@@ -161,6 +163,17 @@ namespace MyBodyShape.Android.Fragments
         private const int nearestDistance = 100;
 
         /// <summary>
+        /// The buttons listeners.
+        /// </summary>
+        private Dictionary<string, MoveRepeatListener> listenerDictionnary;
+        private MoveRepeatListener leftButtonListener;
+        private MoveRepeatListener rightButtonListener;
+        private MoveRepeatListener topButtonListener;
+        private MoveRepeatListener downButtonListener;
+        private MoveRepeatListener zoomButtonListener;
+        private MoveRepeatListener unZoomButtonListener;
+
+        /// <summary>
         /// The OnCreate method.
         /// </summary>
         /// <param name="savedInstanceState"></param>
@@ -251,6 +264,7 @@ namespace MyBodyShape.Android.Fragments
                 imageView.Visibility = ViewStates.Visible;
                 frameLayout.AddView(imageView);
                 buttonDictionnary = new Dictionary<string, ImageButton>();
+                listenerDictionnary = new Dictionary<string, MoveRepeatListener>();
 
                 // For further zooms
                 zoomPoint = new Point();
@@ -311,7 +325,9 @@ namespace MyBodyShape.Android.Fragments
                         leftButton.SetX(0);
                         leftButton.Id = 1000;
                         leftButton.Click += OnResizeFrontImage;
-                        leftButton.LongClick += OnLongResizeFrontImage;
+                        leftButtonListener = new MoveRepeatListener(leftButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
+                        listenerDictionnary.Add("leftListen", leftButtonListener);
+                        leftButton.SetOnTouchListener(leftButtonListener);
 
                         ImageButton rightButton = new ImageButton(this.Context);
                         var rightParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
@@ -323,7 +339,9 @@ namespace MyBodyShape.Android.Fragments
                         rightButton.SetX(3*buttonWidthHeight);
                         rightButton.Id = 1001;
                         rightButton.Click += OnResizeFrontImage;
-                        rightButton.LongClick += OnLongResizeFrontImage;
+                        rightButtonListener = new MoveRepeatListener(rightButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
+                        listenerDictionnary.Add("rightListen", rightButtonListener);
+                        rightButton.SetOnTouchListener(rightButtonListener);
 
                         ImageButton topButton = new ImageButton(this.Context);
                         var topParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
@@ -335,7 +353,9 @@ namespace MyBodyShape.Android.Fragments
                         topButton.SetX(3 * buttonWidthHeight / 2);
                         topButton.Id = 1002;
                         topButton.Click += OnResizeFrontImage;
-                        topButton.LongClick += OnLongResizeFrontImage;
+                        topButtonListener = new MoveRepeatListener(topButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
+                        listenerDictionnary.Add("topListen", topButtonListener);
+                        topButton.SetOnTouchListener(topButtonListener);
 
                         ImageButton downButton = new ImageButton(this.Context);
                         var downParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
@@ -347,7 +367,9 @@ namespace MyBodyShape.Android.Fragments
                         downButton.SetX(3 * buttonWidthHeight / 2);
                         downButton.Id = 1003;
                         downButton.Click += OnResizeFrontImage;
-                        downButton.LongClick += OnLongResizeFrontImage;
+                        downButtonListener = new MoveRepeatListener(downButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
+                        listenerDictionnary.Add("downListen", downButtonListener);
+                        downButton.SetOnTouchListener(downButtonListener);
 
                         ImageButton zoomButton = new ImageButton(this.Context);
                         var zoomParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
@@ -359,7 +381,9 @@ namespace MyBodyShape.Android.Fragments
                         zoomButton.SetX(2 * buttonWidthHeight);
                         zoomButton.Id = 1004;
                         zoomButton.Click += OnResizeFrontImage;
-                        zoomButton.LongClick += OnLongResizeFrontImage;
+                        zoomButtonListener = new MoveRepeatListener(zoomButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
+                        listenerDictionnary.Add("zoomListen", zoomButtonListener);
+                        zoomButton.SetOnTouchListener(zoomButtonListener);
 
                         ImageButton unZoomButton = new ImageButton(this.Context);
                         var unzoomParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
@@ -371,7 +395,9 @@ namespace MyBodyShape.Android.Fragments
                         unZoomButton.SetX(buttonWidthHeight);
                         unZoomButton.Id = 1005;
                         unZoomButton.Click += OnResizeFrontImage;
-                        unZoomButton.LongClick += OnLongResizeFrontImage;
+                        unZoomButtonListener = new MoveRepeatListener(unZoomButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
+                        listenerDictionnary.Add("unZoomListen", unZoomButtonListener);
+                        unZoomButton.SetOnTouchListener(unZoomButtonListener);
 
                         buttonDictionnary.Add("left", leftButton);
                         buttonDictionnary.Add("right", rightButton);
@@ -434,51 +460,32 @@ namespace MyBodyShape.Android.Fragments
         }
 
         /// <summary>
+        /// The synchronize method between listeners and the view.
+        /// </summary>
+        private void SynchronizePositions()
+        {
+            var currentKey = listenerDictionnary.OrderByDescending(b => b.Value.MoveimageRunnable.LastUpdated).FirstOrDefault().Key;
+            this.currentX = listenerDictionnary[currentKey].MoveimageRunnable.CurrentX;
+            this.currentY = listenerDictionnary[currentKey].MoveimageRunnable.CurrentY;
+            this.scaleIndicator = listenerDictionnary[currentKey].MoveimageRunnable.ScaleIndicator;
+            this.circlesList = listenerDictionnary[currentKey].MoveimageRunnable.CirclesList;
+
+            // Listeners update
+            foreach (var listen in listenerDictionnary)
+            {
+                if (listen.Key != currentKey)
+                {
+                    listen.Value.MoveimageRunnable.Update(this.currentX, this.currentY, this.scaleIndicator, this.circlesList);
+                }
+            }
+        }
+
+        /// <summary>
         /// The click event on sizing image buttons.
         /// </summary>
         private void OnResizeFrontImage(object sender, EventArgs e)
         {
-            var imageButton = sender as ImageButton;
-            var scaling = false;
-            switch (imageButton.Id)
-            {
-                case 1000:
-                    currentX -= 20;
-                    scaleIndicator = 0;
-                    break;
-                case 1001:
-                    currentX += 20;
-                    scaleIndicator = 0;
-                    break;
-                case 1002:
-                    currentY -= 20;
-                    scaleIndicator = 0;
-                    break;
-                case 1003:
-                    currentY += 20;
-                    scaleIndicator = 0;
-                    break;
-                case 1004:
-                    scaleIndicator = 30;
-                    scaling = true;
-                    break;
-                case 1005:
-                    scaleIndicator = -30;
-                    scaling = true;
-                    break;
-                default:
-                    break;
-            }
-
-            this.ReDrawAll(currentX, currentY, scaleIndicator, scaling);
-            fragmentView.Invalidate();
-        }
-
-        /// <summary>
-        /// The long click event on sizing image buttons.
-        /// </summary>
-        private void OnLongResizeFrontImage(object sender, View.LongClickEventArgs e)
-        {
+            this.SynchronizePositions();
         }
 
         /// <summary>
