@@ -1,5 +1,5 @@
 /**********************************************************/
-/*************** The move image runnable
+/*************** The front move image runnable
 /**********************************************************/
 
 using Android.Graphics;
@@ -19,7 +19,7 @@ namespace MyBodyShape.Android.Listeners
     /// <summary>
     /// The move image runnable.
     /// </summary>
-    public class MoveImageRunnable : Java.Lang.Object, IRunnable
+    public class FrontMoveImageRunnable : Java.Lang.Object, IRunnable
     {
         /// <summary>
         /// The image button.
@@ -79,7 +79,7 @@ namespace MyBodyShape.Android.Listeners
         /// <summary>
         /// The constructor.
         /// </summary>
-        public MoveImageRunnable(ViewImageView.View fragmentView, Handler repeatedHandler, ImageButton currentButton, Canvas canvas, Paint paint, float radius, List<CircleArea> circlesList)
+        public FrontMoveImageRunnable( ViewImageView.View fragmentView, Handler repeatedHandler, ImageButton currentButton, Canvas canvas, Paint paint, float radius, List<CircleArea> circlesList)
         {
             _imageButton = currentButton;
             _repeatedHandler = repeatedHandler;

@@ -67,12 +67,14 @@
     <Compile Include="Helpers\CircleArea.cs" />
     <Compile Include="Helpers\BodyShapeViewPager.cs" />
     <Compile Include="Helpers\BitmapHelpers.cs" />
-    <Compile Include="Listeners\MoveRepeatListener.cs" />
+    <Compile Include="Listeners\SideMoveRepeatListener.cs" />
+    <Compile Include="Listeners\FrontMoveRepeatListener.cs" />
     <Compile Include="Listeners\EditTextRepeatListener.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Runnables\MoveImageRunnable.cs" />
+    <Compile Include="Runnables\SideMoveImageRunnable.cs" />
+    <Compile Include="Runnables\FrontMoveImageRunnable.cs" />
     <Compile Include="Runnables\EditTextRunnable.cs" />
   </ItemGroup>
   <ItemGroup>

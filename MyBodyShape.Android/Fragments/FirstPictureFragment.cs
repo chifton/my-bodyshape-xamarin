@@ -23,7 +23,6 @@ using MyBodyShape.Android.Helpers;
 using MyBodyShape.Android.Listeners;
 using Android.App;
 using Android.Graphics.Drawables;
-using static Android.Views.View;
 
 namespace MyBodyShape.Android.Fragments
 {
@@ -98,6 +97,11 @@ namespace MyBodyShape.Android.Fragments
         private CircleArea currentCircle;
 
         /// <summary>
+        /// The buffer circles.
+        /// </summary>
+        private List<CircleArea> bufferCircles;
+
+        /// <summary>
         /// The take picture button.
         /// </summary>
         private Button takePictureButton;
@@ -143,6 +147,11 @@ namespace MyBodyShape.Android.Fragments
         private Point zoomBitmapPoint;
 
         /// <summary>
+        /// The circle center of the point.
+        /// </summary>
+        private Point circleCenter;
+
+        /// <summary>
         /// The request picture code.
         /// </summary>
         private const int takePictureCode = 11;
@@ -165,13 +174,18 @@ namespace MyBodyShape.Android.Fragments
         /// <summary>
         /// The buttons listeners.
         /// </summary>
-        private Dictionary<string, MoveRepeatListener> listenerDictionnary;
-        private MoveRepeatListener leftButtonListener;
-        private MoveRepeatListener rightButtonListener;
-        private MoveRepeatListener topButtonListener;
-        private MoveRepeatListener downButtonListener;
-        private MoveRepeatListener zoomButtonListener;
-        private MoveRepeatListener unZoomButtonListener;
+        private Dictionary<string, FrontMoveRepeatListener> listenerDictionnary;
+        private FrontMoveRepeatListener leftButtonListener;
+        private FrontMoveRepeatListener rightButtonListener;
+        private FrontMoveRepeatListener topButtonListener;
+        private FrontMoveRepeatListener downButtonListener;
+        private FrontMoveRepeatListener zoomButtonListener;
+        private FrontMoveRepeatListener unZoomButtonListener;
+
+        /// <summary>
+        /// The viewpager parent.
+        /// </summary>
+        private BodyShapeViewPager viewPager;
 
         /// <summary>
         /// The OnCreate method.
@@ -259,17 +273,20 @@ namespace MyBodyShape.Android.Fragments
                 frameLayout.RemoveAllViewsInLayout();
 
                 // New image view
+                viewPager = this.Activity.FindViewById<BodyShapeViewPager>(Resource.Id.bodyshapeViewPager);
                 bool drawOnPicture = false;
                 imageView = new ZoomableImageView(this.Context);
                 imageView.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent);
                 imageView.Visibility = ViewStates.Visible;
                 frameLayout.AddView(imageView);
                 buttonDictionnary = new Dictionary<string, ImageButton>();
-                listenerDictionnary = new Dictionary<string, MoveRepeatListener>();
+                listenerDictionnary = new Dictionary<string, FrontMoveRepeatListener>();
 
                 // For further zooms
                 zoomPoint = new Point();
                 zoomBitmapPoint = new Point();
+                circleCenter = new Point();
+                bufferCircles = new List<CircleArea>();
 
                 // The height
                 int height = Resources.DisplayMetrics.HeightPixels;
@@ -310,7 +327,6 @@ namespace MyBodyShape.Android.Fragments
                         {
                             drawOnPicture = true;
                             App1.bitmap = loadedBitmap;
-                            //imageView.SetImageBitmap(loadedBitmap);
                         }
                     }
                     else
@@ -360,7 +376,7 @@ namespace MyBodyShape.Android.Fragments
                     leftButton.SetX(0);
                     leftButton.Id = 1000;
                     leftButton.Click += OnResizeFrontImage;
-                    leftButtonListener = new MoveRepeatListener(leftButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
+                    leftButtonListener = new FrontMoveRepeatListener(leftButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
                     listenerDictionnary.Add("leftListen", leftButtonListener);
                     leftButton.SetOnTouchListener(leftButtonListener);
 
@@ -374,7 +390,7 @@ namespace MyBodyShape.Android.Fragments
                     rightButton.SetX(3 * buttonWidthHeight);
                     rightButton.Id = 1001;
                     rightButton.Click += OnResizeFrontImage;
-                    rightButtonListener = new MoveRepeatListener(rightButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
+                    rightButtonListener = new FrontMoveRepeatListener(rightButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
                     listenerDictionnary.Add("rightListen", rightButtonListener);
                     rightButton.SetOnTouchListener(rightButtonListener);
 
@@ -388,7 +404,7 @@ namespace MyBodyShape.Android.Fragments
                     topButton.SetX(3 * buttonWidthHeight / 2);
                     topButton.Id = 1002;
                     topButton.Click += OnResizeFrontImage;
-                    topButtonListener = new MoveRepeatListener(topButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
+                    topButtonListener = new FrontMoveRepeatListener(topButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
                     listenerDictionnary.Add("topListen", topButtonListener);
                     topButton.SetOnTouchListener(topButtonListener);
 
@@ -402,7 +418,7 @@ namespace MyBodyShape.Android.Fragments
                     downButton.SetX(3 * buttonWidthHeight / 2);
                     downButton.Id = 1003;
                     downButton.Click += OnResizeFrontImage;
-                    downButtonListener = new MoveRepeatListener(downButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
+                    downButtonListener = new FrontMoveRepeatListener(downButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
                     listenerDictionnary.Add("downListen", downButtonListener);
                     downButton.SetOnTouchListener(downButtonListener);
 
@@ -416,7 +432,7 @@ namespace MyBodyShape.Android.Fragments
                     zoomButton.SetX(2 * buttonWidthHeight);
                     zoomButton.Id = 1004;
                     zoomButton.Click += OnResizeFrontImage;
-                    zoomButtonListener = new MoveRepeatListener(zoomButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
+                    zoomButtonListener = new FrontMoveRepeatListener(zoomButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
                     listenerDictionnary.Add("zoomListen", zoomButtonListener);
                     zoomButton.SetOnTouchListener(zoomButtonListener);
 
@@ -430,7 +446,7 @@ namespace MyBodyShape.Android.Fragments
                     unZoomButton.SetX(buttonWidthHeight);
                     unZoomButton.Id = 1005;
                     unZoomButton.Click += OnResizeFrontImage;
-                    unZoomButtonListener = new MoveRepeatListener(unZoomButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
+                    unZoomButtonListener = new FrontMoveRepeatListener(unZoomButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
                     listenerDictionnary.Add("unZoomListen", unZoomButtonListener);
                     unZoomButton.SetOnTouchListener(unZoomButtonListener);
 
@@ -487,6 +503,17 @@ namespace MyBodyShape.Android.Fragments
         }
 
         /// <summary>
+        /// The get nearest circles method.
+        /// </summary>
+        private List<CircleArea> GetNearestCircles(int positionX, int positionY, int radius)
+        {
+            var nearest = this.circlesList.Where(f => f.PositionX >= positionX - radius && f.PositionX <= positionX + radius
+                                                                    && f.PositionY >= positionY - radius && f.PositionY <= positionY + radius).ToList();
+
+            return nearest;
+        }
+
+        /// <summary>
         /// The click event on sizing image buttons.
         /// </summary>
         private void OnResizeFrontImage(object sender, EventArgs e)
@@ -509,6 +536,8 @@ namespace MyBodyShape.Android.Fragments
 
             // Head
             circlesList.Add(this.DrawCircleArea(Color.Red, centerBitmap, 50, "head1"));
+            circlesList.Add(this.DrawCircleArea(Color.Red, centerBitmap - 100, 150, "head3"));
+            circlesList.Add(this.DrawCircleArea(Color.Red, centerBitmap + 100, 150, "head3"));
         }
 
         /// <summary>
@@ -615,8 +644,15 @@ namespace MyBodyShape.Android.Fragments
                 // Get nearest circle
                 currentCircle = this.GetNearestCircle(x, y);
 
-                // Zoom
-                imageView.EnableZoom(zoomPoint, zoomBitmapPoint);
+                if (currentCircle != null)
+                {
+                    // Zoom
+                    circleCenter.X = (int)currentCircle.PositionX;
+                    circleCenter.Y = (int)currentCircle.PositionY;
+                    bufferCircles = this.GetNearestCircles(circleCenter.X, circleCenter.Y, 400);
+                    imageView.EnableZoom(zoomPoint, circleCenter, bufferCircles);
+                    viewPager.SetSwipeEnabled(false);
+                }
             }
             else if (e.Event.Action == MotionEventActions.Move)
             {
@@ -633,6 +669,8 @@ namespace MyBodyShape.Android.Fragments
                 imageView.DisableZoom();
 
                 currentCircle = null;
+                bufferCircles = new List<CircleArea>();
+                viewPager.SetSwipeEnabled(true);
             }
 
             fragmentView.Invalidate();

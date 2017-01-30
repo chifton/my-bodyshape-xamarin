@@ -4,5 +4,5 @@
   <uses-permission android:name="android.permission.CAMERA" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.VIBRATE"/>
-	<application android:label="MyBodyShape.Android"></application>
+	<application android:label="MyBodyShape.Android" android:largeHeap="true"></application>
 </manifest>

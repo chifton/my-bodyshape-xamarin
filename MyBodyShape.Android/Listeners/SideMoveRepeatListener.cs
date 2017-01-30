@@ -1,5 +1,5 @@
 /**********************************************************/
-/*************** The move image repeat listener
+/*************** The side move image repeat listener
 /**********************************************************/
 
 using Android.Graphics;
@@ -16,9 +16,9 @@ using static Android.Views.View;
 namespace MyBodyShape.Android.Listeners
 {
     /// <summary>
-    /// The move image repeat listener.
+    /// The side move image repeat listener.
     /// </summary>
-    public class MoveRepeatListener : Java.Lang.Object, IOnTouchListener
+    public class SideMoveRepeatListener : Java.Lang.Object, IOnTouchListener
     {
         /// <summary>
         ///  The private controls.
@@ -42,12 +42,12 @@ namespace MyBodyShape.Android.Listeners
         /// <summary>
         /// The move image runnable.
         /// </summary>
-        public MoveImageRunnable MoveimageRunnable { get; set; }
+        public SideMoveImageRunnable MoveimageRunnable { get; set; }
 
         /// <summary>
         /// The constructor.
         /// </summary>
-        public MoveRepeatListener(ImageButton button, ViewImageView.View imageView, Canvas canvas, Paint paint, float radius, List<CircleArea> circlesList, int initialInterval, int normalInterval, Action<View> clickListener, Action<View> initialClickListener, Action<View, bool> cancelListener = null)
+        public SideMoveRepeatListener(ImageButton button, ViewImageView.View imageView, Canvas canvas, Paint paint, float radius, List<CircleArea> circlesList, int initialInterval, int normalInterval, Action<View> clickListener, Action<View> initialClickListener, Action<View, bool> cancelListener = null)
         {
             _initialInterval = initialInterval;
             _normalInterval = normalInterval;
@@ -64,7 +64,7 @@ namespace MyBodyShape.Android.Listeners
             _paint = paint;
             _radius = radius;
             _circleList = circlesList;
-            MoveimageRunnable = new MoveImageRunnable(_imageView, _repeatedHandler, _button, _canvas, _paint, _radius, _circleList);
+            MoveimageRunnable = new SideMoveImageRunnable(_imageView, _repeatedHandler, _button, _canvas, _paint, _radius, _circleList);
         }
 
         // The handle timer elapsed.
