@@ -23,6 +23,8 @@ using MyBodyShape.Android.Helpers;
 using MyBodyShape.Android.Listeners;
 using Android.App;
 using Android.Graphics.Drawables;
+using Newtonsoft.Json;
+using System.Globalization;
 
 namespace MyBodyShape.Android.Fragments
 {
@@ -170,6 +172,16 @@ namespace MyBodyShape.Android.Fragments
         /// The nearest distance.
         /// </summary>
         private const int nearestDistance = 100;
+
+        /// <summary>
+        /// The website root width.
+        /// </summary>
+        private const int webSiteWidth = 292;
+
+        /// <summary>
+        /// The website root height.
+        /// </summary>
+        private const int webSiteHeight = 596;
 
         /// <summary>
         /// The buttons listeners.
@@ -558,18 +570,39 @@ namespace MyBodyShape.Android.Fragments
         /// </summary>
         private void DrawSideSkeleton()
         {
+            // Extract root example positions
+            var jsonStream = new System.IO.StreamReader(this.Activity.Assets.Open("positions.json"));
+            var positionsDataString = jsonStream.ReadToEnd();
+            var positionData = JsonConvert.DeserializeObject<Dictionary<string, string>>(positionsDataString);
+
             // Initialization
             circlesList = new List<CircleArea>();
             tempPaint = new Paint(PaintFlags.AntiAlias)
             {
                 StrokeWidth = 10
             };
+            CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+            ci.NumberFormat.CurrencyDecimalSeparator = ".";
+            var heightWebSiteRatio = (double)tempBitmap.Height / webSiteHeight;
             var centerBitmap = (tempBitmap.Width - rootRadius) / 2;
+            var headInfo = positionData.Where(x => x.Key == "head_v1_1").FirstOrDefault().Value.Split(';');
+            var headHeight = (float)(float.Parse(headInfo[1], NumberStyles.Any, ci) * heightWebSiteRatio);
+            var bitmapRatioHead = (float.Parse(headInfo[0], NumberStyles.Any, ci)) / (float.Parse(headInfo[1], NumberStyles.Any, ci));
+            var diffxPoints = centerBitmap - headHeight * bitmapRatioHead;
 
-            // Head
-            circlesList.Add(this.DrawCircleArea(Color.Red, centerBitmap, 50, "head1"));
-            circlesList.Add(this.DrawCircleArea(Color.Red, centerBitmap - 100, 150, "head3"));
-            circlesList.Add(this.DrawCircleArea(Color.Red, centerBitmap + 100, 150, "head3"));
+            foreach (var pointToDraw in positionData)
+            {
+                var splitPointData = pointToDraw.Value.Split(';');
+                if (splitPointData[3] == "side")
+                {
+                    var bitmapRatioTotal = (float.Parse(splitPointData[0], NumberStyles.Any, ci)) / (float.Parse(splitPointData[1], NumberStyles.Any, ci));
+                    var pointHeight = (float)(float.Parse(splitPointData[1], NumberStyles.Any, ci) * heightWebSiteRatio);
+                    circlesList.Add(this.DrawCircleArea(Color.ParseColor(splitPointData[2]),
+                        pointHeight * bitmapRatioTotal + diffxPoints,
+                        pointHeight,
+                        pointToDraw.Key));
+                }
+            }
         }
 
         /// <summary>
@@ -598,7 +631,7 @@ namespace MyBodyShape.Android.Fragments
         /// <summary>
         /// The ReDrawAll method at every move.
         /// </summary>
-        private void ReDrawAll(int x, int y, double scale, bool scaling)
+        private void ReDrawAll(int x, int y, double scale, bool scaling, float[] endZoomPoints)
         {
             tempCanvas.DrawColor(Color.Black, PorterDuff.Mode.Clear);
 
@@ -613,7 +646,19 @@ namespace MyBodyShape.Android.Fragments
             foreach (CircleArea circle in circlesList)
             {
                 tempPaint.Color = circle.Color;
-                tempCanvas.DrawCircle(circle.PositionX, circle.PositionY, rootRadius, tempPaint);
+                if (circle.Id != currentCircle.Id)
+                {
+                    tempCanvas.DrawCircle(circle.PositionX, circle.PositionY, rootRadius, tempPaint);
+                }
+                else
+                {
+                    if (endZoomPoints != null)
+                    {
+                        circle.PositionX = circleCenter.X + endZoomPoints[0];
+                        circle.PositionY = circleCenter.Y + endZoomPoints[1];
+                        tempCanvas.DrawCircle(circle.PositionX, circle.PositionY, rootRadius, tempPaint);
+                    }
+                }
             }
         }
 
@@ -683,7 +728,7 @@ namespace MyBodyShape.Android.Fragments
                     circleCenter.X = (int) currentCircle.PositionX;
                     circleCenter.Y = (int)currentCircle.PositionY;
                     bufferCircles = this.GetNearestCircles(circleCenter.X, circleCenter.Y, 400);
-                    imageView.EnableZoom(zoomPoint, circleCenter, bufferCircles);
+                    imageView.EnableZoom(zoomPoint, circleCenter, bufferCircles, currentCircle);
                     viewPager.SetSwipeEnabled(false);
                 }                
             }
@@ -693,13 +738,20 @@ namespace MyBodyShape.Android.Fragments
                 {
                     // Redraw
                     currentCircle.UpdatePosition(x, y);
-                    this.ReDrawAll(currentX, currentY, scaleIndicator, false);
+                    this.ReDrawAll(currentX, currentY, scaleIndicator, false, null);
                 }
             }
             else if (e.Event.Action == MotionEventActions.Up)
             {
                 // UnZoom
-                imageView.DisableZoom();
+                if (currentCircle != null)
+                {
+                    if (imageView.Distances == null)
+                    {
+                        imageView.DisableZoom();
+                    }
+                    this.ReDrawAll(currentX, currentY, scaleIndicator, false, imageView.Distances);
+                }
 
                 currentCircle = null;
                 bufferCircles = new List<CircleArea>();
