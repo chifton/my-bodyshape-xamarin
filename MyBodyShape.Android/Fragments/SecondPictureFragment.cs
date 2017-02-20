@@ -401,7 +401,6 @@ namespace MyBodyShape.Android.Fragments
                     float calculatedimageViewRatio = (float)fragmentView.Width / fragmentView.Height;
                     calculatedDrawHeight = (calculatedimageViewRatio / calculatedBitmapRatio) * fragmentView.Height;
                     calculatedDrawTop = (fragmentView.Height - calculatedDrawHeight) / 2;
-                    var downPosition = fragmentView.Height - calculatedDrawTop;
 
                     // Pictures buttons
                     ImageButton leftButton = new ImageButton(this.Context);
@@ -410,11 +409,11 @@ namespace MyBodyShape.Android.Fragments
                     leftButton.SetScaleType(ImageView.ScaleType.Center);
                     leftButton.SetAdjustViewBounds(true);
                     leftButton.SetBackgroundResource(Resource.Drawable.previous_button);
-                    leftButton.SetY(downPosition - buttonWidthHeight);
+                    leftButton.SetY(calculatedDrawTop + buttonWidthHeight);
                     leftButton.SetX(0);
                     leftButton.Id = 2000;
                     leftButton.Click += OnResizeSideImage;
-                    leftButtonListener = new SideMoveRepeatListener(leftButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
+                    leftButtonListener = new SideMoveRepeatListener(leftButton, fragmentView, tempCanvas, tempPaint, tempPathPaint, rootRadius, circlesList, pathList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
                     listenerDictionnary.Add("leftListen", leftButtonListener);
                     leftButton.SetOnTouchListener(leftButtonListener);
 
@@ -424,11 +423,11 @@ namespace MyBodyShape.Android.Fragments
                     rightButton.SetScaleType(ImageView.ScaleType.Center);
                     rightButton.SetAdjustViewBounds(true);
                     rightButton.SetBackgroundResource(Resource.Drawable.next_button);
-                    rightButton.SetY(downPosition - buttonWidthHeight);
-                    rightButton.SetX(4 * buttonWidthHeight);
+                    rightButton.SetY(calculatedDrawTop + 2 * buttonWidthHeight);
+                    rightButton.SetX(0);
                     rightButton.Id = 2001;
                     rightButton.Click += OnResizeSideImage;
-                    rightButtonListener = new SideMoveRepeatListener(rightButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
+                    rightButtonListener = new SideMoveRepeatListener(rightButton, fragmentView, tempCanvas, tempPaint, tempPathPaint, rootRadius, circlesList, pathList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
                     listenerDictionnary.Add("rightListen", rightButtonListener);
                     rightButton.SetOnTouchListener(rightButtonListener);
 
@@ -438,11 +437,11 @@ namespace MyBodyShape.Android.Fragments
                     topButton.SetScaleType(ImageView.ScaleType.Center);
                     topButton.SetAdjustViewBounds(true);
                     topButton.SetBackgroundResource(Resource.Drawable.top_button);
-                    topButton.SetY(downPosition - 2 * buttonWidthHeight);
-                    topButton.SetX(2 * buttonWidthHeight);
+                    topButton.SetY(calculatedDrawTop + 3 * buttonWidthHeight);
+                    topButton.SetX(0);
                     topButton.Id = 2002;
                     topButton.Click += OnResizeSideImage;
-                    topButtonListener = new SideMoveRepeatListener(topButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
+                    topButtonListener = new SideMoveRepeatListener(topButton, fragmentView, tempCanvas, tempPaint, tempPathPaint, rootRadius, circlesList, pathList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
                     listenerDictionnary.Add("topListen", topButtonListener);
                     topButton.SetOnTouchListener(topButtonListener);
 
@@ -452,11 +451,11 @@ namespace MyBodyShape.Android.Fragments
                     downButton.SetScaleType(ImageView.ScaleType.Center);
                     downButton.SetAdjustViewBounds(true);
                     downButton.SetBackgroundResource(Resource.Drawable.down_button);
-                    downButton.SetY(downPosition);
-                    downButton.SetX(2 * buttonWidthHeight);
+                    downButton.SetY(calculatedDrawTop + 4 * buttonWidthHeight);
+                    downButton.SetX(0);
                     downButton.Id = 2003;
                     downButton.Click += OnResizeSideImage;
-                    downButtonListener = new SideMoveRepeatListener(downButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
+                    downButtonListener = new SideMoveRepeatListener(downButton, fragmentView, tempCanvas, tempPaint, tempPathPaint, rootRadius, circlesList, pathList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
                     listenerDictionnary.Add("downListen", downButtonListener);
                     downButton.SetOnTouchListener(downButtonListener);
 
@@ -466,11 +465,11 @@ namespace MyBodyShape.Android.Fragments
                     zoomButton.SetScaleType(ImageView.ScaleType.Center);
                     zoomButton.SetAdjustViewBounds(true);
                     zoomButton.SetBackgroundResource(Resource.Drawable.zoomin);
-                    zoomButton.SetY(downPosition - buttonWidthHeight);
-                    zoomButton.SetX(3 * buttonWidthHeight);
+                    zoomButton.SetY(calculatedDrawTop + 5 * buttonWidthHeight);
+                    zoomButton.SetX(0);
                     zoomButton.Id = 2004;
                     zoomButton.Click += OnResizeSideImage;
-                    zoomButtonListener = new SideMoveRepeatListener(zoomButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
+                    zoomButtonListener = new SideMoveRepeatListener(zoomButton, fragmentView, tempCanvas, tempPaint, tempPathPaint, rootRadius, circlesList, pathList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
                     listenerDictionnary.Add("zoomListen", zoomButtonListener);
                     zoomButton.SetOnTouchListener(zoomButtonListener);
 
@@ -480,23 +479,45 @@ namespace MyBodyShape.Android.Fragments
                     unZoomButton.SetScaleType(ImageView.ScaleType.Center);
                     unZoomButton.SetAdjustViewBounds(true);
                     unZoomButton.SetBackgroundResource(Resource.Drawable.zoomout);
-                    unZoomButton.SetY(downPosition - buttonWidthHeight);
-                    unZoomButton.SetX(buttonWidthHeight);
+                    unZoomButton.SetY(calculatedDrawTop + 6 * buttonWidthHeight);
+                    unZoomButton.SetX(0);
                     unZoomButton.Id = 2005;
                     unZoomButton.Click += OnResizeSideImage;
-                    unZoomButtonListener = new SideMoveRepeatListener(unZoomButton, fragmentView, tempCanvas, tempPaint, rootRadius, circlesList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
+                    unZoomButtonListener = new SideMoveRepeatListener(unZoomButton, fragmentView, tempCanvas, tempPaint, tempPathPaint, rootRadius, circlesList, pathList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
                     listenerDictionnary.Add("unZoomListen", unZoomButtonListener);
                     unZoomButton.SetOnTouchListener(unZoomButtonListener);
 
+                    ImageButton leftPivotButton = new ImageButton(this.Context);
+                    var leftPivotParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
+                    leftPivotButton.LayoutParameters = leftPivotParams;
+                    leftPivotButton.SetScaleType(ImageView.ScaleType.Center);
+                    leftPivotButton.SetAdjustViewBounds(true);
+                    leftPivotButton.SetBackgroundResource(Resource.Drawable.pivotright);
+                    leftPivotButton.SetY(calculatedDrawTop + 7 * buttonWidthHeight);
+                    leftPivotButton.SetX(0);
+                    leftPivotButton.Id = 2006;
+                    leftPivotButton.Click += OnLeftPivotImage;
+
+                    ImageButton rightPivotButton = new ImageButton(this.Context);
+                    var rightPivotParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
+                    rightPivotButton.LayoutParameters = rightPivotParams;
+                    rightPivotButton.SetScaleType(ImageView.ScaleType.Center);
+                    rightPivotButton.SetAdjustViewBounds(true);
+                    rightPivotButton.SetBackgroundResource(Resource.Drawable.pivotleft);
+                    rightPivotButton.SetY(calculatedDrawTop + 8 * buttonWidthHeight);
+                    rightPivotButton.SetX(0);
+                    rightPivotButton.Id = 2007;
+
+                    rightPivotButton.Click += OnRightPivotImage;
                     ImageButton rotateButton = new ImageButton(this.Context);
                     var rotateParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
                     rotateButton.LayoutParameters = rotateParams;
                     rotateButton.SetScaleType(ImageView.ScaleType.Center);
                     rotateButton.SetAdjustViewBounds(true);
                     rotateButton.SetBackgroundResource(Resource.Drawable.rotate);
-                    rotateButton.SetY(downPosition - buttonWidthHeight);
-                    rotateButton.SetX(2 * buttonWidthHeight);
-                    rotateButton.Id = 2006;
+                    rotateButton.SetY(calculatedDrawTop + 9 * buttonWidthHeight);
+                    rotateButton.SetX(0);
+                    rotateButton.Id = 2008;
                     rotateButton.Click += OnRotateImage;
 
                     buttonDictionnary.Add("left", leftButton);
@@ -505,6 +526,8 @@ namespace MyBodyShape.Android.Fragments
                     buttonDictionnary.Add("down", downButton);
                     buttonDictionnary.Add("zoom", zoomButton);
                     buttonDictionnary.Add("unzoom", unZoomButton);
+                    buttonDictionnary.Add("leftpivot", leftPivotButton);
+                    buttonDictionnary.Add("rightpivot", rightPivotButton);
                     buttonDictionnary.Add("rotate", rotateButton);
 
                     frameLayout.AddView(buttonDictionnary["left"]);
@@ -513,6 +536,8 @@ namespace MyBodyShape.Android.Fragments
                     frameLayout.AddView(buttonDictionnary["down"]);
                     frameLayout.AddView(buttonDictionnary["zoom"]);
                     frameLayout.AddView(buttonDictionnary["unzoom"]);
+                    frameLayout.AddView(buttonDictionnary["leftpivot"]);
+                    frameLayout.AddView(buttonDictionnary["rightpivot"]);
                     frameLayout.AddView(buttonDictionnary["rotate"]);
 
                     // First size coordinates
@@ -526,9 +551,9 @@ namespace MyBodyShape.Android.Fragments
             }
             else
             {
-                var message = new AlertDialog.Builder(this.Activity);
-                message.SetMessage("An error occured during taking pictures.");
-                message.Show();
+                //var message = new AlertDialog.Builder(this.Activity);
+                //message.SetMessage("An error occured during taking pictures.");
+                //message.Show();
             }
         }
 
@@ -542,13 +567,14 @@ namespace MyBodyShape.Android.Fragments
             this.currentY = listenerDictionnary[currentKey].MoveimageRunnable.CurrentY;
             this.scaleIndicator = listenerDictionnary[currentKey].MoveimageRunnable.ScaleIndicator;
             this.circlesList = listenerDictionnary[currentKey].MoveimageRunnable.CirclesList;
+            this.pathList = listenerDictionnary[currentKey].MoveimageRunnable.PathList;
 
             // Listeners update
             foreach (var listen in listenerDictionnary)
             {
                 if (listen.Key != currentKey)
                 {
-                    listen.Value.MoveimageRunnable.Update(this.currentX, this.currentY, this.scaleIndicator, this.circlesList);
+                    listen.Value.MoveimageRunnable.Update(this.currentX, this.currentY, this.scaleIndicator, this.circlesList, this.pathList);
                 }
             }
         }
@@ -573,6 +599,54 @@ namespace MyBodyShape.Android.Fragments
         }
 
         /// <summary>
+        /// The left rotate image click.
+        /// </summary>
+        private void OnLeftPivotImage(object sender, EventArgs e)
+        {
+            tempCanvas.DrawColor(Color.Black, PorterDuff.Mode.Clear);
+
+            Matrix leftPivotMatrix = new Matrix();
+            leftPivotMatrix.PostRotate(-90);
+            App2.bitmap = Bitmap.CreateBitmap(App2.bitmap, 0, 0, App2.bitmap.Width, App2.bitmap.Height, leftPivotMatrix, false);
+            tempCanvas.DrawBitmap(App2.bitmap, this.currentX, this.currentY, tempPaint);
+
+            foreach (PathArea path in pathList)
+            {
+                this.DrawBodyShapePath(path.Id, path.Points, false);
+            }
+            foreach (CircleArea circle in circlesList)
+            {
+                tempPaint.Color = circle.Color;
+                tempCanvas.DrawCircle(circle.PositionX, circle.PositionY, rootRadius, tempPaint);
+            }
+            fragmentView.Invalidate();
+        }
+
+        /// <summary>
+        /// The right rotate image click.
+        /// </summary>
+        private void OnRightPivotImage(object sender, EventArgs e)
+        {
+            tempCanvas.DrawColor(Color.Black, PorterDuff.Mode.Clear);
+
+            Matrix leftPivotMatrix = new Matrix();
+            leftPivotMatrix.PostRotate(90);
+            App2.bitmap = Bitmap.CreateBitmap(App2.bitmap, 0, 0, App2.bitmap.Width, App2.bitmap.Height, leftPivotMatrix, false);
+            tempCanvas.DrawBitmap(App2.bitmap, this.currentX, this.currentY, tempPaint);
+
+            foreach (PathArea path in pathList)
+            {
+                this.DrawBodyShapePath(path.Id, path.Points, false);
+            }
+            foreach (CircleArea circle in circlesList)
+            {
+                tempPaint.Color = circle.Color;
+                tempCanvas.DrawCircle(circle.PositionX, circle.PositionY, rootRadius, tempPaint);
+            }
+            fragmentView.Invalidate();
+        }
+
+        /// <summary>
         /// The rotate image click.
         /// </summary>
         private void OnRotateImage(object sender, EventArgs e)
@@ -583,6 +657,10 @@ namespace MyBodyShape.Android.Fragments
             flipHorizontalMatrix.PostTranslate(App2.bitmap.Width, 0);
             App2.bitmap = Bitmap.CreateBitmap(App2.bitmap, 0, 0, App2.bitmap.Width, App2.bitmap.Height, flipHorizontalMatrix, false);
             tempCanvas.DrawBitmap(App2.bitmap, this.currentX, this.currentY, tempPaint);
+            foreach(PathArea path in pathList)
+            {
+                this.DrawBodyShapePath(path.Id, path.Points, false);
+            }
             foreach (CircleArea circle in circlesList)
             {
                 tempPaint.Color = circle.Color;

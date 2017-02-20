@@ -28,8 +28,10 @@ namespace MyBodyShape.Android.Listeners
         private ImageButton _button;
         private Canvas _canvas;
         private Paint _paint;
+        private Paint _pathPaint;
         private float _radius;
         private List<CircleArea> _circleList;
+        private List<PathArea> _pathList;
         private View _downView;
         private int _normalInterval;
         private int _initialInterval;
@@ -47,7 +49,7 @@ namespace MyBodyShape.Android.Listeners
         /// <summary>
         /// The constructor.
         /// </summary>
-        public FrontMoveRepeatListener(ImageButton button, ViewImageView.View imageView, Canvas canvas, Paint paint, float radius, List<CircleArea> circlesList, int initialInterval, int normalInterval, Action<View> clickListener, Action<View> initialClickListener, Action<View, bool> cancelListener = null)
+        public FrontMoveRepeatListener(ImageButton button, ViewImageView.View imageView, Canvas canvas, Paint paint, Paint pathPaint, float radius, List<CircleArea> circlesList, List<PathArea> pathList, int initialInterval, int normalInterval, Action<View> clickListener, Action<View> initialClickListener, Action<View, bool> cancelListener = null)
         {
             _initialInterval = initialInterval;
             _normalInterval = normalInterval;
@@ -62,9 +64,11 @@ namespace MyBodyShape.Android.Listeners
             _button = button;
             _canvas = canvas;
             _paint = paint;
+            _pathPaint = pathPaint;
             _radius = radius;
             _circleList = circlesList;
-            MoveimageRunnable = new FrontMoveImageRunnable(_imageView, _repeatedHandler, _button, _canvas, _paint, _radius, _circleList);
+            _pathList = pathList;
+            MoveimageRunnable = new FrontMoveImageRunnable(_imageView, _repeatedHandler, _button, _canvas, _paint, _pathPaint, _radius, _circleList, _pathList);
         }
 
         // The handle timer elapsed.
