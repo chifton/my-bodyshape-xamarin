@@ -394,7 +394,7 @@ namespace MyBodyShape.Android.Fragments
                     this.DrawSideSkeleton();
 
                     // Buttons dimensions calculations
-                    var buttonWidthHeight = (int)height / 25;
+                    var buttonWidthHeight = (int)height / 18;
                     float calculatedDrawTop = 0;
                     float calculatedDrawHeight = 0;
                     float calculatedBitmapRatio = (float)tempBitmap.Width / tempBitmap.Height;
@@ -1076,15 +1076,15 @@ namespace MyBodyShape.Android.Fragments
 
             if (e.Event.Action == MotionEventActions.Down)
             {
-                // Vibration
-                Vibrator vibrator = (Vibrator)Activity.GetSystemService(Context.VibratorService);
-                vibrator.Vibrate(50);
-
                 // Get nearest circle
                 currentCircle = this.GetNearestCircle(x, y);
 
                 if(currentCircle != null)
                 {
+                    // Vibration
+                    Vibrator vibrator = (Vibrator)Activity.GetSystemService(Context.VibratorService);
+                    vibrator.Vibrate(50);
+
                     // Zoom
                     circleCenter.X = (int) currentCircle.PositionX;
                     circleCenter.Y = (int)currentCircle.PositionY;

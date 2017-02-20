@@ -184,7 +184,20 @@ namespace MyBodyShape.Android.Fragments
         private void OnGenerateButton_Click(object sender, EventArgs e)
         {
             // Send generation to API here
-            
+            int enteredWeight;
+            bool compareRealWeight = int.TryParse(weightTextEdit.Text, out enteredWeight);
+            if (compareRealWeight)
+            {
+                if(enteredWeight < 25)
+                {
+                    enteredWeight = 0;
+                    compareRealWeight = false;
+                }
+            }
+            else
+            {
+                enteredWeight = 0;
+            }
 
             // Rubik's Cube
             var linearLayout = fragmentView.FindViewById<LinearLayout>(Resource.Id.layoutGenerateCenter);
