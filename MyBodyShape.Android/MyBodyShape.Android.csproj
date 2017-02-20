@@ -67,6 +67,7 @@
     <Compile Include="Fragments\ResultsFragment.cs" />
     <Compile Include="Fragments\SecondPictureFragment.cs" />
     <Compile Include="Fragments\FirstPictureFragment.cs" />
+    <Compile Include="Helpers\PathArea.cs" />
     <Compile Include="Helpers\ZoomableImageView.cs" />
     <Compile Include="Helpers\CircleArea.cs" />
     <Compile Include="Helpers\BodyShapeViewPager.cs" />
@@ -83,6 +84,8 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\positions.json" />
+    <AndroidAsset Include="Assets\supermanjson.json" />
+    <AndroidAsset Include="Assets\pathjson.json" />
     <None Include="packages.config" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />

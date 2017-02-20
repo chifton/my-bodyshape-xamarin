@@ -64,6 +64,16 @@ namespace MyBodyShape.Android.Fragments
         private Paint tempPaint;
 
         /// <summary>
+        /// The temporary path paint.
+        /// </summary>
+        private Paint tempPathPaint;
+
+        /// <summary>
+        /// The temporary target paint.
+        /// </summary>
+        private Paint tempTargetPaint;
+
+        /// <summary>
         /// The temporary bitmap.
         /// </summary>
         private Bitmap tempBitmap;
@@ -94,6 +104,16 @@ namespace MyBodyShape.Android.Fragments
         private List<CircleArea> circlesList;
 
         /// <summary>
+        /// The path list.
+        /// </summary>
+        private List<PathArea> pathList;
+
+        /// <summary>
+        /// The superman list.
+        /// </summary>
+        private List<string[]> supermanList;
+
+        /// <summary>
         /// The current moving circle area.
         /// </summary>
         private CircleArea currentCircle;
@@ -102,6 +122,11 @@ namespace MyBodyShape.Android.Fragments
         /// The buffer circles.
         /// </summary>
         private List<CircleArea> bufferCircles;
+
+        /// <summary>
+        /// The twin superman circles.
+        /// </summary>
+        private List<CircleArea> twinCircles;
 
         /// <summary>
         /// The take picture button.
@@ -166,7 +191,7 @@ namespace MyBodyShape.Android.Fragments
         /// <summary>
         /// The circle radius.
         /// </summary>
-        private const int rootRadius = 50;
+        private const int rootRadius = 30;
 
         /// <summary>
         /// The nearest distance.
@@ -299,6 +324,7 @@ namespace MyBodyShape.Android.Fragments
                 zoomBitmapPoint = new Point();
                 circleCenter = new Point();
                 bufferCircles = new List<CircleArea>();
+                twinCircles = new List<CircleArea>();
 
                 // The height
                 int height = Resources.DisplayMetrics.HeightPixels;
@@ -543,13 +569,37 @@ namespace MyBodyShape.Android.Fragments
             var positionsDataString = jsonStream.ReadToEnd();
             var positionData = JsonConvert.DeserializeObject<Dictionary<string, string>>(positionsDataString);
 
+            // Extract path
+            var pathJsonStream = new System.IO.StreamReader(this.Activity.Assets.Open("pathjson.json"));
+            var pathJsonStreamString = pathJsonStream.ReadToEnd();
+            var pathData = JsonConvert.DeserializeObject<Dictionary<string, string>>(pathJsonStreamString);
+
+            // Extract superman (points at same positions)
+            var supermanJsonStream = new System.IO.StreamReader(this.Activity.Assets.Open("supermanjson.json"));
+            var supermanJsonStreamString = supermanJsonStream.ReadToEnd();
+            var supermanData = JsonConvert.DeserializeObject<Dictionary<string, string>>(supermanJsonStreamString);
+
             // Initialization
             circlesList = new List<CircleArea>();
+            pathList = new List<PathArea>();
+            supermanList = new List<string[]>();
             tempPaint = new Paint(PaintFlags.AntiAlias)
             {
-                StrokeWidth = 10
+                StrokeWidth = 5
             };
-            CultureInfo ci = (CultureInfo) CultureInfo.CurrentCulture.Clone();
+            tempPathPaint = new Paint(PaintFlags.AntiAlias)
+            {
+                StrokeWidth = 20
+            };
+            tempPathPaint.SetStyle(Paint.Style.Stroke);
+            tempTargetPaint = new Paint(PaintFlags.AntiAlias)
+            {
+                StrokeWidth = 10,
+                Color = Color.White
+            };
+            tempTargetPaint.SetStyle(Paint.Style.Stroke);
+
+            CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
             ci.NumberFormat.CurrencyDecimalSeparator = ".";
             var heightWebSiteRatio = (double)tempBitmap.Height / webSiteHeight;
             var centerBitmap = (tempBitmap.Width - rootRadius) / 2;
@@ -558,10 +608,11 @@ namespace MyBodyShape.Android.Fragments
             var bitmapRatioHead = (float.Parse(headInfo[0], NumberStyles.Any, ci)) / (float.Parse(headInfo[1], NumberStyles.Any, ci));
             var diffxPoints = centerBitmap - headHeight * bitmapRatioHead;
 
+            // Draw points
             foreach (var pointToDraw in positionData)
             {
                 var splitPointData = pointToDraw.Value.Split(';');
-                if(splitPointData[3] == "front")
+                if (splitPointData[3] == "front")
                 {
                     var bitmapRatioTotal = (float.Parse(splitPointData[0], NumberStyles.Any, ci)) / (float.Parse(splitPointData[1], NumberStyles.Any, ci));
                     var pointHeight = (float)(float.Parse(splitPointData[1], NumberStyles.Any, ci) * heightWebSiteRatio);
@@ -569,8 +620,32 @@ namespace MyBodyShape.Android.Fragments
                         pointHeight * bitmapRatioTotal + diffxPoints,
                         pointHeight,
                         pointToDraw.Key));
-                } 
+                }
             }
+
+            // Draw paths
+            foreach (var pathToDraw in pathData)
+            {
+                var pathKey = pathToDraw.Key;
+                var pathValues = pathToDraw.Value.Split(';');
+                if (pathValues.All(r => r.Contains("_u")))
+                {
+                    this.DrawBodyShapePath(pathKey, pathValues, true);
+                }
+            }
+
+            // Store superman
+            foreach (var superman in supermanData)
+            {
+                var supermanValues = superman.Value.Split(';');
+                if (supermanValues.All(r => r.Contains("_u")))
+                {
+                    supermanList.Add(new string[] { supermanValues[0], supermanValues[1] });
+                }
+            }
+
+            // Redraw to put paths under circles
+            this.ReDrawAll(currentX, currentY, scaleIndicator, false, false, null);
         }
 
         /// <summary>
@@ -581,6 +656,93 @@ namespace MyBodyShape.Android.Fragments
             tempPaint.Color = color;
             tempCanvas.DrawCircle(xPos, yPos, rootRadius, tempPaint);
             return new CircleArea(id, xPos, yPos, color);
+        }
+
+        /// <summary>
+        /// The draw target method.
+        /// </summary>
+        private void DrawTarget(float x, float y)
+        {
+            Path targetPath = new Path();
+            targetPath.SetFillType(Path.FillType.Winding);
+            targetPath.MoveTo(x, 0);
+            targetPath.LineTo(x, tempCanvas.Height);
+            targetPath.MoveTo(0, y);
+            targetPath.LineTo(tempCanvas.Width, y);
+            tempCanvas.DrawPath(targetPath, tempTargetPaint);
+        }
+
+        /// <summary>
+        /// The draw path area method for 2 points.
+        /// </summary>
+        private PathArea Draw2PathArea(string id, Color color, CircleArea[] points)
+        {
+            var smallRadius = rootRadius / 2;
+            tempPathPaint.Color = color;
+            Path path = new Path();
+            path.SetFillType(Path.FillType.Winding);
+            path.SetLastPoint(points[0].PositionX + smallRadius * RightSide(points[0].PositionX), points[0].PositionY);
+            path.MoveTo(points[0].PositionX + smallRadius * RightSide(points[0].PositionX), points[0].PositionY);
+            path.LineTo(points[1].PositionX + smallRadius * RightSide(points[1].PositionX), points[1].PositionY);
+            tempCanvas.DrawPath(path, tempPathPaint);
+            return new PathArea(id, color, points.Select(p => p.Id).ToArray());
+        }
+
+        /// <summary>
+        /// The draw path area method for 3 points.
+        /// </summary>
+        private PathArea Draw3PathArea(string id, Color color, CircleArea[] points)
+        {
+            var smallRadius = rootRadius / 2;
+            tempPathPaint.Color = color;
+            Path path = new Path();
+            path.SetFillType(Path.FillType.Winding);
+            path.SetLastPoint(points[0].PositionX + smallRadius * RightSide(points[0].PositionX), points[0].PositionY);
+            path.MoveTo(points[0].PositionX + smallRadius * RightSide(points[0].PositionX), points[0].PositionY);
+            path.LineTo(points[1].PositionX + smallRadius * RightSide(points[1].PositionX), points[1].PositionY);
+            path.QuadTo(points[1].PositionX + smallRadius * RightSide(points[1].PositionX), points[1].PositionY, points[2].PositionX + smallRadius * RightSide(points[2].PositionX), points[2].PositionY);
+            tempCanvas.DrawPath(path, tempPathPaint);
+            return new PathArea(id, color, points.Select(p => p.Id).ToArray());
+        }
+
+        /// <summary>
+        /// The draw path area method for 4 points.
+        /// </summary>
+        private PathArea Draw4PathArea(string id, Color color, CircleArea[] points)
+        {
+            var smallRadius = rootRadius / 2;
+            tempPathPaint.Color = color;
+            Path path = new Path();
+            path.SetFillType(Path.FillType.Winding);
+            path.SetLastPoint(points[0].PositionX + smallRadius * RightSide(points[0].PositionX), points[0].PositionY);
+            path.MoveTo(points[0].PositionX + smallRadius * RightSide(points[0].PositionX), points[0].PositionY);
+            path.LineTo(points[1].PositionX + smallRadius * RightSide(points[1].PositionX), points[1].PositionY);
+            path.QuadTo(points[1].PositionX + smallRadius * RightSide(points[1].PositionX), points[1].PositionY, points[2].PositionX + smallRadius * RightSide(points[2].PositionX), points[2].PositionY);
+            path.MoveTo(points[2].PositionX + smallRadius * RightSide(points[2].PositionX), points[2].PositionY);
+            path.LineTo(points[3].PositionX + smallRadius * RightSide(points[3].PositionX), points[3].PositionY);
+            tempCanvas.DrawPath(path, tempPathPaint);
+            return new PathArea(id, color, points.Select(p => p.Id).ToArray());
+        }
+
+        /// <summary>
+        /// The draw path area method for 5 points.
+        /// </summary>
+        private PathArea Draw5PathArea(string id, Color color, CircleArea[] points)
+        {
+            var smallRadius = rootRadius / 2;
+            tempPathPaint.Color = color;
+            Path path = new Path();
+            path.SetFillType(Path.FillType.Winding);
+            path.SetLastPoint(points[0].PositionX + smallRadius * RightSide(points[0].PositionX), points[0].PositionY);
+            path.MoveTo(points[0].PositionX + smallRadius * RightSide(points[0].PositionX), points[0].PositionY);
+            path.LineTo(points[1].PositionX + smallRadius * RightSide(points[1].PositionX), points[1].PositionY);
+            path.QuadTo(points[1].PositionX + smallRadius * RightSide(points[1].PositionX), points[1].PositionY, points[2].PositionX + smallRadius * RightSide(points[2].PositionX), points[2].PositionY);
+            path.MoveTo(points[2].PositionX + smallRadius * RightSide(points[2].PositionX), points[2].PositionY);
+            path.LineTo(points[3].PositionX + smallRadius * RightSide(points[3].PositionX), points[3].PositionY);
+            path.MoveTo(points[3].PositionX + smallRadius * RightSide(points[3].PositionX), points[3].PositionY);
+            path.LineTo(points[4].PositionX + smallRadius * RightSide(points[4].PositionX), points[4].PositionY);
+            tempCanvas.DrawPath(path, tempPathPaint);
+            return new PathArea(id, color, points.Select(p => p.Id).ToArray());
         }
 
         /// <summary>
@@ -597,9 +759,30 @@ namespace MyBodyShape.Android.Fragments
         }
 
         /// <summary>
+        /// The get twin superman twin circles.
+        /// </summary>
+        private List<CircleArea> GetTwinCircles(string id)
+        {
+            var realTwins = new List<CircleArea>();
+            var twins = supermanList.Where(i => i[0] == id || i[1] == id);
+            foreach(var twin in twins)
+            {
+                if(twin[0] == id)
+                {
+                    realTwins.Add(circlesList.Where(t => t.Id == twin[1]).FirstOrDefault());
+                }
+                else if(twin[1] == id)
+                {
+                    realTwins.Add(circlesList.Where(t => t.Id == twin[0]).FirstOrDefault());
+                }
+            }
+            return realTwins;
+        }
+
+        /// <summary>
         /// The ReDrawAll method at every move.
         /// </summary>
-        private void ReDrawAll(int x, int y, double scale, bool scaling, float[] endZoomPoints)
+        private void ReDrawAll(int x, int y, double scale, bool scaling, bool moving, float[] endZoomPoints)
         {
             tempCanvas.DrawColor(Color.Black, PorterDuff.Mode.Clear);
 
@@ -611,23 +794,93 @@ namespace MyBodyShape.Android.Fragments
             }
             
             tempCanvas.DrawBitmap(App1.bitmap, x, y, tempPaint);
+            if(moving)
+            {
+                this.DrawTarget(currentCircle.PositionX, currentCircle.PositionY);
+            }
+
+            // Paths
+            foreach (PathArea path in pathList)
+            {
+                this.DrawBodyShapePath(path.Id, path.Points, false);
+            }
+
+            // Circles
             foreach (CircleArea circle in circlesList)
             {
                 tempPaint.Color = circle.Color;
-                if (circle.Id != currentCircle.Id)
-                {
-                    tempCanvas.DrawCircle(circle.PositionX, circle.PositionY, rootRadius, tempPaint);
-                }
-                else
-                {
-                    if(endZoomPoints != null)
-                    {
-                        circle.PositionX = circleCenter.X + endZoomPoints[0];
-                        circle.PositionY = circleCenter.Y + endZoomPoints[1];
-                        tempCanvas.DrawCircle(circle.PositionX, circle.PositionY, rootRadius, tempPaint);
-                    }
-                }
+                tempCanvas.DrawCircle(circle.PositionX, circle.PositionY, rootRadius, tempPaint);
+                //if (circle.Id != currentCircle.Id)
+                //{
+                //    tempCanvas.DrawCircle(circle.PositionX, circle.PositionY, rootRadius, tempPaint);
+                //}
+                //else
+                //{
+                //    if(endZoomPoints != null)
+                //    {
+                //        circle.PositionX = circleCenter.X + endZoomPoints[0];
+                //        circle.PositionY = circleCenter.Y + endZoomPoints[1];
+                //        tempCanvas.DrawCircle(circle.PositionX, circle.PositionY, rootRadius, tempPaint);
+                //    }
+                //}
             }            
+        }
+
+        /// <summary>
+        /// The draw bodyshape path method.
+        /// </summary>
+        private void DrawBodyShapePath(string key, string[] points, bool create)
+        {
+            if (points.Length == 2)
+            {
+                var firstPoint = circlesList.Where(b => b.Id == points[0]).FirstOrDefault();
+                var secondPoint = circlesList.Where(b => b.Id == points[1]).FirstOrDefault();
+
+                var result = this.Draw2PathArea(key, firstPoint.Color, new CircleArea[] { firstPoint, secondPoint });
+                if(create)
+                {
+                    pathList.Add(result);
+                }
+            }
+            else if (points.Length == 3)
+            {
+                var firstPoint = circlesList.Where(b => b.Id == points[0]).FirstOrDefault();
+                var secondPoint = circlesList.Where(b => b.Id == points[1]).FirstOrDefault();
+                var thirdPoint = circlesList.Where(b => b.Id == points[2]).FirstOrDefault();
+
+                var result = this.Draw3PathArea(key, firstPoint.Color, new CircleArea[] { firstPoint, secondPoint, thirdPoint });
+                if (create)
+                {
+                    pathList.Add(result);
+                }
+            }
+            else if (points.Length == 4)
+            {
+                var firstPoint = circlesList.Where(b => b.Id == points[0]).FirstOrDefault();
+                var secondPoint = circlesList.Where(b => b.Id == points[1]).FirstOrDefault();
+                var thirdPoint = circlesList.Where(b => b.Id == points[2]).FirstOrDefault();
+                var fourthPoint = circlesList.Where(b => b.Id == points[3]).FirstOrDefault();
+
+                var result = this.Draw4PathArea(key, firstPoint.Color, new CircleArea[] { firstPoint, secondPoint, thirdPoint, fourthPoint });
+                if (create)
+                {
+                    pathList.Add(result);
+                }
+            }
+            else if (points.Length == 5)
+            {
+                var firstPoint = circlesList.Where(b => b.Id == points[0]).FirstOrDefault();
+                var secondPoint = circlesList.Where(b => b.Id == points[1]).FirstOrDefault();
+                var thirdPoint = circlesList.Where(b => b.Id == points[2]).FirstOrDefault();
+                var fourthPoint = circlesList.Where(b => b.Id == points[3]).FirstOrDefault();
+                var fifthPoint = circlesList.Where(b => b.Id == points[4]).FirstOrDefault();
+
+                var result = this.Draw5PathArea(key, firstPoint.Color, new CircleArea[] { firstPoint, secondPoint, thirdPoint, fourthPoint, fifthPoint });
+                if (create)
+                {
+                    pathList.Add(result);
+                }
+            }
         }
         
         /// <summary>
@@ -680,10 +933,27 @@ namespace MyBodyShape.Android.Fragments
             zoomBitmapPoint.X = (int) x;
             zoomBitmapPoint.Y = (int) y;
 
+            if(x < 0)
+            {
+                x = 0;
+            }
+            if(x > tempBitmap.Width)
+            {
+                x = tempBitmap.Width;
+            }
+            if (y < 0)
+            {
+                y = 0;
+            }
+            if (y > tempBitmap.Height)
+            {
+                y = tempBitmap.Height;
+            }
+
             if (e.Event.Action == MotionEventActions.Down)
             {
                 // Vibration
-                Vibrator vibrator = (Vibrator) Activity.GetSystemService(Context.VibratorService);
+                Vibrator vibrator = (Vibrator)Activity.GetSystemService(Context.VibratorService);
                 vibrator.Vibrate(50);
 
                 // Get nearest circle
@@ -695,17 +965,22 @@ namespace MyBodyShape.Android.Fragments
                     circleCenter.X = (int)currentCircle.PositionX;
                     circleCenter.Y = (int)currentCircle.PositionY;
                     bufferCircles = this.GetNearestCircles(circleCenter.X, circleCenter.Y, 400);
-                    imageView.EnableZoom(zoomPoint, circleCenter, bufferCircles, currentCircle);
+                    this.twinCircles = this.GetTwinCircles(currentCircle.Id);
+                    //imageView.EnableZoom(zoomPoint, circleCenter, bufferCircles, currentCircle);
                     viewPager.SetSwipeEnabled(false);
                 }
             }
             else if (e.Event.Action == MotionEventActions.Move)
             {
-                if(currentCircle != null)
+                if (currentCircle != null)
                 {
                     // Redraw
                     currentCircle.UpdatePosition(x, y);
-                    this.ReDrawAll(currentX, currentY, scaleIndicator, false, null);
+                    foreach (var twiny in this.twinCircles)
+                    {
+                        circlesList.Where(b => b.Id == twiny.Id).FirstOrDefault()?.UpdatePosition(x, y);
+                    }
+                    this.ReDrawAll(currentX, currentY, scaleIndicator, false, true, null);
                 }
             }
             else if (e.Event.Action == MotionEventActions.Up)
@@ -715,13 +990,14 @@ namespace MyBodyShape.Android.Fragments
                 {
                     if (imageView.Distances == null)
                     {
-                        imageView.DisableZoom();
+                        //imageView.DisableZoom();
                     }
-                    this.ReDrawAll(currentX, currentY, scaleIndicator, false, imageView.Distances);
+                    this.ReDrawAll(currentX, currentY, scaleIndicator, false, false, imageView.Distances);
                 }
 
                 currentCircle = null;
                 bufferCircles = new List<CircleArea>();
+                twinCircles = new List<CircleArea>();
                 viewPager.SetSwipeEnabled(true);
             }
 
@@ -749,6 +1025,25 @@ namespace MyBodyShape.Android.Fragments
             Intent intent = new Intent(MediaStore.ActionImageCapture);
             IList<ResolveInfo> availableActivities = Context.PackageManager.QueryIntentActivities(intent, PackageInfoFlags.MatchDefaultOnly);
             return availableActivities != null && availableActivities.Count > 0;
+        }
+
+        /// <summary>
+        /// The right side position from center canvas.
+        /// </summary>
+        private int RightSide(float position)
+        {
+            if(position > tempCanvas.Width / 2)
+            {
+                return 1;
+            }
+            else if(position < tempCanvas.Width / 2)
+            {
+                return -1;
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 }
