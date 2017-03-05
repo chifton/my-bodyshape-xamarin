@@ -76,6 +76,16 @@ namespace MyBodyShape.Android.Listeners
         public double ScaleIndicator { get; set; }
 
         /// <summary>
+        /// The constants.
+        /// </summary>
+        private const int LEFT_BUTTON_ID = 2000;
+        private const int RIGHT_BUTTON_ID = 2001;
+        private const int TOP_BUTTON_ID = 2002;
+        private const int DOWN_BUTTON_ID = 2003;
+        private const int ZOOM_BUTTON_ID = 2004;
+        private const int UNZOOM_BUTTON_ID = 2005;
+
+        /// <summary>
         /// The circle list.
         /// </summary>
         public List<CircleArea> CirclesList { get; set; }
@@ -110,27 +120,27 @@ namespace MyBodyShape.Android.Listeners
             var scaling = false;
             switch (_imageButton.Id)
             {
-                case 2000:
+                case LEFT_BUTTON_ID:
                     CurrentX -= 20;
                     ScaleIndicator = 0;
                     break;
-                case 2001:
+                case RIGHT_BUTTON_ID:
                     CurrentX += 20;
                     ScaleIndicator = 0;
                     break;
-                case 2002:
+                case TOP_BUTTON_ID:
                     CurrentY -= 20;
                     ScaleIndicator = 0;
                     break;
-                case 2003:
+                case DOWN_BUTTON_ID:
                     CurrentY += 20;
                     ScaleIndicator = 0;
                     break;
-                case 2004:
+                case ZOOM_BUTTON_ID:
                     ScaleIndicator = 30;
                     scaling = true;
                     break;
-                case 2005:
+                case UNZOOM_BUTTON_ID:
                     ScaleIndicator = -30;
                     scaling = true;
                     break;

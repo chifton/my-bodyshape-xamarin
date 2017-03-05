@@ -212,6 +212,22 @@ namespace MyBodyShape.Android.Fragments
         private const int webSiteHeight = 596;
 
         /// <summary>
+        /// The constants.
+        /// </summary>
+        private const int REQUEST_CAMERA_PERMISSION = 2010;
+        private const int REQUEST_WRITE_EXTERNAL_STORAGE = 2011;
+        private const int REQUEST_READ_EXTERNAL_STORAGE = 2012;
+        private const int LEFT_BUTTON_ID = 2000;
+        private const int RIGHT_BUTTON_ID = 2001;
+        private const int TOP_BUTTON_ID = 2002;
+        private const int DOWN_BUTTON_ID = 2003;
+        private const int ZOOM_BUTTON_ID = 2004;
+        private const int UNZOOM_BUTTON_ID = 2005;
+        private const int LEFT_PIVOT_BUTTON_ID = 2006;
+        private const int RIGHT_PIVOT_BUTTON_ID = 2007;
+        private const int ROTATE_BUTTON_ID = 2008;
+
+        /// <summary>
         /// The shared preferences.
         /// </summary>
         private AndroidContent.ISharedPreferences prefs;
@@ -268,106 +284,11 @@ namespace MyBodyShape.Android.Fragments
         }
 
         /// <summary>
-        /// The take button event.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The event.</param>
-        private void OnTakePicture2Button_Click(object sender, EventArgs e)
-        {
-            if (IsThereAnAppToTakePictures())
-            {
-                CreateDirectoryForPictures();
-
-                if (ContextCompat.CheckSelfPermission(this.Context, Manifest.Permission.Camera) != Permission.Granted)
-                {
-                    this.RequestPermissions(new string[] { Manifest.Permission.Camera }, 2010);
-                }
-                else
-                {
-                    this.CheckWriteAccess();
-                }
-            }
-            else
-            {
-                var message = new AlertDialog.Builder(this.Activity);
-                message.SetMessage("Your mobile device has no app for taking pictures.");
-                message.Show();
-            }
-        }
-
-        /// <summary>
-        /// The load button event.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The event.</param>
-        private void OnLoadPicture2Button_Click(object sender, EventArgs e)
-        {
-            this.CheckReadAccess();
-        }
-
-        /// <summary>
         /// The OnDetach event.
         /// </summary>
         public override void OnDestroyView()
         {
             base.OnDestroyView();
-        }
-
-        /// <summary>
-        /// The check write access method.
-        /// </summary>
-        private void CheckWriteAccess()
-        {
-            if (ContextCompat.CheckSelfPermission(this.Context, Manifest.Permission.WriteExternalStorage) != Permission.Granted)
-            {
-                this.RequestPermissions(new string[] { Manifest.Permission.WriteExternalStorage }, 2011);
-            }
-            else
-            {
-                this.TakePicture();
-            }
-        }
-
-        /// <summary>
-        /// The check read access method.
-        /// </summary>
-        private void CheckReadAccess()
-        {
-            if (ContextCompat.CheckSelfPermission(this.Context, Manifest.Permission.ReadExternalStorage) != Permission.Granted)
-            {
-                this.RequestPermissions(new string[] { Manifest.Permission.ReadExternalStorage }, 2012);
-            }
-            else
-            {
-                this.LoadPicture();
-            }
-        }
-
-        /// <summary>
-        /// The load picture method.
-        /// </summary>
-        private void LoadPicture()
-        {
-            AndroidContent.Intent intent = new AndroidContent.Intent();
-            intent.SetType("image/*");
-            intent.SetAction(AndroidContent.Intent.ActionGetContent);
-            StartActivityForResult(AndroidContent.Intent.CreateChooser(intent, "Select Picture"), loadPictureCode);
-        }
-
-        /// <summary>
-        /// The take picture method.
-        /// </summary>
-        private void TakePicture()
-        {
-            var customDate = DateTime.Now.Year + "-" + DateTime.Now.Month + "-" + DateTime.Now.Day;
-            var root = Guid.NewGuid().ToString() + "-" + customDate + "-Android";
-            var fileName = root + "Picture_2";
-
-            AndroidContent.Intent intent = new AndroidContent.Intent(MediaStore.ActionImageCapture);
-            App2._file = File.CreateTempFile(fileName, ".png", App2._dir);
-            intent.PutExtra(MediaStore.ExtraOutput, FileProvider.GetUriForFile(this.Context, this.Context.ApplicationContext.PackageName + ".provider", App2._file));
-
-            StartActivityForResult(intent, takePictureCode);
         }
 
         /// <summary>
@@ -377,7 +298,7 @@ namespace MyBodyShape.Android.Fragments
         {
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
-            if (requestCode == 2010)
+            if (requestCode == REQUEST_CAMERA_PERMISSION)
             {
                 if (grantResults[0] == Permission.Granted)
                 {
@@ -390,7 +311,7 @@ namespace MyBodyShape.Android.Fragments
                     message.Show();
                 }
             }
-            else if (requestCode == 2011)
+            else if (requestCode == REQUEST_WRITE_EXTERNAL_STORAGE)
             {
                 if (grantResults[0] == Permission.Granted)
                 {
@@ -403,7 +324,7 @@ namespace MyBodyShape.Android.Fragments
                     message.Show();
                 }
             }
-            else if (requestCode == 2012)
+            else if (requestCode == REQUEST_READ_EXTERNAL_STORAGE)
             {
                 if (grantResults[0] == Permission.Granted)
                 {
@@ -540,7 +461,7 @@ namespace MyBodyShape.Android.Fragments
                     leftButton.SetBackgroundResource(Resource.Drawable.previous_button);
                     leftButton.SetY(calculatedDrawTop + buttonWidthHeight);
                     leftButton.SetX(0);
-                    leftButton.Id = 2000;
+                    leftButton.Id = LEFT_BUTTON_ID;
                     leftButton.Click += OnResizeSideImage;
                     leftButtonListener = new SideMoveRepeatListener(leftButton, fragmentView, tempCanvas, tempPaint, tempPathPaint, rootRadius, circlesList, pathList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
                     listenerDictionnary.Add("leftListen", leftButtonListener);
@@ -554,7 +475,7 @@ namespace MyBodyShape.Android.Fragments
                     rightButton.SetBackgroundResource(Resource.Drawable.next_button);
                     rightButton.SetY(calculatedDrawTop + 2 * buttonWidthHeight);
                     rightButton.SetX(0);
-                    rightButton.Id = 2001;
+                    rightButton.Id = RIGHT_BUTTON_ID;
                     rightButton.Click += OnResizeSideImage;
                     rightButtonListener = new SideMoveRepeatListener(rightButton, fragmentView, tempCanvas, tempPaint, tempPathPaint, rootRadius, circlesList, pathList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
                     listenerDictionnary.Add("rightListen", rightButtonListener);
@@ -568,7 +489,7 @@ namespace MyBodyShape.Android.Fragments
                     topButton.SetBackgroundResource(Resource.Drawable.top_button);
                     topButton.SetY(calculatedDrawTop + 3 * buttonWidthHeight);
                     topButton.SetX(0);
-                    topButton.Id = 2002;
+                    topButton.Id = TOP_BUTTON_ID;
                     topButton.Click += OnResizeSideImage;
                     topButtonListener = new SideMoveRepeatListener(topButton, fragmentView, tempCanvas, tempPaint, tempPathPaint, rootRadius, circlesList, pathList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
                     listenerDictionnary.Add("topListen", topButtonListener);
@@ -582,7 +503,7 @@ namespace MyBodyShape.Android.Fragments
                     downButton.SetBackgroundResource(Resource.Drawable.down_button);
                     downButton.SetY(calculatedDrawTop + 4 * buttonWidthHeight);
                     downButton.SetX(0);
-                    downButton.Id = 2003;
+                    downButton.Id = DOWN_BUTTON_ID;
                     downButton.Click += OnResizeSideImage;
                     downButtonListener = new SideMoveRepeatListener(downButton, fragmentView, tempCanvas, tempPaint, tempPathPaint, rootRadius, circlesList, pathList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
                     listenerDictionnary.Add("downListen", downButtonListener);
@@ -596,7 +517,7 @@ namespace MyBodyShape.Android.Fragments
                     zoomButton.SetBackgroundResource(Resource.Drawable.zoomin);
                     zoomButton.SetY(calculatedDrawTop + 5 * buttonWidthHeight);
                     zoomButton.SetX(0);
-                    zoomButton.Id = 2004;
+                    zoomButton.Id = ZOOM_BUTTON_ID;
                     zoomButton.Click += OnResizeSideImage;
                     zoomButtonListener = new SideMoveRepeatListener(zoomButton, fragmentView, tempCanvas, tempPaint, tempPathPaint, rootRadius, circlesList, pathList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
                     listenerDictionnary.Add("zoomListen", zoomButtonListener);
@@ -610,7 +531,7 @@ namespace MyBodyShape.Android.Fragments
                     unZoomButton.SetBackgroundResource(Resource.Drawable.zoomout);
                     unZoomButton.SetY(calculatedDrawTop + 6 * buttonWidthHeight);
                     unZoomButton.SetX(0);
-                    unZoomButton.Id = 2005;
+                    unZoomButton.Id = UNZOOM_BUTTON_ID;
                     unZoomButton.Click += OnResizeSideImage;
                     unZoomButtonListener = new SideMoveRepeatListener(unZoomButton, fragmentView, tempCanvas, tempPaint, tempPathPaint, rootRadius, circlesList, pathList, 100, 2000, (button) => { }, button => { }, (button, isLongPress) => { });
                     listenerDictionnary.Add("unZoomListen", unZoomButtonListener);
@@ -624,7 +545,7 @@ namespace MyBodyShape.Android.Fragments
                     leftPivotButton.SetBackgroundResource(Resource.Drawable.pivotright);
                     leftPivotButton.SetY(calculatedDrawTop + 7 * buttonWidthHeight);
                     leftPivotButton.SetX(0);
-                    leftPivotButton.Id = 2006;
+                    leftPivotButton.Id = LEFT_PIVOT_BUTTON_ID;
                     leftPivotButton.Click += OnLeftPivotImage;
 
                     ImageButton rightPivotButton = new ImageButton(this.Context);
@@ -635,9 +556,9 @@ namespace MyBodyShape.Android.Fragments
                     rightPivotButton.SetBackgroundResource(Resource.Drawable.pivotleft);
                     rightPivotButton.SetY(calculatedDrawTop + 8 * buttonWidthHeight);
                     rightPivotButton.SetX(0);
-                    rightPivotButton.Id = 2007;
-
+                    rightPivotButton.Id = RIGHT_PIVOT_BUTTON_ID;
                     rightPivotButton.Click += OnRightPivotImage;
+
                     ImageButton rotateButton = new ImageButton(this.Context);
                     var rotateParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
                     rotateButton.LayoutParameters = rotateParams;
@@ -646,7 +567,7 @@ namespace MyBodyShape.Android.Fragments
                     rotateButton.SetBackgroundResource(Resource.Drawable.rotate);
                     rotateButton.SetY(calculatedDrawTop + 9 * buttonWidthHeight);
                     rotateButton.SetX(0);
-                    rotateButton.Id = 2008;
+                    rotateButton.Id = ROTATE_BUTTON_ID;
                     rotateButton.Click += OnRotateImage;
 
                     buttonDictionnary.Add("left", leftButton);
@@ -707,6 +628,103 @@ namespace MyBodyShape.Android.Fragments
                 //message.Show();
             }
         }
+
+        /// <summary>
+        /// The take button event.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The event.</param>
+        private void OnTakePicture2Button_Click(object sender, EventArgs e)
+        {
+            if (IsThereAnAppToTakePictures())
+            {
+                CreateDirectoryForPictures();
+
+                if (ContextCompat.CheckSelfPermission(this.Context, Manifest.Permission.Camera) != Permission.Granted)
+                {
+                    this.RequestPermissions(new string[] { Manifest.Permission.Camera }, REQUEST_CAMERA_PERMISSION);
+                }
+                else
+                {
+                    this.CheckWriteAccess();
+                }
+            }
+            else
+            {
+                var message = new AlertDialog.Builder(this.Activity);
+                message.SetMessage("Your mobile device has no app for taking pictures.");
+                message.Show();
+            }
+        }
+
+        /// <summary>
+        /// The load button event.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The event.</param>
+        private void OnLoadPicture2Button_Click(object sender, EventArgs e)
+        {
+            this.CheckReadAccess();
+        }
+
+        /// <summary>
+        /// The check write access method.
+        /// </summary>
+        private void CheckWriteAccess()
+        {
+            if (ContextCompat.CheckSelfPermission(this.Context, Manifest.Permission.WriteExternalStorage) != Permission.Granted)
+            {
+                this.RequestPermissions(new string[] { Manifest.Permission.WriteExternalStorage }, REQUEST_WRITE_EXTERNAL_STORAGE);
+            }
+            else
+            {
+                this.TakePicture();
+            }
+        }
+
+        /// <summary>
+        /// The check read access method.
+        /// </summary>
+        private void CheckReadAccess()
+        {
+            if (ContextCompat.CheckSelfPermission(this.Context, Manifest.Permission.ReadExternalStorage) != Permission.Granted)
+            {
+                this.RequestPermissions(new string[] { Manifest.Permission.ReadExternalStorage }, REQUEST_READ_EXTERNAL_STORAGE);
+            }
+            else
+            {
+                this.LoadPicture();
+            }
+        }
+
+        /// <summary>
+        /// The load picture method.
+        /// </summary>
+        private void LoadPicture()
+        {
+            AndroidContent.Intent intent = new AndroidContent.Intent();
+            intent.SetType("image/*");
+            intent.SetAction(AndroidContent.Intent.ActionGetContent);
+            StartActivityForResult(AndroidContent.Intent.CreateChooser(intent, "Select Picture"), loadPictureCode);
+        }
+
+        /// <summary>
+        /// The take picture method.
+        /// </summary>
+        private void TakePicture()
+        {
+            var customDate = DateTime.Now.Year + "-" + DateTime.Now.Month + "-" + DateTime.Now.Day;
+            var root = Guid.NewGuid().ToString() + "-" + customDate + "-Android";
+            var fileName = root + "Picture_2";
+
+            AndroidContent.Intent intent = new AndroidContent.Intent(MediaStore.ActionImageCapture);
+            App2._file = File.CreateTempFile(fileName, ".png", App2._dir);
+            intent.PutExtra(MediaStore.ExtraOutput, FileProvider.GetUriForFile(this.Context, this.Context.ApplicationContext.PackageName + ".provider", App2._file));
+
+            StartActivityForResult(intent, takePictureCode);
+        }
+
+
 
         /// <summary>
         /// The cache positions method.
