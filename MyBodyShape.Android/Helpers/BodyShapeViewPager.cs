@@ -3,12 +3,16 @@
 /**********************************************************/
 
 using Android.Content;
+using Android.Graphics;
 using Android.Util;
 using Android.Views;
 using V4App = Android.Support.V4.View;
 
 namespace MyBodyShape.Android.Helpers
 {
+    /// <summary>
+    /// A bodyshape viewpager.
+    /// </summary>
     public class BodyShapeViewPager : V4App.ViewPager
     {
         /// <summary>

@@ -12,7 +12,7 @@ using Android.OS;
 using AndroidOS = Android.OS;
 using Android.Widget;
 using Android.Views;
-using Android.Content;
+using AndroidContent = Android.Content;
 using Android.Provider;
 using Android.Content.PM;
 using AndroidNet = Android.Net;
@@ -25,6 +25,9 @@ using Android.App;
 using Android.Graphics.Drawables;
 using Newtonsoft.Json;
 using System.Globalization;
+using Android.Support.V4.Content;
+using Android;
+using Android.Runtime;
 
 namespace MyBodyShape.Android.Fragments
 {
@@ -209,6 +212,16 @@ namespace MyBodyShape.Android.Fragments
         private const int webSiteHeight = 596;
 
         /// <summary>
+        /// The shared preferences.
+        /// </summary>
+        private AndroidContent.ISharedPreferences prefs;
+
+        /// <summary>
+        /// The shared preferences editor.
+        /// </summary>
+        private AndroidContent.ISharedPreferencesEditor editor;
+
+        /// <summary>
         /// The buttons listeners.
         /// </summary>
         private Dictionary<string, FrontMoveRepeatListener> listenerDictionnary;
@@ -265,14 +278,14 @@ namespace MyBodyShape.Android.Fragments
             {
                 CreateDirectoryForPictures();
 
-                var customDate = DateTime.Now.Year + "-" + DateTime.Now.Month + "-" + DateTime.Now.Day;
-                var root = Guid.NewGuid().ToString() + "-" + customDate + "-Android";
-                var fileName = root + "Picture_1";
-
-                Intent intent = new Intent(MediaStore.ActionImageCapture);
-                App1._file = new File(App1._dir, $"{ fileName }.png");
-                intent.PutExtra(MediaStore.ExtraOutput, AndroidNet.Uri.FromFile(App1._file));
-                StartActivityForResult(intent, takePictureCode);
+                if (ContextCompat.CheckSelfPermission(this.Context, Manifest.Permission.Camera) != Permission.Granted)
+                {
+                    this.RequestPermissions(new string[] { Manifest.Permission.Camera }, 1010);
+                }
+                else
+                {
+                    this.CheckWriteAccess();
+                }
             }
             else
             {
@@ -289,19 +302,126 @@ namespace MyBodyShape.Android.Fragments
         /// <param name="e">The event.</param>
         private void OnLoadPicture1Button_Click(object sender, EventArgs e)
         {
-            Intent intent = new Intent();
+            this.CheckReadAccess();
+        }
+
+        /// <summary>
+        /// The OnDetach event.
+        /// </summary>
+        public override void OnDestroyView()
+        {
+            base.OnDestroyView();
+        }
+
+        /// <summary>
+        /// The check write access method.
+        /// </summary>
+        private void CheckWriteAccess()
+        {
+            if (ContextCompat.CheckSelfPermission(this.Context, Manifest.Permission.WriteExternalStorage) != Permission.Granted)
+            {
+                this.RequestPermissions(new string[] { Manifest.Permission.WriteExternalStorage }, 1011);
+            }
+            else
+            {
+                this.TakePicture();
+            }
+        }
+
+        /// <summary>
+        /// The check read access method.
+        /// </summary>
+        private void CheckReadAccess()
+        {
+            if (ContextCompat.CheckSelfPermission(this.Context, Manifest.Permission.ReadExternalStorage) != Permission.Granted)
+            {
+                this.RequestPermissions(new string[] { Manifest.Permission.ReadExternalStorage }, 1012);
+            }
+            else
+            {
+                this.LoadPicture();
+            }
+        }
+
+        /// <summary>
+        /// The load picture method.
+        /// </summary>
+        private void LoadPicture()
+        {
+            AndroidContent.Intent intent = new AndroidContent.Intent();
             intent.SetType("image/*");
-            intent.SetAction(Intent.ActionGetContent);
-            StartActivityForResult(Intent.CreateChooser(intent, "Select Picture"), loadPictureCode);
+            intent.SetAction(AndroidContent.Intent.ActionGetContent);
+            StartActivityForResult(AndroidContent.Intent.CreateChooser(intent, "Select Picture"), loadPictureCode);
+        }
+
+        /// <summary>
+        /// The take picture method.
+        /// </summary>
+        private void TakePicture()
+        {
+            var customDate = DateTime.Now.Year + "-" + DateTime.Now.Month + "-" + DateTime.Now.Day;
+            var root = Guid.NewGuid().ToString() + "-" + customDate + "-Android";
+            var fileName = root + "Picture_1";
+
+            AndroidContent.Intent intent = new AndroidContent.Intent(MediaStore.ActionImageCapture);
+            App1._file = File.CreateTempFile(fileName, ".png", App1._dir);
+            intent.PutExtra(MediaStore.ExtraOutput, FileProvider.GetUriForFile(this.Context, this.Context.ApplicationContext.PackageName + ".provider", App1._file));
+
+            StartActivityForResult(intent, takePictureCode);
+        }
+
+        /// <summary>
+        /// The result of the request permissions.
+        /// </summary>
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
+        {
+            base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+
+            if (requestCode == 1010)
+            {
+                if (grantResults[0] == Permission.Granted)
+                {
+                    this.CheckWriteAccess();
+                }
+                else
+                {
+                    var message = new AlertDialog.Builder(this.Activity);
+                    message.SetMessage("Please accept the camera permission for taking a picture.");
+                    message.Show();
+                }
+            }
+            else if (requestCode == 1011)
+            {
+                if (grantResults[0] == Permission.Granted)
+                {
+                    this.TakePicture();
+                }
+                else
+                {
+                    var message = new AlertDialog.Builder(this.Activity);
+                    message.SetMessage("Please allow MyBodyShape to store your new pictures.");
+                    message.Show();
+                }
+            }
+            else if (requestCode == 1012)
+            {
+                if (grantResults[0] == Permission.Granted)
+                {
+                    this.LoadPicture();
+                }
+                else
+                {
+                    var message = new AlertDialog.Builder(this.Activity);
+                    message.SetMessage("Please allow MyBodyShape to read your pictures.");
+                    message.Show();
+                }
+            }
         }
 
         /// <summary>
         /// The result of the pictures.
         /// </summary>
-        /// <param name="requestCode">The request code.</param>
-        /// <param name="resultCode">The result code.</param>
-        /// <param name="data">The picture data.</param>
-        public override void OnActivityResult(int requestCode, int resultCode, Intent data)
+        public override void OnActivityResult(int requestCode, int resultCode, AndroidContent.Intent data)
         {
             if (resultCode == -1)
             {
@@ -319,6 +439,10 @@ namespace MyBodyShape.Android.Fragments
                 buttonDictionnary = new Dictionary<string, ImageButton>();
                 listenerDictionnary = new Dictionary<string, FrontMoveRepeatListener>();
 
+                // Caching
+                prefs = Application.Context.GetSharedPreferences("bodyshape", AndroidContent.FileCreationMode.Private);
+                editor = prefs.Edit();
+
                 // For further zooms
                 zoomPoint = new Point();
                 zoomBitmapPoint = new Point();
@@ -329,15 +453,15 @@ namespace MyBodyShape.Android.Fragments
                 // The height
                 int height = Resources.DisplayMetrics.HeightPixels;
 
+                // Result
+                base.OnActivityResult(requestCode, resultCode, data);
+
                 // The take picture result
                 if (requestCode == takePictureCode)
                 {
-                    // Result
-                    base.OnActivityResult(requestCode, resultCode, data);
-
                     // Image data
-                    Intent mediaScanIntent = new Intent(Intent.ActionMediaScannerScanFile);
-                    AndroidNet.Uri contentUri = AndroidNet.Uri.FromFile(App1._file);
+                    AndroidContent.Intent mediaScanIntent = new AndroidContent.Intent(AndroidContent.Intent.ActionMediaScannerScanFile);
+                    AndroidNet.Uri contentUri = FileProvider.GetUriForFile(this.Context, this.Context.ApplicationContext.PackageName + ".provider", App1._file);
                     mediaScanIntent.SetData(contentUri);
                     Context.SendBroadcast(mediaScanIntent);
 
@@ -352,15 +476,16 @@ namespace MyBodyShape.Android.Fragments
                 // The load picture result
                 else if (requestCode == loadPictureCode)
                 {
-                    if (data != null)
+                    if (data != null && data.Data != null)
                     {
                         // Get the loaded image
                         AndroidNet.Uri uri = data.Data;
+                        var fileStream = this.Activity.ContentResolver.OpenInputStream(uri);
 
                         // Resize and display
                         int width = fragmentView.Width;
                         Bitmap resizedBitmap = MediaStore.Images.Media.GetBitmap(this.Activity.ContentResolver, uri);
-                        var loadedBitmap = uri.Path.LoadInGalleryAndResizeBitmap(width, height, resizedBitmap);
+                        var loadedBitmap = fileStream.LoadInGalleryAndResizeBitmap(width, height, resizedBitmap);
                         if (loadedBitmap != null)
                         {
                             drawOnPicture = true;
@@ -534,6 +659,28 @@ namespace MyBodyShape.Android.Fragments
 
                     // Memory
                     GC.Collect();
+
+                    // Picture has been loaded
+                    var customDate = DateTime.Now.Year + "-" + DateTime.Now.Month + "-" + DateTime.Now.Day;
+                    var root = Guid.NewGuid().ToString() + "-" + customDate + "-Android";
+
+                    var isLoaded = this.prefs.GetBoolean("picture1", false);
+                    if(isLoaded)
+                    {
+                        this.editor.Remove("picture1");
+                    }
+                    this.editor.PutBoolean("picture1", true);
+                    var fileName = this.prefs.GetString("filename", null);
+                    if (fileName != null)
+                    {
+                        this.editor.Remove("filename");
+                    }
+                    this.editor.PutString("filename", root);
+                    this.editor.Apply();
+
+                    // Store prior positions (circles and picture)
+                    this.CachePositions("frontpositions");
+                    this.CachePictureDimensionsAndPositions("frontpicture");
                 }
             }
             else
@@ -542,6 +689,52 @@ namespace MyBodyShape.Android.Fragments
                 //message.SetMessage("An error occured during taking pictures.");
                 //message.Show();
             }
+        }
+
+        /// <summary>
+        /// The cache positions method.
+        /// </summary>
+        private void CachePositions(string key)
+        {
+            var jsonPositions = JsonConvert.SerializeObject(this.circlesList);
+            var positions = this.prefs.GetString(key, null);
+            if (positions != null)
+            {
+                this.editor.Remove(key);
+            }
+            this.editor.PutString(key, jsonPositions);
+            this.editor.Apply();
+        }
+
+        /// <summary>
+        /// The cache picture dimensions and positions.
+        /// </summary>
+        private void CachePictureDimensionsAndPositions(string picture)
+        {
+            var leftKey = picture + "_left";
+            var topKey = picture + "_top";
+            var widthKey = picture + "_width";
+            var heightKey = picture + "_height";
+
+            this.UpdatePictureKey(leftKey, currentX);
+            this.UpdatePictureKey(topKey, currentY);
+            this.UpdatePictureKey(widthKey, App1.bitmap.Width);
+            this.UpdatePictureKey(heightKey, App1.bitmap.Height);
+
+            this.editor.Apply();
+        }
+
+        /// <summary>
+        /// The update key method.
+        /// </summary>
+        private void UpdatePictureKey(string key, int value)
+        {
+            var foundElement = this.prefs.GetInt(key, 0);
+            if (foundElement != 0)
+            {
+                this.editor.Remove(key);
+            }
+            this.editor.PutInt(key, value);
         }
 
         /// <summary>
@@ -564,6 +757,9 @@ namespace MyBodyShape.Android.Fragments
                     listen.Value.MoveimageRunnable.Update(this.currentX, this.currentY, this.scaleIndicator, this.circlesList, this.pathList);
                 }
             }
+
+            // Caching
+            this.CachePictureDimensionsAndPositions("frontpicture");
         }
 
         /// <summary>
@@ -1032,7 +1228,7 @@ namespace MyBodyShape.Android.Fragments
                 if (currentCircle != null)
                 {
                     // Vibration
-                    Vibrator vibrator = (Vibrator)Activity.GetSystemService(Context.VibratorService);
+                    Vibrator vibrator = (Vibrator)Activity.GetSystemService(AndroidContent.Context.VibratorService);
                     vibrator.Vibrate(50);
 
                     // Zoom
@@ -1067,6 +1263,7 @@ namespace MyBodyShape.Android.Fragments
                         //imageView.DisableZoom();
                     }
                     this.ReDrawAll(currentX, currentY, scaleIndicator, false, false, imageView.Distances);
+                    this.CachePositions("frontpositions");
                 }
 
                 currentCircle = null;
@@ -1096,7 +1293,7 @@ namespace MyBodyShape.Android.Fragments
         /// <returns></returns>
         private bool IsThereAnAppToTakePictures()
         {
-            Intent intent = new Intent(MediaStore.ActionImageCapture);
+            AndroidContent.Intent intent = new AndroidContent.Intent(MediaStore.ActionImageCapture);
             IList<ResolveInfo> availableActivities = Context.PackageManager.QueryIntentActivities(intent, PackageInfoFlags.MatchDefaultOnly);
             return availableActivities != null && availableActivities.Count > 0;
         }

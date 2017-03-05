@@ -10,6 +10,7 @@ using MyBodyShape.Android.Adapters;
 using V4App = Android.Support.V4.App;
 using Android.Content.PM;
 using MyBodyShape.Android.Helpers;
+using Android.Graphics;
 
 namespace MyBodyShape.Android
 {
@@ -20,6 +21,31 @@ namespace MyBodyShape.Android
     public class MainActivity : V4App.FragmentActivity
     {
         /// <summary>
+        /// The first picture fragment.
+        /// </summary>
+        public FirstPictureFragment FirstPictureFragment { get; set; }
+
+        /// <summary>
+        /// The second picture fragment.
+        /// </summary>
+        public SecondPictureFragment SecondPictureFragment { get; set; }
+
+        /// <summary>
+        /// The generation fragment.
+        /// </summary>
+        public GenerationFragment GenerationFragment { get; set; }
+
+        /// <summary>
+        /// The results fragment.
+        /// </summary>
+        public ResultsFragment ResultsFragment { get; set; }
+
+        /// <summary>
+        /// The 3d model fragment.
+        /// </summary>
+        public Model3DFragment Model3DFragment { get; set; }
+
+        /// <summary>
         /// The onCreate method for the main activity.
         /// </summary>
         /// <param name="bundle">The activity bundle.</param>
@@ -29,14 +55,21 @@ namespace MyBodyShape.Android
             base.OnCreate(bundle);
             SetContentView(Resource.Layout.Main);
 
+            var ex = new FirstPictureFragment();
+
             // Fragments
+            this.FirstPictureFragment = new FirstPictureFragment();
+            this.SecondPictureFragment = new SecondPictureFragment();
+            this.GenerationFragment = new GenerationFragment();
+            this.ResultsFragment = new ResultsFragment();
+            this.Model3DFragment = new Model3DFragment();
             var fragments = new V4App.Fragment[]
             {
-                new FirstPictureFragment(),
-                new SecondPictureFragment(),
-                new GenerationFragment(),
-                new ResultsFragment(),
-                new Model3DFragment()
+                this.FirstPictureFragment,
+                this.SecondPictureFragment,
+                this.GenerationFragment,
+                this.ResultsFragment,
+                this.Model3DFragment
             };
 
             // Titles
@@ -51,6 +84,8 @@ namespace MyBodyShape.Android
 
             // View pager and adapter
             var viewPager = FindViewById<BodyShapeViewPager>(Resource.Id.bodyshapeViewPager);
+            viewPager.SetBackgroundColor(Color.Black);
+
             viewPager.Adapter = new MainAdapter(base.SupportFragmentManager, fragments, titles);
         }
     }

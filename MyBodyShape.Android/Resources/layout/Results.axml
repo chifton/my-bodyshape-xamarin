@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:id="@+id/layoutResults">
+              <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text=""
+              android:textSize="12sp"
+              android:textStyle="bold"
+              android:id="@+id/headMass"/>
+              <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text=""
+              android:textSize="12sp"
+              android:textStyle="bold"
+              android:id="@+id/neckMass"/>
+<TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text=""
+              android:textSize="12sp"
+              android:textStyle="bold"
+              android:id="@+id/thoraxMass"/>
+<TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text=""
+              android:textSize="12sp"
+              android:textStyle="bold"
+              android:id="@+id/abdoMass"/>
+<TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text=""
+              android:textSize="12sp"
+              android:textStyle="bold"
+              android:id="@+id/fesseMass"/>
+
+<TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text=""
+              android:textSize="12sp"
+              android:textStyle="bold"
+              android:id="@+id/cuissegaucheMass"/>
+<TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text=""
+              android:textSize="12sp"
+              android:textStyle="bold"
+              android:id="@+id/cuissedroiteMass"/>
+<TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text=""
+              android:textSize="12sp"
+              android:textStyle="bold"
+              android:id="@+id/jambegaucheMass"/>
+<TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text=""
+              android:textSize="12sp"
+              android:textStyle="bold"
+              android:id="@+id/jambedroiteMass"/>
+<TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text=""
+              android:textSize="12sp"
+              android:textStyle="bold"
+              android:id="@+id/chevillegaucheMass"/>
+<TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text=""
+              android:textSize="12sp"
+              android:textStyle="bold"
+              android:id="@+id/chevilledroiteMass"/>
+<TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text=""
+              android:textSize="12sp"
+              android:textStyle="bold"
+              android:id="@+id/piedgaucheMass"/>
+<TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text=""
+              android:textSize="12sp"
+              android:textStyle="bold"
+              android:id="@+id/pieddroitMass"/>
+<TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text=""
+              android:textSize="12sp"
+              android:textStyle="bold"
+              android:id="@+id/brasgaucheMass"/>
+<TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text=""
+              android:textSize="12sp"
+              android:textStyle="bold"
+              android:id="@+id/brasdroitMass"/>
+<TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text=""
+              android:textSize="12sp"
+              android:textStyle="bold"
+              android:id="@+id/avantbrasgaucheMass"/>
+<TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text=""
+              android:textSize="12sp"
+              android:textStyle="bold"
+              android:id="@+id/avantbrasdroitMass"/>
+<TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text=""
+              android:textSize="12sp"
+              android:textStyle="bold"
+              android:id="@+id/maingaucheMass"/>
+<TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text=""
+              android:textSize="12sp"
+              android:textStyle="bold"
+              android:id="@+id/maindroiteMass"/>
+<TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text=""
+              android:textSize="12sp"
+              android:textStyle="bold"
+              android:id="@+id/errorInfo"/>
+<TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text=""
+              android:textSize="12sp"
+              android:textStyle="bold"
+              android:id="@+id/totalMass"/>
+</LinearLayout>

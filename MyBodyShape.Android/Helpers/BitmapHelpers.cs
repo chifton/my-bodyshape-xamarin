@@ -64,11 +64,11 @@ namespace MyBodyShape.Android.Helpers
         /// <summary>
         /// Helper method for gallery pictures
         /// </summary>
-        public static Bitmap LoadInGalleryAndResizeBitmap(this string fileName, int width, int height, Bitmap bitmap)
+        public static Bitmap LoadInGalleryAndResizeBitmap(this System.IO.Stream fileName, int width, int height, Bitmap bitmap)
         {
             // Source dimensions
             BitmapFactory.Options options = new BitmapFactory.Options { InJustDecodeBounds = true };
-            BitmapFactory.DecodeFile(fileName, options);
+            BitmapFactory.DecodeStream(fileName, new Rect(), options);
 
             // Ratio
             int outHeight = options.OutHeight;
