@@ -5,6 +5,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Globalization;
 
 using Java.IO;
 
@@ -17,17 +18,18 @@ using Android.Provider;
 using Android.Content.PM;
 using AndroidNet = Android.Net;
 using Android.Graphics;
-using V4App = Android.Support.V4.App;
-
-using MyBodyShape.Android.Helpers;
-using MyBodyShape.Android.Listeners;
-using Android.App;
-using Android.Graphics.Drawables;
-using Newtonsoft.Json;
-using System.Globalization;
 using Android.Support.V4.Content;
 using Android;
 using Android.Runtime;
+using Android.App;
+using Android.Graphics.Drawables;
+using V4App = Android.Support.V4.App;
+
+using Newtonsoft.Json;
+
+using MyBodyShape.Android.Helpers;
+using MyBodyShape.Android.Listeners;
+
 
 namespace MyBodyShape.Android.Fragments
 {
@@ -38,6 +40,7 @@ namespace MyBodyShape.Android.Fragments
     {
         public static File _file;
         public static File _dir;
+        public static string _path;
         public static Bitmap bitmap;
     }
 
@@ -415,6 +418,13 @@ namespace MyBodyShape.Android.Fragments
                         {
                             drawOnPicture = true;
                             App2.bitmap = loadedBitmap;
+
+                            // Persist image
+                            var customDate = DateTime.Now.Year + "-" + DateTime.Now.Month + "-" + DateTime.Now.Day;
+                            var root = Guid.NewGuid().ToString() + "-" + customDate + "-Android";
+                            var fileNamePersist = root + "Picture_2.png";
+                            var tempRatio = (float)resizedBitmap.Height / resizedBitmap.Width;
+                            App2._path = this.PersistImage(Bitmap.CreateBitmap(App2.bitmap, 0, 0, 600, (int)(600 / tempRatio), new Matrix(), false), fileNamePersist);
                         }
                     }
                     else
@@ -630,6 +640,20 @@ namespace MyBodyShape.Android.Fragments
         }
 
         /// <summary>
+        /// The persist image mthod.
+        /// </summary>
+        private string PersistImage(Bitmap bitmap, string name)
+        {
+            var fileName = System.IO.Path.Combine(App1._dir.Path, name);
+            var os = new System.IO.FileStream(fileName, System.IO.FileMode.OpenOrCreate);
+            bitmap.Compress(Bitmap.CompressFormat.Png, 100, os);
+            os.Flush();
+            os.Close();
+            return fileName;
+        }
+
+
+        /// <summary>
         /// The take button event.
         /// </summary>
         /// <param name="sender">The sender.</param>
@@ -664,6 +688,8 @@ namespace MyBodyShape.Android.Fragments
         /// <param name="e">The event.</param>
         private void OnLoadPicture2Button_Click(object sender, EventArgs e)
         {
+            CreateDirectoryForPictures();
+
             this.CheckReadAccess();
         }
 
@@ -1352,6 +1378,7 @@ namespace MyBodyShape.Android.Fragments
         /// </summary>
         private void CreateDirectoryForPictures()
         {
+            App1._dir = new File(AndroidOS.Environment.GetExternalStoragePublicDirectory(AndroidOS.Environment.DirectoryPictures), "BodyShapePictures");
             App2._dir = new File(AndroidOS.Environment.GetExternalStoragePublicDirectory(AndroidOS.Environment.DirectoryPictures), "BodyShapePictures");
             if (!App2._dir.Exists())
             {

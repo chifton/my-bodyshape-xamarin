@@ -3,27 +3,25 @@
 /**********************************************************/
 
 using System;
-using Android.OS;
-using Android.Views;
-using Android.Widget;
-using V4App = Android.Support.V4.App;
-using Android.Webkit;
-using Android.Graphics;
-using AndroidNet = Android.Net;
-using MyBodyShape.Android.Helpers;
-using MyBodyShape.Android.Listeners;
-using Android.Content;
-using Android.App;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+
+using Android.OS;
+using Android.Views;
+using Android.Widget;
+using Android.Webkit;
+using Android.Graphics;
+using Android.Content;
+using Android.App;
+using V4App = Android.Support.V4.App;
+
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Globalization;
-using System.IO;
-using Java.IO;
-using System.Net.Http.Headers;
+
+using MyBodyShape.Android.Helpers;
+using MyBodyShape.Android.Listeners;
 
 namespace MyBodyShape.Android.Fragments
 {
@@ -311,23 +309,21 @@ namespace MyBodyShape.Android.Fragments
             viewPager.SetSwipeEnabled(false);
 
             // Send the two pictures to server
-            var streamFront = new MemoryStream();
-            App1.bitmap.Compress(Bitmap.CompressFormat.Png, 100, streamFront);
-            byte[] bytesPictureFrontToSend = streamFront.ToArray();
-            var streamSide = new MemoryStream();
-            App2.bitmap.Compress(Bitmap.CompressFormat.Png, 100, streamSide);
-            var bytesPictureSideToSend = streamSide.ToArray();
-            var bodyShapeClient = new HttpClient();
-            var picturesUri = new Uri(this.ServerUrl + $"/Home/UploadFromMobile?rootFileName={ picturesName }");
-            var imagesContent = new MultipartFormDataContent();
-            imagesContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-            imagesContent.Add(new ByteArrayContent(bytesPictureFrontToSend, 0, bytesPictureFrontToSend.Length), "picturefront", picturesName + "Picture_1.png");
-            imagesContent.Add(new ByteArrayContent(bytesPictureSideToSend, 0, bytesPictureSideToSend.Length), "pictureside", picturesName + "Picture_2.png");
-            var imagesMessage = bodyShapeClient.PostAsync(picturesUri, imagesContent).Result;
-            if(!imagesMessage.IsSuccessStatusCode)
+            var picturesUriFront = new Uri(this.ServerUrl + $"/Home/UploadFromMobile?rootFileName={ picturesName }Picture_1.png");
+            var picturesUriSide = new Uri(this.ServerUrl + $"/Home/UploadFromMobile?rootFileName={ picturesName }Picture_2.png");
+            var webClient = new System.Net.WebClient();
+            webClient.Headers.Add("Content-Type", "binary/octet-streOpenWriteam");
+
+            var resultSendFileFront = webClient.UploadFile(picturesUriFront, "POST", App1._path == null ? App1._file.AbsolutePath : App1._path);
+            var resultSendFileSide = webClient.UploadFile(picturesUriSide, "POST", App2._path == null ? App2._file.AbsolutePath : App2._path);
+
+            var resultSendFileFrontString = Encoding.UTF8.GetString(resultSendFileFront, 0, resultSendFileFront.Length);
+            var resultSendFileSideString = Encoding.UTF8.GetString(resultSendFileSide, 0, resultSendFileSide.Length);
+
+            if (!resultSendFileFrontString.Contains(picturesName) || !resultSendFileSideString.Contains(picturesName))
             {
                 var errorMessage = new AlertDialog.Builder(this.Activity);
-                errorMessage.SetMessage("Sorry, but your pictures will not be sent due to connection lags.");
+                errorMessage.SetMessage("Sorry, but your pictures may have not been sent due to connection lags.");
                 errorMessage.Show();
             }
 
@@ -336,6 +332,7 @@ namespace MyBodyShape.Android.Fragments
             var jsonToSend = JsonConvert.SerializeObject(jsonObject);
 
             // Send the request
+            var bodyShapeClient = new HttpClient();
             var uri = new Uri(this.ServerUrl + "/Home/Calculate");
             var content = new StringContent(jsonToSend, Encoding.UTF8, "application/json");
             var postResult = bodyShapeClient.PostAsync(uri, content).Result;
