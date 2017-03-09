@@ -424,7 +424,7 @@ namespace MyBodyShape.Android.Fragments
                             var root = Guid.NewGuid().ToString() + "-" + customDate + "-Android";
                             var fileNamePersist = root + "Picture_2.png";
                             var tempRatio = (float)resizedBitmap.Height / resizedBitmap.Width;
-                            App2._path = this.PersistImage(Bitmap.CreateBitmap(App2.bitmap, 0, 0, 600, (int)(600 / tempRatio), new Matrix(), false), fileNamePersist);
+                            App2._path = this.PersistImage(Bitmap.CreateScaledBitmap(App2.bitmap, 600, (int)(600 / tempRatio), true), fileNamePersist);
                         }
                     }
                     else

@@ -11,6 +11,7 @@ using V4App = Android.Support.V4.App;
 using Android.Content.PM;
 using MyBodyShape.Android.Helpers;
 using Android.Graphics;
+using Android.Content;
 
 namespace MyBodyShape.Android
 {
@@ -55,7 +56,15 @@ namespace MyBodyShape.Android
             base.OnCreate(bundle);
             SetContentView(Resource.Layout.Main);
 
-            var ex = new FirstPictureFragment();
+            // Clear all old data
+            ISharedPreferences prefs = Application.Context.GetSharedPreferences("bodyshape", FileCreationMode.Private);
+            ISharedPreferences resultsPrefs = Application.Context.GetSharedPreferences("bodyshaperesults", FileCreationMode.Private);
+            ISharedPreferencesEditor editor = prefs.Edit();
+            ISharedPreferencesEditor resultsEditor = resultsPrefs.Edit();
+            editor.Clear();
+            resultsEditor.Clear();
+            editor.Commit();
+            resultsEditor.Commit();
 
             // Fragments
             this.FirstPictureFragment = new FirstPictureFragment();
@@ -90,4 +99,3 @@ namespace MyBodyShape.Android
         }
     }
 }
-

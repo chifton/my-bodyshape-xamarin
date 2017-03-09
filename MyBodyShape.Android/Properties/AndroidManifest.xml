@@ -12,6 +12,8 @@
   <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.VIBRATE" />
+  <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+  <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
   <uses-feature android:name="android.hardware.camera.any" android:required="true" />
   <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
 	<application android:label="MyBodyShape.Android" android:largeHeap="true"></application>
