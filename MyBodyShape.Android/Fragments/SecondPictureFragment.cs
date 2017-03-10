@@ -423,8 +423,8 @@ namespace MyBodyShape.Android.Fragments
                             var customDate = DateTime.Now.Year + "-" + DateTime.Now.Month + "-" + DateTime.Now.Day;
                             var root = Guid.NewGuid().ToString() + "-" + customDate + "-Android";
                             var fileNamePersist = root + "Picture_2.png";
-                            var tempRatio = (float)resizedBitmap.Height / resizedBitmap.Width;
-                            App2._path = this.PersistImage(Bitmap.CreateScaledBitmap(App2.bitmap, 600, (int)(600 / tempRatio), true), fileNamePersist);
+                            var tempRatio = resizedBitmap.Height >= resizedBitmap.Width ? (float)resizedBitmap.Height / resizedBitmap.Width : (float)resizedBitmap.Width / resizedBitmap.Height;
+                            App2._path = this.PersistImage(Bitmap.CreateScaledBitmap(App2.bitmap, (int)(600 / tempRatio), 600, true), fileNamePersist);
                         }
                     }
                     else
