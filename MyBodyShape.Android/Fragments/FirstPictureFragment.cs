@@ -342,6 +342,21 @@ namespace MyBodyShape.Android.Fragments
         }
 
         /// <summary>
+        /// The disable view method.
+        /// </summary>
+        public void DisableView()
+        {
+            this.imageView.Touch -= OnBodyShapeTouchEvent;
+            foreach (var button in buttonDictionnary)
+            {
+                button.Value.SetOnTouchListener(null);
+                button.Value.Click -= OnResizeFrontImage;
+                button.Value.Click -= OnLeftPivotImage;
+                button.Value.Click -= OnRightPivotImage;
+            }
+        }
+
+        /// <summary>
         /// The result of the pictures.
         /// </summary>
         public override void OnActivityResult(int requestCode, int resultCode, AndroidContent.Intent data)

@@ -87,6 +87,11 @@ namespace MyBodyShape.Android.Fragments
         public string ServerUrl { get; set; }
 
         /// <summary>
+        /// The constants.
+        /// </summary>
+        private const int RETRY_BUTTON_ID = 3001;
+
+        /// <summary>
         /// The front and Side positions.
         /// </summary>
         public List<CircleArea> FrontSidePositions { get; set; }
@@ -400,6 +405,24 @@ namespace MyBodyShape.Android.Fragments
                         // Swipe to result fragment
                         this.Activity.RunOnUiThread(() =>
                         {
+                            // Update this fragment
+                            var buttonWidthHeight = Resources.DisplayMetrics.HeightPixels / 6;
+                            var retryButton = new Button(this.Context);
+                            var retryButtonParams = new LinearLayout.LayoutParams(buttonWidthHeight, ViewGroup.LayoutParams.MatchParent, 0.7f);
+                            retryButton.LayoutParameters = retryButtonParams;
+                            retryButton.SetBackgroundResource(Resource.Drawable.blue_button);
+                            retryButton.Id = RETRY_BUTTON_ID;
+                            retryButton.Text = "Retry";
+                            retryButton.SetTextAppearance(Resource.Style.button_text);
+                            retryButton.Visibility = ViewStates.Visible;
+                            retryButton.Click += OnRetryButton_Click;
+                            linearLayout.AddView(retryButton);
+
+                            // Disable the picture fragments
+                            ((MainActivity)this.Activity).FirstPictureFragment.DisableView();
+                            ((MainActivity)this.Activity).SecondPictureFragment.DisableView();
+
+                            // Results fragment
                             ((MainActivity)this.Activity).ResultsFragment.ShowResults();
                             viewPager.SetCurrentItem(3, true);
                         });
@@ -435,6 +458,16 @@ namespace MyBodyShape.Android.Fragments
                     });
                 }
             });
+        }
+
+        /// <summary>
+        /// The retry button event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnRetryButton_Click(object sender, EventArgs e)
+        {
+            this.ReloadBodyShape();
         }
 
         /// <summary>
