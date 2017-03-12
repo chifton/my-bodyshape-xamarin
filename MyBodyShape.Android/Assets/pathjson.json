@@ -1,6 +1,6 @@
 {
-   "path_head_1":"head_u1_1;head_u2_1;head_u3_1;head_u4_1;head_u5_1",
-   "path_head_2":"head_u1_2;head_u2_2;head_u3_2;head_u4_2;head_u5_2",
+   "path_head_1":"head_u1_1;head_u2_1;head_u3_1;head_u4_1",
+   "path_head_2":"head_u1_2;head_u2_2;head_u3_2;head_u4_2",
    "path_neck_1":"neck_u1_1;neck_u2_1;neck_u3_1",
    "path_neck_2":"neck_u1_2;neck_u2_2;neck_u3_2",
    "path_thorax_1":"thorax_u1_1;thorax_u2_1;thorax_u3_1",
