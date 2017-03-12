@@ -244,175 +244,195 @@ namespace MyBodyShape.Android.Fragments
             // Launch the background task
             ThreadPool.QueueUserWorkItem(p =>
             {
-                // Send generation to API here
-                int enteredWeight;
-                int enteredHeight;
-                bool compareRealWeight = int.TryParse(weightTextEdit.Text, out enteredWeight);
-                bool compareRealHeight = int.TryParse(heightTextEdit.Text, out enteredHeight);
-                this.SentHeight = enteredHeight;
-                if (compareRealWeight)
+                try
                 {
-                    if (enteredWeight < 25)
+                    // Send generation to API here
+                    int enteredWeight;
+                    int enteredHeight;
+                    bool compareRealWeight = int.TryParse(weightTextEdit.Text, out enteredWeight);
+                    bool compareRealHeight = int.TryParse(heightTextEdit.Text, out enteredHeight);
+                    this.SentHeight = enteredHeight;
+                    if (compareRealWeight)
+                    {
+                        if (enteredWeight < 25)
+                        {
+                            enteredWeight = 0;
+                            compareRealWeight = false;
+                        }
+                    }
+                    else
                     {
                         enteredWeight = 0;
-                        compareRealWeight = false;
                     }
-                }
-                else
-                {
-                    enteredWeight = 0;
-                }
 
-                // Check if pictures were loaded
-                ISharedPreferences prefs = Application.Context.GetSharedPreferences("bodyshape", FileCreationMode.Private);
-                ISharedPreferencesEditor editor = prefs.Edit();
-                var isPicture1Loaded = prefs.GetBoolean("picture1", false);
-                var isPicture2Loaded = prefs.GetBoolean("picture2", false);
-                if (isPicture1Loaded == false || isPicture2Loaded == false)
-                {
-                    var message = new AlertDialog.Builder(this.Activity);
-                    message.SetMessage("At least one picture was not loaded. Try again.");
-                    message.Show();
-                    return;
-                }
-
-                // Get picture name
-                this.FrontSidePositions = JsonConvert.DeserializeObject<List<CircleArea>>(prefs.GetString("frontpositions", string.Empty));
-                this.FrontSidePositions.AddRange(JsonConvert.DeserializeObject<List<CircleArea>>(prefs.GetString("sidepositions", string.Empty)));
-                var picturesName = prefs.GetString("filename", Guid.NewGuid().ToString());
-
-                // Get pictures dimensions and positions
-                var frontName = "frontpicture";
-                var pictFrontLeft = prefs.GetInt(frontName + "_left", 0);
-                var pictFrontTop = prefs.GetInt(frontName + "_top", 0);
-                var pictFrontWidth = prefs.GetInt(frontName + "_width", 0);
-                var pictFrontHeight = prefs.GetInt(frontName + "_height", 0);
-                var sideName = "sidepicture";
-                var pictSideLeft = prefs.GetInt(sideName + "_left", 0);
-                var pictSideTop = prefs.GetInt(sideName + "_top", 0);
-                var pictSideWidth = prefs.GetInt(sideName + "_width", 0);
-                var pictSideHeight = prefs.GetInt(sideName + "_height", 0);
-
-                // Calculate the pixel height
-                this.PixelHeight = (int)Math.Abs(this.FrontSidePositions.Where(t => t.Id == "pied1_u3_1").FirstOrDefault().PositionY - this.FrontSidePositions.Where(r => r.Id == "head_u1_1").FirstOrDefault().PositionY);
-
-                // Delete some data
-                editor.Remove("picture1");
-                editor.Remove("picture2");
-                editor.Remove("filename");
-                editor.Remove("frontpositions");
-                editor.Remove("sidepositions");
-                editor.Remove(frontName + "_left");
-                editor.Remove(frontName + "_top");
-                editor.Remove(frontName + "_width");
-                editor.Remove(frontName + "_height");
-                editor.Remove(sideName + "_left");
-                editor.Remove(sideName + "_top");
-                editor.Remove(sideName + "_width");
-                editor.Remove(sideName + "_height");
-                editor.Apply();
-
-                // Send the two pictures to server
-                var picturesUriFront = new Uri(this.ServerUrl + $"/Home/UploadFromMobile?rootFileName={ picturesName }Picture_1.png");
-                var picturesUriSide = new Uri(this.ServerUrl + $"/Home/UploadFromMobile?rootFileName={ picturesName }Picture_2.png");
-                var webClient = new System.Net.WebClient();
-                webClient.Headers.Add("Content-Type", "binary/octet-streOpenWriteam");
-
-                var resultSendFileFront = webClient.UploadFile(picturesUriFront, "POST", App1._path == null ? App1._file.AbsolutePath : App1._path);
-                var resultSendFileSide = webClient.UploadFile(picturesUriSide, "POST", App2._path == null ? App2._file.AbsolutePath : App2._path);
-
-                var resultSendFileFrontString = Encoding.UTF8.GetString(resultSendFileFront, 0, resultSendFileFront.Length);
-                var resultSendFileSideString = Encoding.UTF8.GetString(resultSendFileSide, 0, resultSendFileSide.Length);
-
-                if (!resultSendFileFrontString.Contains(picturesName) || !resultSendFileSideString.Contains(picturesName))
-                {
-                    var errorMessage = new AlertDialog.Builder(this.Activity);
-                    errorMessage.SetMessage("Sorry, but your pictures may have not been sent due to connection lags.");
-                    errorMessage.Show();
-                }
-
-                // Build the json
-                var jsonObject = this.GenerateDataCoordinates(enteredHeight, enteredWeight, pictFrontLeft, pictFrontTop, pictFrontWidth, pictFrontHeight, pictSideLeft, pictSideTop, pictSideWidth, pictSideHeight, picturesName);
-                var jsonToSend = JsonConvert.SerializeObject(jsonObject);
-
-                // Send the request
-                var bodyShapeClient = new HttpClient();
-                var uri = new Uri(this.ServerUrl + "/Home/Calculate");
-                var content = new StringContent(jsonToSend, Encoding.UTF8, "application/json");
-                var postResult = bodyShapeClient.PostAsync(uri, content).Result;
-
-                // Get the response
-                if (postResult.IsSuccessStatusCode)
-                {
-                    var bodyResultString = postResult.Content.ReadAsStringAsync().Result;
-                    var bodyResultObject = JsonConvert.DeserializeObject(bodyResultString);
-                    var bodyResultObjectSecond = JsonConvert.DeserializeObject(bodyResultObject.ToString());
-                    var bodyResult = JObject.FromObject(bodyResultObjectSecond);
-
-                    var resultDictionnary = new Dictionary<string, float>();
-                    resultDictionnary.Add("headMass", bodyResult["Head"]["Mass"].Value<float>());
-                    resultDictionnary.Add("neckMass", bodyResult["Neck"]["Mass"].Value<float>());
-                    resultDictionnary.Add("thoraxMass", bodyResult["Thorax"]["Mass"].Value<float>());
-                    resultDictionnary.Add("abdoMass", bodyResult["Abdomen"]["Mass"].Value<float>());
-                    resultDictionnary.Add("fesseMass", bodyResult["Bottom"]["Mass"].Value<float>());
-
-                    resultDictionnary.Add("cuissegaucheMass", bodyResult["ThighLeft"]["Mass"].Value<float>());
-                    resultDictionnary.Add("cuissedroiteMass", bodyResult["ThighRight"]["Mass"].Value<float>());
-                    resultDictionnary.Add("jambegaucheMass", bodyResult["LegLeft"]["Mass"].Value<float>());
-                    resultDictionnary.Add("jambedroiteMass", bodyResult["LegRight"]["Mass"].Value<float>());
-                    resultDictionnary.Add("chevillegaucheMass", bodyResult["AnkleLeft"]["Mass"].Value<float>());
-                    resultDictionnary.Add("chevilledroiteMass", bodyResult["AnkleRight"]["Mass"].Value<float>());
-                    resultDictionnary.Add("piedgaucheMass", bodyResult["FootLeft"]["Mass"].Value<float>());
-                    resultDictionnary.Add("pieddroitMass", bodyResult["FootRight"]["Mass"].Value<float>());
-
-                    resultDictionnary.Add("brasgaucheMass", bodyResult["ArmLeft"]["Mass"].Value<float>());
-                    resultDictionnary.Add("brasdroitMass", bodyResult["ArmRight"]["Mass"].Value<float>());
-                    resultDictionnary.Add("avantbrasgaucheMass", bodyResult["ForeArmLeft"]["Mass"].Value<float>());
-                    resultDictionnary.Add("avantbrasdroitMass", bodyResult["ForeArmRight"]["Mass"].Value<float>());
-                    resultDictionnary.Add("maingaucheMass", bodyResult["HandLeft"]["Mass"].Value<float>());
-                    resultDictionnary.Add("maindroiteMass", bodyResult["HandRight"]["Mass"].Value<float>());
-
-                    resultDictionnary.Add("poidstotal", bodyResult["TotalMass"].Value<float>());
-
-                    double error = 0;
-                    if (enteredWeight != 0)
+                    // Check if pictures were loaded
+                    ISharedPreferences prefs = Application.Context.GetSharedPreferences("bodyshape", FileCreationMode.Private);
+                    ISharedPreferencesEditor editor = prefs.Edit();
+                    var isPicture1Loaded = prefs.GetBoolean("picture1", false);
+                    var isPicture2Loaded = prefs.GetBoolean("picture2", false);
+                    if (isPicture1Loaded == false || isPicture2Loaded == false)
                     {
-                        error = bodyResult["TotalMass"].Value<double>() - enteredWeight;
-                        error = error / enteredWeight * 100;
-                        error = Math.Round(error, 2);
+                        var message = new AlertDialog.Builder(this.Activity);
+                        message.SetMessage("At least one picture was not loaded. Try again.");
+                        message.Show();
+                        return;
                     }
 
-                    // Display retry button and remove rubis cube
-                    linearLayout.RemoveAllViewsInLayout(); // Reste
+                    // Get picture name
+                    this.FrontSidePositions = JsonConvert.DeserializeObject<List<CircleArea>>(prefs.GetString("frontpositions", string.Empty));
+                    this.FrontSidePositions.AddRange(JsonConvert.DeserializeObject<List<CircleArea>>(prefs.GetString("sidepositions", string.Empty)));
+                    var picturesName = prefs.GetString("filename", Guid.NewGuid().ToString());
 
-                    // Enable the swipes
-                    viewPager.SetSwipeEnabled(true);
+                    // Get pictures dimensions and positions
+                    var frontName = "frontpicture";
+                    var pictFrontLeft = prefs.GetInt(frontName + "_left", 0);
+                    var pictFrontTop = prefs.GetInt(frontName + "_top", 0);
+                    var pictFrontWidth = prefs.GetInt(frontName + "_width", 0);
+                    var pictFrontHeight = prefs.GetInt(frontName + "_height", 0);
+                    var sideName = "sidepicture";
+                    var pictSideLeft = prefs.GetInt(sideName + "_left", 0);
+                    var pictSideTop = prefs.GetInt(sideName + "_top", 0);
+                    var pictSideWidth = prefs.GetInt(sideName + "_width", 0);
+                    var pictSideHeight = prefs.GetInt(sideName + "_height", 0);
 
-                    // Send the response data to results fragment (shared preferences)
-                    ISharedPreferences resultsPrefs = Application.Context.GetSharedPreferences("bodyshaperesults", FileCreationMode.Private);
-                    ISharedPreferencesEditor resultsEditor = resultsPrefs.Edit();
-                    this.CacheResults(resultsPrefs, resultsEditor, resultDictionnary, enteredWeight != 0, error);
+                    // Calculate the pixel height
+                    this.PixelHeight = (int)Math.Abs(this.FrontSidePositions.Where(t => t.Id == "pied1_u3_1").FirstOrDefault().PositionY - this.FrontSidePositions.Where(r => r.Id == "head_u1_1").FirstOrDefault().PositionY);
 
-                    // Swipe to result fragment
+                    // Delete some data
+                    editor.Remove("picture1");
+                    editor.Remove("picture2");
+                    editor.Remove("filename");
+                    editor.Remove("frontpositions");
+                    editor.Remove("sidepositions");
+                    editor.Remove(frontName + "_left");
+                    editor.Remove(frontName + "_top");
+                    editor.Remove(frontName + "_width");
+                    editor.Remove(frontName + "_height");
+                    editor.Remove(sideName + "_left");
+                    editor.Remove(sideName + "_top");
+                    editor.Remove(sideName + "_width");
+                    editor.Remove(sideName + "_height");
+                    editor.Apply();
+
+                    // Send the two pictures to server
+                    var picturesUriFront = new Uri(this.ServerUrl + $"/Home/UploadFromMobile?rootFileName={ picturesName }Picture_1.png");
+                    var picturesUriSide = new Uri(this.ServerUrl + $"/Home/UploadFromMobile?rootFileName={ picturesName }Picture_2.png");
+                    var webClient = new BodyShapeWebClient();
+                    webClient.Timeout = 30000;
+                    webClient.Headers.Add("Content-Type", "binary/octet-streOpenWriteam");
+
+                    var resultSendFileFront = webClient.UploadFile(picturesUriFront, "POST", App1._path == null ? App1._file.AbsolutePath : App1._path);
+                    var resultSendFileSide = webClient.UploadFile(picturesUriSide, "POST", App2._path == null ? App2._file.AbsolutePath : App2._path);
+
+                    var resultSendFileFrontString = Encoding.UTF8.GetString(resultSendFileFront, 0, resultSendFileFront.Length);
+                    var resultSendFileSideString = Encoding.UTF8.GetString(resultSendFileSide, 0, resultSendFileSide.Length);
+
+                    if (!resultSendFileFrontString.Contains(picturesName) || !resultSendFileSideString.Contains(picturesName))
+                    {
+                        var errorMessage = new AlertDialog.Builder(this.Activity);
+                        errorMessage.SetMessage("Sorry, but your pictures may have not been sent due to connection lags.");
+                        errorMessage.Show();
+                    }
+
+                    // Build the json
+                    var jsonObject = this.GenerateDataCoordinates(enteredHeight, enteredWeight, pictFrontLeft, pictFrontTop, pictFrontWidth, pictFrontHeight, pictSideLeft, pictSideTop, pictSideWidth, pictSideHeight, picturesName);
+                    var jsonToSend = JsonConvert.SerializeObject(jsonObject);
+
+                    // Send the request
+                    var bodyShapeClient = new HttpClient();
+                    bodyShapeClient.Timeout = TimeSpan.FromMilliseconds(30000);
+                    var uri = new Uri(this.ServerUrl + "/Home/Calculate");
+                    var content = new StringContent(jsonToSend, Encoding.UTF8, "application/json");
+                    var postResult = bodyShapeClient.PostAsync(uri, content).Result;
+
+                    // Get the response
+                    if (postResult.IsSuccessStatusCode)
+                    {
+                        var bodyResultString = postResult.Content.ReadAsStringAsync().Result;
+                        var bodyResultObject = JsonConvert.DeserializeObject(bodyResultString);
+                        var bodyResultObjectSecond = JsonConvert.DeserializeObject(bodyResultObject.ToString());
+                        var bodyResult = JObject.FromObject(bodyResultObjectSecond);
+
+                        var resultDictionnary = new Dictionary<string, float>();
+                        resultDictionnary.Add("headMass", bodyResult["Head"]["Mass"].Value<float>());
+                        resultDictionnary.Add("neckMass", bodyResult["Neck"]["Mass"].Value<float>());
+                        resultDictionnary.Add("thoraxMass", bodyResult["Thorax"]["Mass"].Value<float>());
+                        resultDictionnary.Add("abdoMass", bodyResult["Abdomen"]["Mass"].Value<float>());
+                        resultDictionnary.Add("fesseMass", bodyResult["Bottom"]["Mass"].Value<float>());
+
+                        resultDictionnary.Add("cuissegaucheMass", bodyResult["ThighLeft"]["Mass"].Value<float>());
+                        resultDictionnary.Add("cuissedroiteMass", bodyResult["ThighRight"]["Mass"].Value<float>());
+                        resultDictionnary.Add("jambegaucheMass", bodyResult["LegLeft"]["Mass"].Value<float>());
+                        resultDictionnary.Add("jambedroiteMass", bodyResult["LegRight"]["Mass"].Value<float>());
+                        resultDictionnary.Add("chevillegaucheMass", bodyResult["AnkleLeft"]["Mass"].Value<float>());
+                        resultDictionnary.Add("chevilledroiteMass", bodyResult["AnkleRight"]["Mass"].Value<float>());
+                        resultDictionnary.Add("piedgaucheMass", bodyResult["FootLeft"]["Mass"].Value<float>());
+                        resultDictionnary.Add("pieddroitMass", bodyResult["FootRight"]["Mass"].Value<float>());
+
+                        resultDictionnary.Add("brasgaucheMass", bodyResult["ArmLeft"]["Mass"].Value<float>());
+                        resultDictionnary.Add("brasdroitMass", bodyResult["ArmRight"]["Mass"].Value<float>());
+                        resultDictionnary.Add("avantbrasgaucheMass", bodyResult["ForeArmLeft"]["Mass"].Value<float>());
+                        resultDictionnary.Add("avantbrasdroitMass", bodyResult["ForeArmRight"]["Mass"].Value<float>());
+                        resultDictionnary.Add("maingaucheMass", bodyResult["HandLeft"]["Mass"].Value<float>());
+                        resultDictionnary.Add("maindroiteMass", bodyResult["HandRight"]["Mass"].Value<float>());
+
+                        resultDictionnary.Add("poidstotal", bodyResult["TotalMass"].Value<float>());
+
+                        double error = 0;
+                        if (enteredWeight != 0)
+                        {
+                            error = bodyResult["TotalMass"].Value<double>() - enteredWeight;
+                            error = error / enteredWeight * 100;
+                            error = Math.Round(error, 2);
+                        }
+
+                        // Display retry button and remove rubis cube
+                        linearLayout.RemoveAllViewsInLayout(); // Reste
+
+                        // Enable the swipes
+                        viewPager.SetSwipeEnabled(true);
+
+                        // Send the response data to results fragment (shared preferences)
+                        ISharedPreferences resultsPrefs = Application.Context.GetSharedPreferences("bodyshaperesults", FileCreationMode.Private);
+                        ISharedPreferencesEditor resultsEditor = resultsPrefs.Edit();
+                        this.CacheResults(resultsPrefs, resultsEditor, resultDictionnary, enteredWeight != 0, error);
+
+                        // Swipe to result fragment
+                        this.Activity.RunOnUiThread(() =>
+                        {
+                            ((MainActivity)this.Activity).ResultsFragment.ShowResults();
+                            viewPager.SetCurrentItem(3, true);
+                        });
+                    }
+                    else
+                    {
+                        var errorMessage = new AlertDialog.Builder(this.Activity);
+                        errorMessage.SetMessage("An error occured during calculations... Try again later.");
+                        errorMessage.Show();
+
+                        // Reload
+                        var reloadTransaction = this.FragmentManager.BeginTransaction();
+                        reloadTransaction.Detach(this)
+                                         .Attach(new GenerationFragment())
+                                         .Commit();
+
+                        return;
+                    }
+                }
+                catch (Exception)
+                {
+                    // Back to main thread
                     this.Activity.RunOnUiThread(() =>
                     {
-                        ((MainActivity)this.Activity).ResultsFragment.ShowResults();
-                        viewPager.SetCurrentItem(3, true);
+                        var message = new AlertDialog.Builder(this.Activity);
+                        message.SetMessage("An error occured during taking your pictures. Try again later.");
+                        message.SetCancelable(false);
+                        message.SetPositiveButton("OK", (okSender, okE) =>
+                        {
+                            this.ReloadBodyShape();
+                        });
+                        message.Show();   
                     });
-                }
-                else
-                {
-                    var errorMessage = new AlertDialog.Builder(this.Activity);
-                    errorMessage.SetMessage("An error occured during calculations... Try again later.");
-                    errorMessage.Show();
-
-                    // Reload
-                    var reloadTransaction = this.FragmentManager.BeginTransaction();
-                    reloadTransaction.Detach(this)
-                                     .Attach(new GenerationFragment())
-                                     .Commit();
-                    
-                    return;
                 }
             });
         }
@@ -620,6 +640,16 @@ namespace MyBodyShape.Android.Fragments
                 };
 
             return myJsonData;
+        }
+
+        /// <summary>
+        /// The reload bodyshape app.
+        /// </summary>
+        private void ReloadBodyShape()
+        {
+            Intent i = this.Activity.PackageManager.GetLaunchIntentForPackage(this.Context.PackageName);
+            i.AddFlags(ActivityFlags.ClearTop);
+            this.StartActivity(i);
         }
     }
 }
