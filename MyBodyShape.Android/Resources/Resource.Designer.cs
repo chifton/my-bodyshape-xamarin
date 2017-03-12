@@ -96,26 +96,20 @@ namespace MyBodyShape.Android
 			// aapt resource value: 0x7f070014
 			public const int abdoMass = 2131165204;
 			
-			// aapt resource value: 0x7f070021
-			public const int avantbrasdroitMass = 2131165217;
+			// aapt resource value: 0x7f07001f
+			public const int avantbrasdroitMass = 2131165215;
 			
-			// aapt resource value: 0x7f070020
-			public const int avantbrasgaucheMass = 2131165216;
+			// aapt resource value: 0x7f07001e
+			public const int avantbrasgaucheMass = 2131165214;
 			
 			// aapt resource value: 0x7f070009
 			public const int bodyshapeViewPager = 2131165193;
 			
-			// aapt resource value: 0x7f07001f
-			public const int brasdroitMass = 2131165215;
+			// aapt resource value: 0x7f07001d
+			public const int brasdroitMass = 2131165213;
 			
-			// aapt resource value: 0x7f07001e
-			public const int brasgaucheMass = 2131165214;
-			
-			// aapt resource value: 0x7f07001b
-			public const int chevilledroiteMass = 2131165211;
-			
-			// aapt resource value: 0x7f07001a
-			public const int chevillegaucheMass = 2131165210;
+			// aapt resource value: 0x7f07001c
+			public const int brasgaucheMass = 2131165212;
 			
 			// aapt resource value: 0x7f070017
 			public const int cuissedroiteMass = 2131165207;
@@ -123,8 +117,8 @@ namespace MyBodyShape.Android
 			// aapt resource value: 0x7f070016
 			public const int cuissegaucheMass = 2131165206;
 			
-			// aapt resource value: 0x7f070024
-			public const int errorInfo = 2131165220;
+			// aapt resource value: 0x7f070022
+			public const int errorInfo = 2131165218;
 			
 			// aapt resource value: 0x7f070015
 			public const int fesseMass = 2131165205;
@@ -171,20 +165,20 @@ namespace MyBodyShape.Android
 			// aapt resource value: 0x7f07000f
 			public const int loadpicture2Button = 2131165199;
 			
-			// aapt resource value: 0x7f070023
-			public const int maindroiteMass = 2131165219;
+			// aapt resource value: 0x7f070021
+			public const int maindroiteMass = 2131165217;
 			
-			// aapt resource value: 0x7f070022
-			public const int maingaucheMass = 2131165218;
+			// aapt resource value: 0x7f070020
+			public const int maingaucheMass = 2131165216;
 			
 			// aapt resource value: 0x7f070012
 			public const int neckMass = 2131165202;
 			
-			// aapt resource value: 0x7f07001d
-			public const int pieddroitMass = 2131165213;
+			// aapt resource value: 0x7f07001b
+			public const int pieddroitMass = 2131165211;
 			
-			// aapt resource value: 0x7f07001c
-			public const int piedgaucheMass = 2131165212;
+			// aapt resource value: 0x7f07001a
+			public const int piedgaucheMass = 2131165210;
 			
 			// aapt resource value: 0x7f07000b
 			public const int takepicture1Button = 2131165195;
@@ -195,8 +189,8 @@ namespace MyBodyShape.Android
 			// aapt resource value: 0x7f070013
 			public const int thoraxMass = 2131165203;
 			
-			// aapt resource value: 0x7f070025
-			public const int totalMass = 2131165221;
+			// aapt resource value: 0x7f070023
+			public const int totalMass = 2131165219;
 			
 			// aapt resource value: 0x7f070006
 			public const int weightText = 2131165190;

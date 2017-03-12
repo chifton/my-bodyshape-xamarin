@@ -369,8 +369,8 @@ namespace MyBodyShape.Android.Fragments
                         resultDictionnary.Add("cuissedroiteMass", bodyResult["ThighRight"]["Mass"].Value<float>());
                         resultDictionnary.Add("jambegaucheMass", bodyResult["LegLeft"]["Mass"].Value<float>());
                         resultDictionnary.Add("jambedroiteMass", bodyResult["LegRight"]["Mass"].Value<float>());
-                        resultDictionnary.Add("chevillegaucheMass", bodyResult["AnkleLeft"]["Mass"].Value<float>());
-                        resultDictionnary.Add("chevilledroiteMass", bodyResult["AnkleRight"]["Mass"].Value<float>());
+                        //resultDictionnary.Add("chevillegaucheMass", bodyResult["AnkleLeft"]["Mass"].Value<float>());
+                        //resultDictionnary.Add("chevilledroiteMass", bodyResult["AnkleRight"]["Mass"].Value<float>());
                         resultDictionnary.Add("piedgaucheMass", bodyResult["FootLeft"]["Mass"].Value<float>());
                         resultDictionnary.Add("pieddroitMass", bodyResult["FootRight"]["Mass"].Value<float>());
 

@@ -36,8 +36,8 @@ namespace MyBodyShape.Android.Fragments
         private TextView thighrightText;
         private TextView legleftText;
         private TextView legrightText;
-        private TextView ankleleftText;
-        private TextView anklerightText;
+        //private TextView ankleleftText;
+        //private TextView anklerightText;
         private TextView footleftText;
         private TextView footrightText;
         private TextView armleftText;
@@ -82,8 +82,8 @@ namespace MyBodyShape.Android.Fragments
                 thighrightText = fragmentView.FindViewById<TextView>(Resource.Id.cuissedroiteMass);
                 legleftText = fragmentView.FindViewById<TextView>(Resource.Id.jambegaucheMass);
                 legrightText = fragmentView.FindViewById<TextView>(Resource.Id.jambedroiteMass);
-                ankleleftText = fragmentView.FindViewById<TextView>(Resource.Id.chevillegaucheMass);
-                anklerightText = fragmentView.FindViewById<TextView>(Resource.Id.chevilledroiteMass);
+                //ankleleftText = fragmentView.FindViewById<TextView>(Resource.Id.chevillegaucheMass);
+                //anklerightText = fragmentView.FindViewById<TextView>(Resource.Id.chevilledroiteMass);
                 footleftText = fragmentView.FindViewById<TextView>(Resource.Id.piedgaucheMass);
                 footrightText = fragmentView.FindViewById<TextView>(Resource.Id.pieddroitMass);
                 armleftText = fragmentView.FindViewById<TextView>(Resource.Id.brasgaucheMass);
@@ -114,12 +114,12 @@ namespace MyBodyShape.Android.Fragments
             abdomenText.Text = $"Abdomen : { resultsPrefs.GetFloat("abdoMass", 0) } kgs";
             bottomText.Text = $"Bottom : { resultsPrefs.GetFloat("fesseMass", 0) } kgs";
 
-            thighleftText.Text = $"Left thigh : { resultsPrefs.GetFloat("cuissegaucheMass", 0) } kgs";
+            thighleftText.Text = $"Left Thigh : { resultsPrefs.GetFloat("cuissegaucheMass", 0) } kgs";
             thighrightText.Text = $"Right Thigh : { resultsPrefs.GetFloat("cuissedroiteMass", 0) } kgs";
             legleftText.Text = $"Left Leg : { resultsPrefs.GetFloat("jambegaucheMass", 0) } kgs";
             legrightText.Text = $"Right Leg : { resultsPrefs.GetFloat("jambedroiteMass", 0) } kgs";
-            ankleleftText.Text = $"Left Ankle : { resultsPrefs.GetFloat("chevillegaucheMass", 0) } kgs";
-            anklerightText.Text = $"Right Ankle : { resultsPrefs.GetFloat("chevilledroiteMass", 0) } kgs";
+            //ankleleftText.Text = $"Left Ankle : { resultsPrefs.GetFloat("chevillegaucheMass", 0) } kgs";
+            //anklerightText.Text = $"Right Ankle : { resultsPrefs.GetFloat("chevilledroiteMass", 0) } kgs";
             footleftText.Text = $"Left Foot : { resultsPrefs.GetFloat("piedgaucheMass", 0) } kgs";
             footrightText.Text = $"Right Foot : { resultsPrefs.GetFloat("pieddroitMass", 0) } kgs";
 
