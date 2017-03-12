@@ -515,31 +515,31 @@ namespace MyBodyShape.Android.Fragments
                     V3 = Math.Abs(this.PixelToRealLeft("abdo_v3_2") - this.PixelToRealLeft("abdo_v3_1")),
                     Z1 = 0,
                     Z2 = Math.Abs(this.PixelToRealTop("abdo_u3_1", "abdo_u3_2") - this.PixelToRealTop("abdo_u1_1", "abdo_u1_2")) / 2,
-                    Z3 = Math.Abs(this.PixelToRealTop("abdo_u3_1", "abdo_u3_2") - this.PixelToRealTop("abdo_u1_1", "abdo_u1_2")),
+                    Z3 = Math.Abs(this.PixelToRealTop("abdo_u3_1", "abdo_u3_2") - this.PixelToRealTop("abdo_u1_1", "abdo_u1_2"))
                 },
                 Thorax = new
                     {
-                U1 = Math.Abs(this.PixelToRealLeft("thorax_u1_2") - this.PixelToRealLeft("thorax_u1_1")),
+                U1 = Math.Abs(this.PixelToRealLeft("neck_u2_2") - this.PixelToRealLeft("neck_u2_1")),
                         U2 = Math.Abs(this.PixelToRealLeft("thorax_u2_2") - this.PixelToRealLeft("thorax_u2_1")),
                         U3 = Math.Abs(this.PixelToRealLeft("thorax_u3_2") - this.PixelToRealLeft("thorax_u3_1")),
                         V1 = Math.Abs(this.PixelToRealLeft("thorax_v1_2") - this.PixelToRealLeft("thorax_v1_1")),
                         V2 = Math.Abs(this.PixelToRealLeft("thorax_v2_2") - this.PixelToRealLeft("thorax_v2_1")),
                         V3 = Math.Abs(this.PixelToRealLeft("thorax_v3_2") - this.PixelToRealLeft("thorax_v3_1")),
                         Z1 = 0,
-                        Z2 = Math.Abs(this.PixelToRealTop("thorax_u3_1", "thorax_u3_2") - this.PixelToRealTop("thorax_u1_1", "thorax_u1_2")) / 2,
-                        Z3 = Math.Abs(this.PixelToRealTop("thorax_u3_1", "thorax_u3_2") - this.PixelToRealTop("thorax_u1_1", "thorax_u1_2")),
+                        Z2 = Math.Abs(this.PixelToRealTop("thorax_u3_1", "thorax_u3_2") - this.PixelToRealTop("neck_u2_1", "neck_u2_2")) / 2,
+                        Z3 = Math.Abs(this.PixelToRealTop("thorax_u3_1", "thorax_u3_2") - this.PixelToRealTop("neck_u2_1", "neck_u2_2"))
                     },
                     Neck = new
                     {
-                U1 = Math.Abs(this.PixelToRealLeft("neck_u1_2") - this.PixelToRealLeft("neck_u1_1")),
-                        U2 = Math.Abs(this.PixelToRealLeft("neck_u2_2") - this.PixelToRealLeft("neck_u2_1")),
-                        U3 = Math.Abs(this.PixelToRealLeft("neck_u3_2") - this.PixelToRealLeft("neck_u3_1")),
+                U1 = Math.Abs(this.PixelToRealLeft("head_u3_2") - this.PixelToRealLeft("head_u3_1")),
+                        U2 = Math.Abs(this.PixelToRealLeft("neck_u1_2") - this.PixelToRealLeft("neck_u1_1")),
+                        U3 = Math.Abs(this.PixelToRealLeft("neck_u2_2") - this.PixelToRealLeft("neck_u2_1")),
                         V1 = Math.Abs(this.PixelToRealLeft("neck_v1_2") - this.PixelToRealLeft("neck_v1_1")),
                         V2 = Math.Abs(this.PixelToRealLeft("neck_v2_2") - this.PixelToRealLeft("neck_v2_1")),
                         V3 = Math.Abs(this.PixelToRealLeft("neck_v3_2") - this.PixelToRealLeft("neck_v3_1")),
                         Z1 = 0,
-                        Z2 = Math.Abs(this.PixelToRealTop("neck_u3_1", "neck_u3_2") - this.PixelToRealTop("neck_u1_1", "neck_u1_2")) / 2,
-                        Z3 = Math.Abs(this.PixelToRealTop("neck_u3_1", "neck_u3_2") - this.PixelToRealTop("neck_u1_1", "neck_u1_2")),
+                        Z2 = Math.Abs(this.PixelToRealTop("neck_u2_1", "neck_u2_2") - this.PixelToRealTop("head_u3_1", "head_u3_2")) / 2,
+                        Z3 = Math.Abs(this.PixelToRealTop("neck_u2_1", "neck_u2_2") - this.PixelToRealTop("head_u3_1", "head_u3_2"))
                     },
                     Head = new
                     {
@@ -551,7 +551,7 @@ namespace MyBodyShape.Android.Fragments
                         V3 = Math.Abs(this.PixelToRealLeft("head_v3_2") - this.PixelToRealLeft("head_v3_1")),
                         Z1 = 0,
                         Z2 = Math.Abs(this.PixelToRealTop("head_u3_1", "head_u3_2") - this.PixelToRealTop("head_u1_1", "head_u1_2")) / 2,
-                        Z3 = Math.Abs(this.PixelToRealTop("head_u3_1", "head_u3_2") - this.PixelToRealTop("head_u1_1", "head_u1_2")),
+                        Z3 = Math.Abs(this.PixelToRealTop("head_u3_1", "head_u3_2") - this.PixelToRealTop("head_u1_1", "head_u1_2"))
                     },
                     Bottom = new
                     {
@@ -563,7 +563,7 @@ namespace MyBodyShape.Android.Fragments
                         V3 = Math.Abs(this.PixelToRealLeft("fesse_v3_2") - this.PixelToRealLeft("fesse_v3_1")),
                         Z1 = 0,
                         Z2 = Math.Abs(this.PixelToRealTop("fesse_u3_1", "fesse_u3_2") - this.PixelToRealTop("fesse_u1_1", "fesse_u1_2")) / 2,
-                        Z3 = Math.Abs(this.PixelToRealTop("fesse_u3_1", "fesse_u3_2") - this.PixelToRealTop("fesse_u1_1", "fesse_u1_2")),
+                        Z3 = Math.Abs(this.PixelToRealTop("fesse_u3_1", "fesse_u3_2") - this.PixelToRealTop("fesse_u1_1", "fesse_u1_2"))
                     },
                     Thigh = new
                     {
@@ -575,7 +575,7 @@ namespace MyBodyShape.Android.Fragments
                         V3 = Math.Abs(this.PixelToRealLeft("cuisse_v3_2") - this.PixelToRealLeft("cuisse_v3_1")),
                         Z1 = 0,
                         Z2 = Math.Abs(this.PixelToRealTop("cuisse1_u3_1", "cuisse2_u3_1") - this.PixelToRealTop("cuisse1_u1_1", "cuisse2_u1_1")) / 2,
-                        Z3 = Math.Abs(this.PixelToRealTop("cuisse1_u3_1", "cuisse2_u3_1") - this.PixelToRealTop("cuisse1_u1_1", "cuisse2_u1_1")),
+                        Z3 = Math.Abs(this.PixelToRealTop("cuisse1_u3_1", "cuisse2_u3_1") - this.PixelToRealTop("cuisse1_u1_1", "cuisse2_u1_1"))
                     },
                     Leg = new
                     {
@@ -587,19 +587,19 @@ namespace MyBodyShape.Android.Fragments
                         V3 = Math.Abs(this.PixelToRealLeft("jambe_v3_2") - this.PixelToRealLeft("jambe_v3_1")),
                         Z1 = 0,
                         Z2 = Math.Abs(this.PixelToRealTop("jambe1_u3_1", "jambe2_u3_1") - this.PixelToRealTop("jambe1_u1_1", "jambe2_u1_1")) / 2,
-                        Z3 = Math.Abs(this.PixelToRealTop("jambe1_u3_1", "jambe2_u3_1") - this.PixelToRealTop("jambe1_u1_1", "jambe2_u1_1")),
+                        Z3 = Math.Abs(this.PixelToRealTop("jambe1_u3_1", "jambe2_u3_1") - this.PixelToRealTop("jambe1_u1_1", "jambe2_u1_1"))
                     },
                     Foot = new
                     {
                 U1 = Math.Abs(this.PixelToRealLeft("pied1_u1_1") - this.PixelToRealLeft("pied2_u1_1")),
                         U2 = Math.Abs(this.PixelToRealLeft("pied1_u2_1") - this.PixelToRealLeft("pied2_u2_1")),
                         U3 = Math.Abs(this.PixelToRealLeft("pied1_u3_1") - this.PixelToRealLeft("pied2_u3_1")),
-                        V1 = Math.Abs(this.PixelToRealLeft("pied_v1_2") - this.PixelToRealLeft("pied_v1_1")),
-                        V2 = Math.Abs(this.PixelToRealLeft("pied_v2_2") - this.PixelToRealLeft("pied_v2_1")),
+                        V1 = Math.Abs(this.PixelToRealLeft("pied_v2_1") - this.PixelToRealLeft("pied_v3_1")),
+                        V2 = Math.Abs(this.PixelToRealLeft("pied_v2_1") - this.PixelToRealLeft("pied_v3_1")) / 2,
                         V3 = Math.Abs(this.PixelToRealLeft("pied_v3_2") - this.PixelToRealLeft("pied_v3_1")),
                         Z1 = 0,
-                        Z2 = Math.Abs(this.PixelToRealTop("pied1_u3_1", "pied2_u3_1") - this.PixelToRealTop("pied1_u1_1", "pied2_u1_1")) / 2,
-                        Z3 = Math.Abs(this.PixelToRealTop("pied1_u3_1", "pied2_u3_1") - this.PixelToRealTop("pied1_u1_1", "pied2_u1_1")),
+                        Z2 = Math.Abs(this.PixelToRealLeft("pied_v3_2") - this.PixelToRealLeft("pied_v3_1")) / 2,
+                        Z3 = Math.Abs(this.PixelToRealLeft("pied_v3_2") - this.PixelToRealLeft("pied_v3_1"))
                     },
                     Hand = new
                     {
@@ -610,8 +610,8 @@ namespace MyBodyShape.Android.Fragments
                         V2 = Math.Abs(this.PixelToRealLeft("main_v2_2") - this.PixelToRealLeft("main_v2_1")),
                         V3 = Math.Abs(this.PixelToRealLeft("main_v3_2") - this.PixelToRealLeft("main_v3_1")),
                         Z1 = 0,
-                        Z2 = Math.Abs(this.PixelToRealTop("maingauche_u3_1", "maingauche_u3_2") - this.PixelToRealTop("maingauche_u1_1", "maingauche_u1_2")) / 2,
-                        Z3 = Math.Abs(this.PixelToRealTop("maingauche_u3_1", "maingauche_u3_2") - this.PixelToRealTop("maingauche_u1_1", "maingauche_u1_2")),
+                        Z2 = Math.Abs(this.PixelToRealTop("maingauche_u4_1", "maingauche_u4_2") - this.PixelToRealTop("maingauche_u1_1", "maingauche_u1_2")) / 2,
+                        Z3 = Math.Abs(this.PixelToRealTop("maingauche_u4_1", "maingauche_u4_2") - this.PixelToRealTop("maingauche_u1_1", "maingauche_u1_2"))
                     },
                     ForeArm = new
                     {
@@ -623,7 +623,7 @@ namespace MyBodyShape.Android.Fragments
                         V3 = Math.Abs(this.PixelToRealLeft("avantbras_v3_2") - this.PixelToRealLeft("avantbras_v3_1")),
                         Z1= 0,
                         Z2= Math.Abs(this.PixelToRealTop("avantbrasgauche_u3_1", "avantbrasgauche_u3_2") - this.PixelToRealTop("avantbrasgauche_u1_1", "avantbrasgauche_u1_2")) / 2,
-                        Z3= Math.Abs(this.PixelToRealTop("avantbrasgauche_u3_1", "avantbrasgauche_u3_2") - this.PixelToRealTop("avantbrasgauche_u1_1", "avantbrasgauche_u1_2")),
+                        Z3= Math.Abs(this.PixelToRealTop("avantbrasgauche_u3_1", "avantbrasgauche_u3_2") - this.PixelToRealTop("avantbrasgauche_u1_1", "avantbrasgauche_u1_2"))
                     },
                     Arm = new
                     {
@@ -634,8 +634,8 @@ namespace MyBodyShape.Android.Fragments
                         V2= Math.Abs(this.PixelToRealLeft("bras_v2_2") - this.PixelToRealLeft("bras_v2_1")),
                         V3= Math.Abs(this.PixelToRealLeft("bras_v3_2") - this.PixelToRealLeft("bras_v3_1")),
                         Z1= 0,
-                        Z2= Math.Abs(this.PixelToRealTop("brasgauche_u2_2", "brasgauche_u2_1") - this.PixelToRealTop("brasgauche_u4_2", "brasgauche_u4_1")) / 2,
-                        Z3= Math.Abs(this.PixelToRealTop("brasgauche_u2_2", "brasgauche_u2_1") - this.PixelToRealTop("brasgauche_u4_2", "brasgauche_u4_1")),
+                        Z2= Math.Abs(this.PixelToRealTop("brasgauche_u1_2", "brasgauche_u1_1") - this.PixelToRealTop("brasgauche_u4_2", "brasgauche_u4_1")) / 2,
+                        Z3= Math.Abs(this.PixelToRealTop("brasgauche_u1_2", "brasgauche_u1_1") - this.PixelToRealTop("brasgauche_u4_2", "brasgauche_u4_1"))
                     },
                 };
 
