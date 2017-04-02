@@ -197,7 +197,7 @@ namespace MyBodyShape.Android.Fragments
         /// <summary>
         /// The circle radius.
         /// </summary>
-        private const int rootRadius = 30;
+        private int rootRadius = 30;
 
         /// <summary>
         /// The nearest distance.
@@ -449,6 +449,10 @@ namespace MyBodyShape.Android.Fragments
 
                     if (drawOnPicture)
                     {
+                        // Update the radius
+                        rootRadius = App1.bitmap.Height * 30 / 4032;
+
+                        // Display the bitmap
                         tempBitmap = Bitmap.CreateBitmap(App1.bitmap.Width, App1.bitmap.Height, Bitmap.Config.Rgb565);
                         bitmapRatio = (float)tempBitmap.Height / tempBitmap.Width;
                         tempCanvas = new Canvas(tempBitmap);

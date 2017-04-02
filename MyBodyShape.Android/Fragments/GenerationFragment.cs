@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 
+using AndroidResource = Android.Resource;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
@@ -23,6 +24,7 @@ using Newtonsoft.Json.Linq;
 using MyBodyShape.Android.Helpers;
 using MyBodyShape.Android.Listeners;
 using System.Threading;
+using Android.Support.V4.Content;
 
 namespace MyBodyShape.Android.Fragments
 {
@@ -244,8 +246,17 @@ namespace MyBodyShape.Android.Fragments
             webView.LoadUrl(string.Format("file:///android_asset/RubiksCube.html"));
             webView.SetBackgroundColor(new Color(0, 0, 0, 0));
             webView.SetLayerType(LayerType.Software, null);
-            linearLayout.AddView(webView);
+
+            // Progress bar
+            var customDrawable = ContextCompat.GetDrawable(this.Context, Resource.Drawable.custom_progressbar);
+            ProgressBar progressBar = new ProgressBar(this.Context, null, AndroidResource.Attribute.ProgressBarStyleHorizontal);
+            progressBar.SetPadding(10, 10, 10, 10);
+            progressBar.Max = 100;
+            progressBar.Progress = 0;
             
+            linearLayout.AddView(webView);
+            linearLayout.AddView(progressBar);
+
             // Launch the background task
             ThreadPool.QueueUserWorkItem(p =>
             {
@@ -327,7 +338,15 @@ namespace MyBodyShape.Android.Fragments
                     webClient.Headers.Add("Content-Type", "binary/octet-streOpenWriteam");
 
                     var resultSendFileFront = webClient.UploadFile(picturesUriFront, "POST", App1._path == null ? App1._file.AbsolutePath : App1._path);
+                    this.Activity.RunOnUiThread(() =>
+                    {
+                        progressBar.IncrementProgressBy(20);
+                    });
                     var resultSendFileSide = webClient.UploadFile(picturesUriSide, "POST", App2._path == null ? App2._file.AbsolutePath : App2._path);
+                    this.Activity.RunOnUiThread(() =>
+                    {
+                        progressBar.IncrementProgressBy(20);
+                    });
 
                     var resultSendFileFrontString = Encoding.UTF8.GetString(resultSendFileFront, 0, resultSendFileFront.Length);
                     var resultSendFileSideString = Encoding.UTF8.GetString(resultSendFileSide, 0, resultSendFileSide.Length);
@@ -349,6 +368,10 @@ namespace MyBodyShape.Android.Fragments
                     var uri = new Uri(this.ServerUrl + "/Home/Calculate");
                     var content = new StringContent(jsonToSend, Encoding.UTF8, "application/json");
                     var postResult = bodyShapeClient.PostAsync(uri, content).Result;
+                    this.Activity.RunOnUiThread(() =>
+                    {
+                        progressBar.IncrementProgressBy(40);
+                    });
 
                     // Get the response
                     if (postResult.IsSuccessStatusCode)
@@ -391,11 +414,16 @@ namespace MyBodyShape.Android.Fragments
                             error = Math.Round(error, 2);
                         }
 
-                        // Display retry button and remove rubis cube
-                        linearLayout.RemoveAllViewsInLayout(); // Reste
+                        this.Activity.RunOnUiThread(() =>
+                        {
+                            progressBar.IncrementProgressBy(20);
 
-                        // Enable the swipes
-                        viewPager.SetSwipeEnabled(true);
+                            // Remove rubis cube
+                            linearLayout.RemoveAllViewsInLayout();
+
+                            // Enable the swipes
+                            viewPager.SetSwipeEnabled(true);
+                        });
 
                         // Send the response data to results fragment (shared preferences)
                         ISharedPreferences resultsPrefs = Application.Context.GetSharedPreferences("bodyshaperesults", FileCreationMode.Private);
