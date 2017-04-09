@@ -17,6 +17,7 @@ using Android.Graphics;
 using Android.Content;
 using Android.App;
 using V4App = Android.Support.V4.App;
+using RadialProgress;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -249,11 +250,8 @@ namespace MyBodyShape.Android.Fragments
 
             // Progress bar
             var customDrawable = ContextCompat.GetDrawable(this.Context, Resource.Drawable.custom_progressbar);
-            ProgressBar progressBar = new ProgressBar(this.Context, null, AndroidResource.Attribute.ProgressBarStyleHorizontal);
-            progressBar.SetPadding(10, 10, 10, 10);
-            progressBar.Max = 100;
-            progressBar.Progress = 0;
-            
+            RadialProgressView progressBar = new RadialProgressView(this.Context, 0, 1, RadialProgressViewStyle.Big, Color.Green);
+            progressBar.LayoutParameters = new ViewGroup.LayoutParams(200, 200);
             linearLayout.AddView(webView);
             linearLayout.AddView(progressBar);
 
@@ -340,12 +338,12 @@ namespace MyBodyShape.Android.Fragments
                     var resultSendFileFront = webClient.UploadFile(picturesUriFront, "POST", App1._path == null ? App1._file.AbsolutePath : App1._path);
                     this.Activity.RunOnUiThread(() =>
                     {
-                        progressBar.IncrementProgressBy(20);
+                        progressBar.Value = 0.2f;
                     });
                     var resultSendFileSide = webClient.UploadFile(picturesUriSide, "POST", App2._path == null ? App2._file.AbsolutePath : App2._path);
                     this.Activity.RunOnUiThread(() =>
                     {
-                        progressBar.IncrementProgressBy(20);
+                        progressBar.Value = 0.4f;
                     });
 
                     var resultSendFileFrontString = Encoding.UTF8.GetString(resultSendFileFront, 0, resultSendFileFront.Length);
@@ -370,7 +368,7 @@ namespace MyBodyShape.Android.Fragments
                     var postResult = bodyShapeClient.PostAsync(uri, content).Result;
                     this.Activity.RunOnUiThread(() =>
                     {
-                        progressBar.IncrementProgressBy(40);
+                        progressBar.Value = 0.8f;
                     });
 
                     // Get the response
@@ -416,7 +414,7 @@ namespace MyBodyShape.Android.Fragments
 
                         this.Activity.RunOnUiThread(() =>
                         {
-                            progressBar.IncrementProgressBy(20);
+                            progressBar.Value = 1f;
 
                             // Remove rubis cube
                             linearLayout.RemoveAllViewsInLayout();

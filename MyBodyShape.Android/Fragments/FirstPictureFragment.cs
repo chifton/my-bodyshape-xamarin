@@ -462,9 +462,8 @@ namespace MyBodyShape.Android.Fragments
                         imageView.Touch += OnBodyShapeTouchEvent;
 
                         // Original image dimensions
-                        Drawable drawable = imageView.Drawable;
-                        intrinsicWidth = drawable.IntrinsicWidth;
-                        intrinsicHeight = drawable.IntrinsicHeight;
+                        intrinsicWidth = tempCanvas.Width;
+                        intrinsicHeight = tempCanvas.Height;
 
                         // Draw front skeleton
                         this.DrawFrontSkeleton();
@@ -641,7 +640,7 @@ namespace MyBodyShape.Android.Fragments
                     message.Show();
                 }
             }
-            catch(Exception)
+            catch(Exception ex)
             {
                 var message = new AlertDialog.Builder(this.Activity);
                 message.SetMessage("An error occured during taking your pictures. Try again later.");
@@ -1267,9 +1266,11 @@ namespace MyBodyShape.Android.Fragments
 
             var eventX = e.Event.GetX();
             var eventY = e.Event.GetY();
-            var x = (eventX + calculatedDrawLeft) * xRatio;
-            var y = (eventY + calculatedDrawTop) * yRatio * Resources.DisplayMetrics.HeightPixels / viewer.Height - 4 * calculatedDrawTop;
-
+            //var x = eventX;
+            //var y = eventY;
+            var x = eventX * xRatio;
+            var y = (eventY - calculatedDrawTop) * yRatio;
+            
             // Zoom coordinates
             zoomPoint.X = (int) eventX;
             zoomPoint.Y = (int) eventY;

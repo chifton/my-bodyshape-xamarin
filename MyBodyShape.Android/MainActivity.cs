@@ -12,6 +12,8 @@ using Android.Content.PM;
 using MyBodyShape.Android.Helpers;
 using Android.Graphics;
 using Android.Content;
+using Java.Lang;
+using System;
 
 namespace MyBodyShape.Android
 {
@@ -96,6 +98,15 @@ namespace MyBodyShape.Android
             viewPager.SetBackgroundColor(Color.Black);
 
             viewPager.Adapter = new MainAdapter(base.SupportFragmentManager, fragments, titles);
+        }
+
+        /// <summary>
+        /// The OnDestroy method
+        /// </summary>
+        protected override void OnDestroy()
+        {
+            // Empty total memory
+            GC.Collect();
         }
     }
 }
