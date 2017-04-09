@@ -251,7 +251,7 @@ namespace MyBodyShape.Android.Fragments
             // Progress bar
             var customDrawable = ContextCompat.GetDrawable(this.Context, Resource.Drawable.custom_progressbar);
             RadialProgressView progressBar = new RadialProgressView(this.Context, 0, 1, RadialProgressViewStyle.Big, Color.Green);
-            progressBar.LayoutParameters = new ViewGroup.LayoutParams(200, 200);
+            progressBar.LayoutParameters = new ViewGroup.LayoutParams(400, 400);
             linearLayout.AddView(webView);
             linearLayout.AddView(progressBar);
 
