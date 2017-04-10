@@ -80,9 +80,14 @@ namespace MyBodyShape.Android.Fragments
         public int SentHeight { get; set; }
 
         /// <summary>
-        /// The sent pixel height.
+        /// The sent pixel height for front picture.
         /// </summary>
-        public int PixelHeight { get; set; }
+        public int PixelHeightFront { get; set; }
+
+        /// <summary>
+        /// The sent pixel height for side picture.
+        /// </summary>
+        public int PixelHeightSide { get; set; }
 
         /// <summary>
         /// The server url.
@@ -95,7 +100,7 @@ namespace MyBodyShape.Android.Fragments
         private const int RETRY_BUTTON_ID = 3001;
 
         /// <summary>
-        /// The front and Side positions.
+        /// The front and side positions.
         /// </summary>
         public List<CircleArea> FrontSidePositions { get; set; }
 
@@ -310,7 +315,8 @@ namespace MyBodyShape.Android.Fragments
                     var pictSideHeight = prefs.GetInt(sideName + "_height", 0);
 
                     // Calculate the pixel height
-                    this.PixelHeight = (int)Math.Abs(this.FrontSidePositions.Where(t => t.Id == "pied1_u3_1").FirstOrDefault().PositionY - this.FrontSidePositions.Where(r => r.Id == "head_u1_1").FirstOrDefault().PositionY);
+                    this.PixelHeightFront = (int)Math.Abs(this.FrontSidePositions.Where(t => t.Id == "pied1_u3_1").FirstOrDefault().PositionY - this.FrontSidePositions.Where(r => r.Id == "head_u1_1").FirstOrDefault().PositionY);
+                    this.PixelHeightSide = (int)Math.Abs(this.FrontSidePositions.Where(t => t.Id == "pied_v3_1").FirstOrDefault().PositionY - this.FrontSidePositions.Where(r => r.Id == "head_v1_1").FirstOrDefault().PositionY);
 
                     // Delete some data
                     editor.Remove("picture1");
@@ -529,19 +535,37 @@ namespace MyBodyShape.Android.Fragments
         /// </summary>
         private double PixelToRealLeft(string pixel)
         {
+            int realHeight;
+            if(pixel.Contains("_u"))
+            {
+                realHeight = this.PixelHeightFront;
+            }
+            else
+            {
+                realHeight = this.PixelHeightSide;
+            }
             var foundPoint = this.FrontSidePositions.Where(u => u.Id == pixel).FirstOrDefault();
-            var result = Math.Round(foundPoint.PositionX) * this.SentHeight / this.PixelHeight;
+            var result = Math.Round(foundPoint.PositionX) * this.SentHeight / realHeight;
             return result;
         }
-
+        
         /// <summary>
         /// The pixel to real top method.
         /// </summary>
         private double PixelToRealTop(string pixel, string pixel2)
         {
+            int realHeight;
+            if (pixel.Contains("_u"))
+            {
+                realHeight = this.PixelHeightFront;
+            }
+            else
+            {
+                realHeight = this.PixelHeightSide;
+            }
             var foundFirstPoint = this.FrontSidePositions.Where(u => u.Id == pixel).FirstOrDefault();
             var foundSecondPoint = this.FrontSidePositions.Where(u => u.Id == pixel2).FirstOrDefault();
-            var result = (Math.Round(foundFirstPoint.PositionY) + Math.Round(foundSecondPoint.PositionY)) * this.SentHeight / this.PixelHeight / 2;
+            var result = (Math.Round(foundFirstPoint.PositionY) + Math.Round(foundSecondPoint.PositionY)) * this.SentHeight / realHeight / 2;
             return result;
         }
 
@@ -554,12 +578,12 @@ namespace MyBodyShape.Android.Fragments
             {
                 Height = height,
                 Weight = weight,
-                Picture_1 = pictureName + "Picture_1",
+                Picture_1 = pictureName + "Picture_1.png",
                 PictureWidth_1 = pictureFrontWidth,
                 PictureHeight_1 = pictureFrontHeight,
                 PictureLeft_1 = pictureFrontLeft,
                 PictureTop_1 = pictureFrontTop,
-                Picture_2 = pictureName + "Picture_2",
+                Picture_2 = pictureName + "Picture_2.png",
                 PictureWidth_2 = pictureSideWidth,
                 PictureHeight_2 = pictureSideHeight,
                 PictureLeft_2 = pictureSideLeft,
