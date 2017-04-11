@@ -677,12 +677,12 @@ namespace MyBodyShape.Android.Fragments
                 U1 = Math.Abs(this.PixelToRealLeft("pied1_u1_1") - this.PixelToRealLeft("pied2_u1_1")),
                         U2 = Math.Abs(this.PixelToRealLeft("pied1_u2_1") - this.PixelToRealLeft("pied2_u2_1")),
                         U3 = Math.Abs(this.PixelToRealLeft("pied1_u3_1") - this.PixelToRealLeft("pied2_u3_1")),
-                        V1 = Math.Abs(this.PixelToRealLeft("pied_v2_1") - this.PixelToRealLeft("pied_v3_1")),
-                        V2 = Math.Abs(this.PixelToRealLeft("pied_v2_1") - this.PixelToRealLeft("pied_v3_1")) / 2,
-                        V3 = Math.Abs(this.PixelToRealLeft("pied_v3_2") - this.PixelToRealLeft("pied_v3_2")),
+                        V1 = Math.Abs(this.PixelToRealLeft("pied_v1_2") - this.PixelToRealLeft("pied_v1_1")),
+                        V2 = Math.Abs(this.PixelToRealLeft("pied_v2_2") - this.PixelToRealLeft("pied_v2_1")) / 2,
+                        V3 = Math.Abs(this.PixelToRealLeft("pied_v3_2") - this.PixelToRealLeft("pied_v3_1")),
                         Z1 = 0,
-                        Z2 = Math.Abs(this.PixelToRealLeft("pied_v3_2") - this.PixelToRealLeft("pied_v3_1")) / 2,
-                        Z3 = Math.Abs(this.PixelToRealLeft("pied_v3_2") - this.PixelToRealLeft("pied_v3_1"))
+                        Z2 = Math.Abs(this.PixelToRealTop("pied_v1_1", "pied_v1_2") - this.PixelToRealTop("pied_v3_1", "pied_v3_2")) / 2,
+                        Z3 = Math.Abs(this.PixelToRealTop("pied_v1_1", "pied_v1_2") - this.PixelToRealTop("pied_v3_1", "pied_v3_2"))
                     },
                     Hand = new
                     {
