@@ -679,7 +679,7 @@ namespace MyBodyShape.Android.Fragments
                         U3 = Math.Abs(this.PixelToRealLeft("pied1_u3_1") - this.PixelToRealLeft("pied2_u3_1")),
                         V1 = Math.Abs(this.PixelToRealLeft("pied_v2_1") - this.PixelToRealLeft("pied_v3_1")),
                         V2 = Math.Abs(this.PixelToRealLeft("pied_v2_1") - this.PixelToRealLeft("pied_v3_1")) / 2,
-                        V3 = Math.Abs(this.PixelToRealLeft("pied_v3_2") - this.PixelToRealLeft("pied_v3_1")),
+                        V3 = Math.Abs(this.PixelToRealLeft("pied_v3_2") - this.PixelToRealLeft("pied_v3_2")),
                         Z1 = 0,
                         Z2 = Math.Abs(this.PixelToRealLeft("pied_v3_2") - this.PixelToRealLeft("pied_v3_1")) / 2,
                         Z3 = Math.Abs(this.PixelToRealLeft("pied_v3_2") - this.PixelToRealLeft("pied_v3_1"))
