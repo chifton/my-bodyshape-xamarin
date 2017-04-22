@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#000000"
+        android:layout_weight="1"
+        android:gravity="center">
+                <ImageView
+      android:id="@+id/iconhelp"
+      android:src="@drawable/help"
+      android:layout_width="35dip"
+      android:layout_height="35dip"
+      android:layout_alignParentLeft="true"
+      android:layout_gravity="left"
+      android:layout_marginLeft="10dip"/>
+            <LinearLayout
+            android:layout_height="35dip"
+            android:layout_width="fill_parent"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal"
+            android:gravity="center">
+                  <ImageView
+      android:id="@+id/iconbodyshape"
+      android:src="@drawable/logo"
+      android:layout_width="35dip"
+      android:layout_height="35dip"
+      android:scaleType="centerInside"
+      android:gravity="center"/>
+
+    <ImageView
+        android:id="@+id/logobodyshape"
+        android:src="@drawable/logoLong"
+        android:layout_height="35dip"
+        android:layout_width="105dip"
+        android:scaleType="centerInside"
+        android:gravity="center"/>
+                            </LinearLayout>
+            <ImageView
+      android:id="@+id/iconsign"
+      android:src="@drawable/signin"
+      android:layout_width="35dip"
+      android:layout_height="35dip"
+      android:layout_alignParentRight="true"
+      android:layout_gravity="right"
+      android:layout_marginRight="10dip"/>
+</RelativeLayout>

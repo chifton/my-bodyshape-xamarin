@@ -54,34 +54,61 @@ namespace MyBodyShape.Android
 			public const int down_button = 2130837506;
 			
 			// aapt resource value: 0x7f020003
-			public const int Icon = 2130837507;
+			public const int front_icon = 2130837507;
 			
 			// aapt resource value: 0x7f020004
-			public const int next_button = 2130837508;
+			public const int help = 2130837508;
 			
 			// aapt resource value: 0x7f020005
-			public const int pivotleft = 2130837509;
+			public const int icon = 2130837509;
 			
 			// aapt resource value: 0x7f020006
-			public const int pivotright = 2130837510;
+			public const int icon_3d = 2130837510;
 			
 			// aapt resource value: 0x7f020007
-			public const int previous_button = 2130837511;
+			public const int icon_side = 2130837511;
 			
 			// aapt resource value: 0x7f020008
-			public const int rotate = 2130837512;
+			public const int logo = 2130837512;
 			
 			// aapt resource value: 0x7f020009
-			public const int rounded_border_edittext = 2130837513;
+			public const int logoLong = 2130837513;
 			
 			// aapt resource value: 0x7f02000a
-			public const int top_button = 2130837514;
+			public const int next_button = 2130837514;
 			
 			// aapt resource value: 0x7f02000b
-			public const int zoomin = 2130837515;
+			public const int pivotleft = 2130837515;
 			
 			// aapt resource value: 0x7f02000c
-			public const int zoomout = 2130837516;
+			public const int pivotright = 2130837516;
+			
+			// aapt resource value: 0x7f02000d
+			public const int previous_button = 2130837517;
+			
+			// aapt resource value: 0x7f02000e
+			public const int results = 2130837518;
+			
+			// aapt resource value: 0x7f02000f
+			public const int rotate = 2130837519;
+			
+			// aapt resource value: 0x7f020010
+			public const int rounded_border_edittext = 2130837520;
+			
+			// aapt resource value: 0x7f020011
+			public const int rubis = 2130837521;
+			
+			// aapt resource value: 0x7f020012
+			public const int signin = 2130837522;
+			
+			// aapt resource value: 0x7f020013
+			public const int top_button = 2130837523;
+			
+			// aapt resource value: 0x7f020014
+			public const int zoomin = 2130837524;
+			
+			// aapt resource value: 0x7f020015
+			public const int zoomout = 2130837525;
 			
 			static Drawable()
 			{
@@ -141,6 +168,15 @@ namespace MyBodyShape.Android
 			// aapt resource value: 0x7f070004
 			public const int height_btn_plus = 2131165188;
 			
+			// aapt resource value: 0x7f070025
+			public const int iconbodyshape = 2131165221;
+			
+			// aapt resource value: 0x7f070024
+			public const int iconhelp = 2131165220;
+			
+			// aapt resource value: 0x7f070027
+			public const int iconsign = 2131165223;
+			
 			// aapt resource value: 0x7f070019
 			public const int jambedroiteMass = 2131165209;
 			
@@ -167,6 +203,9 @@ namespace MyBodyShape.Android
 			
 			// aapt resource value: 0x7f07000f
 			public const int loadpicture2Button = 2131165199;
+			
+			// aapt resource value: 0x7f070026
+			public const int logobodyshape = 2131165222;
 			
 			// aapt resource value: 0x7f070021
 			public const int maindroiteMass = 2131165217;
@@ -232,6 +271,9 @@ namespace MyBodyShape.Android
 			// aapt resource value: 0x7f030004
 			public const int Results = 2130903044;
 			
+			// aapt resource value: 0x7f030005
+			public const int window_title = 2130903045;
+			
 			static Layout()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
@@ -245,11 +287,11 @@ namespace MyBodyShape.Android
 		public partial class String
 		{
 			
-			// aapt resource value: 0x7f050001
-			public const int ApplicationName = 2131034113;
+			// aapt resource value: 0x7f060001
+			public const int ApplicationName = 2131099649;
 			
-			// aapt resource value: 0x7f050000
-			public const int Hello = 2131034112;
+			// aapt resource value: 0x7f060000
+			public const int Hello = 2131099648;
 			
 			static String()
 			{
@@ -264,8 +306,14 @@ namespace MyBodyShape.Android
 		public partial class Style
 		{
 			
-			// aapt resource value: 0x7f060000
-			public const int button_text = 2131099648;
+			// aapt resource value: 0x7f050001
+			public const int CustomTheme = 2131034113;
+			
+			// aapt resource value: 0x7f050000
+			public const int CustomWindowTitleBackground = 2131034112;
+			
+			// aapt resource value: 0x7f050002
+			public const int button_text = 2131034114;
 			
 			static Style()
 			{
