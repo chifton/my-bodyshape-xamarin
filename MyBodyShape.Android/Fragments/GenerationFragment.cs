@@ -250,13 +250,15 @@ namespace MyBodyShape.Android.Fragments
             webView.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent);
             webView.Visibility = ViewStates.Visible;
             webView.LoadUrl(string.Format("file:///android_asset/RubiksCube.html"));
-            webView.SetBackgroundColor(new Color(0, 0, 0, 0));
+            webView.SetBackgroundColor(Color.ParseColor("#000000"));
             webView.SetLayerType(LayerType.Software, null);
 
             // Progress bar
             var customDrawable = ContextCompat.GetDrawable(this.Context, Resource.Drawable.custom_progressbar);
-            RadialProgressView progressBar = new RadialProgressView(this.Context, 0, 1, RadialProgressViewStyle.Big, Color.Green);
-            progressBar.LayoutParameters = new ViewGroup.LayoutParams(400, 400);
+            Func<float, string> percentFormat = (x) => string.Format("{0}%", x);
+            RadialProgressView progressBar = new RadialProgressView(this.Context, 0, 100, RadialProgressViewStyle.Big, Color.Green);
+            progressBar.LabelTextDelegate = percentFormat;
+            progressBar.LayoutParameters = new ViewGroup.LayoutParams(500, 500);
             linearLayout.AddView(webView);
             linearLayout.AddView(progressBar);
 
@@ -344,12 +346,12 @@ namespace MyBodyShape.Android.Fragments
                     var resultSendFileFront = webClient.UploadFile(picturesUriFront, "POST", App1._path == null ? App1._file.AbsolutePath : App1._path);
                     this.Activity.RunOnUiThread(() =>
                     {
-                        progressBar.Value = 0.2f;
+                        progressBar.Value = 20;
                     });
                     var resultSendFileSide = webClient.UploadFile(picturesUriSide, "POST", App2._path == null ? App2._file.AbsolutePath : App2._path);
                     this.Activity.RunOnUiThread(() =>
                     {
-                        progressBar.Value = 0.4f;
+                        progressBar.Value = 40;
                     });
 
                     var resultSendFileFrontString = Encoding.UTF8.GetString(resultSendFileFront, 0, resultSendFileFront.Length);
@@ -374,7 +376,7 @@ namespace MyBodyShape.Android.Fragments
                     var postResult = bodyShapeClient.PostAsync(uri, content).Result;
                     this.Activity.RunOnUiThread(() =>
                     {
-                        progressBar.Value = 0.8f;
+                        progressBar.Value = 80;
                     });
 
                     // Get the response
@@ -420,7 +422,7 @@ namespace MyBodyShape.Android.Fragments
 
                         this.Activity.RunOnUiThread(() =>
                         {
-                            progressBar.Value = 1f;
+                            progressBar.Value = 100;
 
                             // Remove rubis cube
                             linearLayout.RemoveAllViewsInLayout();

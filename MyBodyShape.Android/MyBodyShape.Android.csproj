@@ -144,37 +144,9 @@
     <AndroidAsset Include="Assets\loader.gif" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\RubiksCube.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\JsCssContent\jquery-1.10.2.min.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\JsCssContent\jquery-ui.min.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\JsCssContent\bezier-spline.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\JsCssContent\jquery.simulate.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\JsCssContent\raphael.min.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\JsCssContent\jquery-glowing.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\JsCssContent\jquery.browser.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\JsCssContent\jquery.alerts.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\JsCssContent\jquery-ui.css" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Assets\JsCssContent\Site.css" />
+    <AndroidAsset Include="Assets\RubiksCube.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AndroidAsset>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\next_button.png" />
