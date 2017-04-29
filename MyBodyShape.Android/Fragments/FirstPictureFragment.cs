@@ -147,22 +147,12 @@ namespace MyBodyShape.Android.Fragments
         /// <summary>
         /// The picture x ratio.
         /// </summary>
-        private float xRatio;
+        private float widthRatio;
 
         /// <summary>
         /// The picture y ratio.
         /// </summary>
-        private float yRatio;
-
-        /// <summary>
-        /// The intrisic width.
-        /// </summary>
-        private float intrinsicWidth;
-
-        /// <summary>
-        /// The intrisic height.
-        /// </summary>
-        private float intrinsicHeight;
+        private float heightRatio;
 
         /// <summary>
         /// The picture bitmap ratio.
@@ -462,10 +452,6 @@ namespace MyBodyShape.Android.Fragments
                             imageView.SetImageDrawable(new BitmapDrawable(this.Resources, tempBitmap));
                             imageView.SetPaintShader(new BitmapShader(App1.bitmap, Shader.TileMode.Clamp, Shader.TileMode.Clamp));
                             imageView.Touch += OnBodyShapeTouchEvent;
-
-                            // Original image dimensions
-                            intrinsicWidth = tempCanvas.Width;
-                            intrinsicHeight = tempCanvas.Height;
 
                             // Draw front skeleton
                             this.DrawFrontSkeleton();
@@ -1237,11 +1223,13 @@ namespace MyBodyShape.Android.Fragments
         {
             // Bitmap coordinates calculation
             var viewer = sender as ImageView;
+
+            // Lags
             float calculatedDrawLeft = 0;
             float calculatedDrawTop = 0;
             float calculatedDrawHeight = 0;
             float calculatedDrawWidth = 0;
-            float calculatedBitmapRatio = (float) tempBitmap.Width / tempBitmap.Height;
+            float calculatedBitmapRatio = (float)tempCanvas.Width / tempCanvas.Height;
             float calculatedimageViewRatio = (float) viewer.Width / viewer.Height;
             if (calculatedBitmapRatio > calculatedimageViewRatio)
             {
@@ -1256,47 +1244,49 @@ namespace MyBodyShape.Android.Fragments
                 calculatedDrawLeft = (viewer.Width - calculatedDrawWidth) / 2;
             }
 
-            if (xRatio == 0)
+            // Ratio updates
+            if (widthRatio == 0)
             {
-                int scaledWidth = viewer.Width;
-                xRatio = intrinsicWidth / scaledWidth;
+                widthRatio = (float)viewer.Width / tempCanvas.Width;
             }
-            if (yRatio == 0)
+            if (heightRatio == 0)
             {
-                int scaledHeight = viewer.Height;
-                yRatio = intrinsicHeight / scaledHeight;
+                heightRatio = (float)viewer.Height / tempCanvas.Height;
             }
-
-            var eventX = e.Event.GetX();
-            var eventY = e.Event.GetY();
-            //var x = eventX;
-            //var y = eventY;
-            var x = eventX * xRatio;
-            var y = (eventY - calculatedDrawTop) * yRatio;
             
             // Zoom coordinates
+            var eventX = e.Event.GetX();
+            var eventY = e.Event.GetY();
             zoomPoint.X = (int) eventX;
             zoomPoint.Y = (int) eventY;
-            zoomBitmapPoint.X = (int) x;
-            zoomBitmapPoint.Y = (int) y;
+            var halfHeight = Math.Round((double)viewer.Height / 2);
+            var sideCondition = eventY >= halfHeight;
+            var diffRatioHeight = Math.Abs(eventY - halfHeight) / (viewer.Height / 2);
+            var heightSideBool = sideCondition ? 1 : -1;
+            var x = (int)Math.Round((double) eventX / widthRatio);
+            var y = (int)Math.Round((eventY + calculatedDrawTop * heightSideBool * diffRatioHeight) / heightRatio);
+            zoomBitmapPoint.X = x;
+            zoomBitmapPoint.Y = y;
 
-            if(x < 0)
+            // Limits
+            if (x < 0)
             {
                 x = 0;
             }
-            if(x > tempBitmap.Width)
+            if(x > tempCanvas.Width)
             {
-                x = tempBitmap.Width;
+                x = tempCanvas.Width;
             }
             if (y < 0)
             {
                 y = 0;
             }
-            if (y > tempBitmap.Height)
+            if (y > tempCanvas.Height)
             {
-                y = tempBitmap.Height;
+                y = tempCanvas.Height;
             }
 
+            // Actions
             if (e.Event.Action == MotionEventActions.Down)
             {
                 // Get nearest circle
