@@ -22,7 +22,7 @@ namespace MyBodyShape.Android
     /// <summary>
     /// The main activity.
     /// </summary>
-    [Activity(Label = "MyBodyShape", MainLauncher = true, Icon = "@drawable/icon", ScreenOrientation = ScreenOrientation.Portrait)]
+    [Activity(Label = "MyBodyShape", Icon = "@drawable/icon", ScreenOrientation = ScreenOrientation.Portrait)]
     public class MainActivity : V4App.FragmentActivity
     {
         /// <summary>
