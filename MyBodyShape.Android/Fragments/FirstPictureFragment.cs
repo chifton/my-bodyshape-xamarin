@@ -80,6 +80,11 @@ namespace MyBodyShape.Android.Fragments
         private Paint tempTargetPaint;
 
         /// <summary>
+        /// The source bitmap drawable.
+        /// </summary>
+        private BitmapDrawable tempSourceBitmapDrawable;
+
+        /// <summary>
         /// The temporary bitmap.
         /// </summary>
         private Bitmap tempBitmap;
@@ -449,7 +454,8 @@ namespace MyBodyShape.Android.Fragments
                             bitmapRatio = (float)tempBitmap.Height / tempBitmap.Width;
                             tempCanvas = new Canvas(tempBitmap);
                             tempCanvas.DrawBitmap(App1.bitmap, 0, 0, null);
-                            imageView.SetImageDrawable(new BitmapDrawable(this.Resources, tempBitmap));
+                            tempSourceBitmapDrawable = new BitmapDrawable(this.Resources, tempBitmap);
+                            imageView.SetImageDrawable(tempSourceBitmapDrawable);
                             imageView.SetPaintShader(new BitmapShader(App1.bitmap, Shader.TileMode.Clamp, Shader.TileMode.Clamp));
                             imageView.Touch += OnBodyShapeTouchEvent;
 
@@ -1223,7 +1229,7 @@ namespace MyBodyShape.Android.Fragments
         {
             // Bitmap coordinates calculation
             var viewer = sender as ImageView;
-
+            
             // Lags
             float calculatedDrawLeft = 0;
             float calculatedDrawTop = 0;

@@ -98,7 +98,7 @@
                     android:id="@+id/generateButton"
                     android:layout_width="fill_parent"
                     android:layout_height="match_parent"
-                    android:text="Generate your model"
+                    android:text="Generate your bodyshape"
                     android:layout_weight="0.7"
                     style="@style/button_text"
                     />

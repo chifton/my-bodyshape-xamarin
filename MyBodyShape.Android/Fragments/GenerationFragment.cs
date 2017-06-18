@@ -388,34 +388,34 @@ namespace MyBodyShape.Android.Fragments
                         var bodyResult = JObject.FromObject(bodyResultObjectSecond);
 
                         var resultDictionnary = new Dictionary<string, float>();
-                        resultDictionnary.Add("headMass", bodyResult["Head"]["Mass"].Value<float>());
-                        resultDictionnary.Add("neckMass", bodyResult["Neck"]["Mass"].Value<float>());
-                        resultDictionnary.Add("thoraxMass", bodyResult["Thorax"]["Mass"].Value<float>());
-                        resultDictionnary.Add("abdoMass", bodyResult["Abdomen"]["Mass"].Value<float>());
-                        resultDictionnary.Add("fesseMass", bodyResult["Bottom"]["Mass"].Value<float>());
+                        resultDictionnary.Add("headMass", bodyResult["BodyMass"]["Head"]["Mass"].Value<float>());
+                        resultDictionnary.Add("neckMass", bodyResult["BodyMass"]["Neck"]["Mass"].Value<float>());
+                        resultDictionnary.Add("thoraxMass", bodyResult["BodyMass"]["Thorax"]["Mass"].Value<float>());
+                        resultDictionnary.Add("abdoMass", bodyResult["BodyMass"]["Abdomen"]["Mass"].Value<float>());
+                        resultDictionnary.Add("fesseMass", bodyResult["BodyMass"]["Bottom"]["Mass"].Value<float>());
 
-                        resultDictionnary.Add("cuissegaucheMass", bodyResult["ThighLeft"]["Mass"].Value<float>());
-                        resultDictionnary.Add("cuissedroiteMass", bodyResult["ThighRight"]["Mass"].Value<float>());
-                        resultDictionnary.Add("jambegaucheMass", bodyResult["LegLeft"]["Mass"].Value<float>());
-                        resultDictionnary.Add("jambedroiteMass", bodyResult["LegRight"]["Mass"].Value<float>());
-                        //resultDictionnary.Add("chevillegaucheMass", bodyResult["AnkleLeft"]["Mass"].Value<float>());
-                        //resultDictionnary.Add("chevilledroiteMass", bodyResult["AnkleRight"]["Mass"].Value<float>());
-                        resultDictionnary.Add("piedgaucheMass", bodyResult["FootLeft"]["Mass"].Value<float>());
-                        resultDictionnary.Add("pieddroitMass", bodyResult["FootRight"]["Mass"].Value<float>());
+                        resultDictionnary.Add("cuissegaucheMass", bodyResult["BodyMass"]["ThighLeft"]["Mass"].Value<float>());
+                        resultDictionnary.Add("cuissedroiteMass", bodyResult["BodyMass"]["ThighRight"]["Mass"].Value<float>());
+                        resultDictionnary.Add("jambegaucheMass", bodyResult["BodyMass"]["LegLeft"]["Mass"].Value<float>());
+                        resultDictionnary.Add("jambedroiteMass", bodyResult["BodyMass"]["LegRight"]["Mass"].Value<float>());
+                        //resultDictionnary.Add("chevillegaucheMass", bodyResult["BodyMass"]["AnkleLeft"]["Mass"].Value<float>());
+                        //resultDictionnary.Add("chevilledroiteMass", bodyResult["BodyMass"]["AnkleRight"]["Mass"].Value<float>());
+                        resultDictionnary.Add("piedgaucheMass", bodyResult["BodyMass"]["FootLeft"]["Mass"].Value<float>());
+                        resultDictionnary.Add("pieddroitMass", bodyResult["BodyMass"]["FootRight"]["Mass"].Value<float>());
 
-                        resultDictionnary.Add("brasgaucheMass", bodyResult["ArmLeft"]["Mass"].Value<float>());
-                        resultDictionnary.Add("brasdroitMass", bodyResult["ArmRight"]["Mass"].Value<float>());
-                        resultDictionnary.Add("avantbrasgaucheMass", bodyResult["ForeArmLeft"]["Mass"].Value<float>());
-                        resultDictionnary.Add("avantbrasdroitMass", bodyResult["ForeArmRight"]["Mass"].Value<float>());
-                        resultDictionnary.Add("maingaucheMass", bodyResult["HandLeft"]["Mass"].Value<float>());
-                        resultDictionnary.Add("maindroiteMass", bodyResult["HandRight"]["Mass"].Value<float>());
+                        resultDictionnary.Add("brasgaucheMass", bodyResult["BodyMass"]["ArmLeft"]["Mass"].Value<float>());
+                        resultDictionnary.Add("brasdroitMass", bodyResult["BodyMass"]["ArmRight"]["Mass"].Value<float>());
+                        resultDictionnary.Add("avantbrasgaucheMass", bodyResult["BodyMass"]["ForeArmLeft"]["Mass"].Value<float>());
+                        resultDictionnary.Add("avantbrasdroitMass", bodyResult["BodyMass"]["ForeArmRight"]["Mass"].Value<float>());
+                        resultDictionnary.Add("maingaucheMass", bodyResult["BodyMass"]["HandLeft"]["Mass"].Value<float>());
+                        resultDictionnary.Add("maindroiteMass", bodyResult["BodyMass"]["HandRight"]["Mass"].Value<float>());
 
-                        resultDictionnary.Add("poidstotal", bodyResult["TotalMass"].Value<float>());
+                        resultDictionnary.Add("poidstotal", bodyResult["BodyMass"]["TotalMass"].Value<float>());
 
                         double error = 0;
                         if (enteredWeight != 0)
                         {
-                            error = bodyResult["TotalMass"].Value<double>() - enteredWeight;
+                            error = bodyResult["BodyMass"]["TotalMass"].Value<double>() - enteredWeight;
                             error = error / enteredWeight * 100;
                             error = Math.Round(error, 2);
                         }
@@ -457,7 +457,7 @@ namespace MyBodyShape.Android.Fragments
                             ((MainActivity)this.Activity).SecondPictureFragment.DisableView();
 
                             // Results fragment
-                            ((MainActivity)this.Activity).ResultsFragment.ShowResults();
+                            ((MainActivity)this.Activity).ResultsFragment.ShowResults((string) bodyResult["Ticket"]);
                             viewPager.SetCurrentItem(3, true);
                         });
                     }

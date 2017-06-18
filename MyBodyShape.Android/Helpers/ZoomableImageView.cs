@@ -14,6 +14,16 @@ namespace MyBodyShape.Android.Helpers
     public class ZoomableImageView : ImageView
     {
         /// <summary>
+        /// The zoom radius.
+        /// </summary>
+        private const int ZOOM_RADIUS = 400;
+
+        /// <summary>
+        /// The circle weight.
+        /// </summary>
+        private const int CIRCLE_WEIGHT = 50;
+
+        /// <summary>
         /// The zoomable image view boolean.
         /// </summary>
         private bool zooming;
@@ -32,6 +42,11 @@ namespace MyBodyShape.Android.Helpers
         /// The list of buffered points.
         /// </summary>
         private List<CircleArea> _bufferPoints;
+
+        /// <summary>
+        /// The zoom twin superman circles.
+        /// </summary>
+        private List<CircleArea> _zoomTwinCircles;
 
         /// <summary>
         /// The current circle.
@@ -70,6 +85,7 @@ namespace MyBodyShape.Android.Helpers
                 StrokeWidth = 60
             };
             _bufferPoints = new List<CircleArea>();
+            _zoomTwinCircles = new List<CircleArea>();
             _currentCircle = null;
             currentPointZooming = new Point();
             currentPointBitmapZooming = new Point();
@@ -81,34 +97,15 @@ namespace MyBodyShape.Android.Helpers
         protected override void OnDraw(Canvas canvas)
         {
             base.OnDraw(canvas);
-
+            
             if (zooming)
             {
-                // If we go out of the 
-                var zoomRadius = 400;
-                var circleWeight = 50;
-                var focusElement = _bufferPoints.Where(a => a.Id == _currentCircle.Id).FirstOrDefault();
-                var distanceX = (focusElement.PositionX - currentPointBitmapZooming.X) / 2;
-                var distanceY = (focusElement.PositionY - currentPointBitmapZooming.Y) / 2;
-                var xSquare = Math.Pow(Math.Abs(distanceX), 2);
-                var ySquare = Math.Pow(Math.Abs(distanceY) - 2 * circleWeight, 2);
-                if (Math.Sqrt(xSquare + ySquare) > zoomRadius + circleWeight / 2)
-                {
-                    this.DisableZoom();
-                }
+                //matrix.Reset();
+                //matrix.SetScale(1, 1, ToCanvasCoordinates(canvas.Height / 2, canvas.Height, currentPointZooming.X, currentPointBitmapZooming.Y + currentPointZooming.Y);
+                //mPaint.Shader.SetLocalMatrix(matrix);
+                //canvas.DrawRect(0, 0, canvas.Width, canvas.Height, mPaint);
 
-                var diffx = currentPointBitmapZooming.X - currentPointZooming.X;
-                var diffy = currentPointBitmapZooming.Y - currentPointZooming.Y;
-                matrix.Reset();
-                matrix.PostScale(2f, 2f, currentPointBitmapZooming.X + currentPointZooming.X, currentPointBitmapZooming.Y + currentPointZooming.Y);
-                mPaint.Shader.SetLocalMatrix(matrix);
-                canvas.DrawCircle(currentPointZooming.X, currentPointZooming.Y, zoomRadius, mPaint);
-                foreach (var circle in _bufferPoints)
-                {    
-                    pastPaint.Color = circle.Color;
-                    var xPos = _currentCircle.Id == circle.Id ? circle.PositionX / 2 : circle.PositionX - diffx;
-                    canvas.DrawCircle(xPos, circle.PositionY / 2 - circleWeight - diffy, circleWeight, pastPaint);
-                }
+
                 this.Invalidate();
             }
         }
@@ -141,6 +138,7 @@ namespace MyBodyShape.Android.Helpers
             currentPointZooming = new Point();
             currentPointBitmapZooming = new Point();
             _bufferPoints = new List<CircleArea>();
+            _zoomTwinCircles = new List<CircleArea>();
             _currentCircle = null;
         }
 

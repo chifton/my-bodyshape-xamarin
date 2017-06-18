@@ -96,7 +96,7 @@ namespace MyBodyShape.Android
                 "Side Picture",
                 "Generate",
                 "Members weights",
-                "3D Model"
+                "3D Bodyshape"
             });
 
             // Tabs icons

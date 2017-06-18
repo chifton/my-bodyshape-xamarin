@@ -44,6 +44,9 @@
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Calligraphy, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CallygraphyXamarin.2.2.0\lib\MonoAndroid\Calligraphy.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Android" />
     <Reference Include="mscorlib" />
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -125,6 +128,7 @@
     <AndroidAsset Include="Assets\supermanjson.json" />
     <AndroidAsset Include="Assets\pathjson.json" />
     <AndroidAsset Include="Assets\config.json" />
+    <AndroidAsset Include="Assets\Fonts\GARAIT.TTF" />
     <None Include="packages.config" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
@@ -153,6 +157,9 @@
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\drawable\splashscreen.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\Splash.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
@@ -244,6 +251,7 @@
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\logosplash.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
