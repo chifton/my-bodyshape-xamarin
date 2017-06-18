@@ -98,7 +98,7 @@ namespace MyBodyShape.Android.Fragments
             var webClient = new BodyShapeWebClient();
             webClient.Timeout = 30000;
             webClient.Headers.Add("Content-Type", "binary/octet-streOpenWriteam");
-
+            
             try
             {
                 // Uri
@@ -118,7 +118,7 @@ namespace MyBodyShape.Android.Fragments
                 {
                     this.Activity.RunOnUiThread(() =>
                     {
-                        resultsText = "<center><font color='red'>An error occured while getting results image.<br/>Try again later...</font></center>";
+                        resultsText = "<span style='text-align:center;'><font color='red'>An error occured while getting results image.<br/>Try again later...</font><br/></span>";
                     });
                 } 
             }
@@ -126,15 +126,15 @@ namespace MyBodyShape.Android.Fragments
             {
                 this.Activity.RunOnUiThread(() =>
                 {
-                    resultsText = "<center><font color='red'>An error occured while getting results image.<br/>Try again later...</font></center>";
+                    resultsText = "<span style='text-align:center;'><font color='red'>An error occured while getting results image.<br/>Try again later...</font><br/></span>";
                 });
             }
             
-            resultsText = resultsText + $"<center><font color='white'>Total Generated Mass : { resultsPrefs.GetFloat("poidstotal", 0) } kgs</font></center>";
+            resultsText = resultsText + $"<span style='text-align:center;'><font color='white'>Total Generated Mass : <font color='#008000'>{ resultsPrefs.GetFloat("poidstotal", 0) } kgs</font></font><br/></span>";
             var errorResult = resultsPrefs.GetFloat("generationError", 0);
             if (errorResult != 0)
             {
-                resultsText = resultsText + $"<center><font color='red'><br/>Error : {Math.Abs(errorResult) } %</font></center>";
+                resultsText = resultsText + $"<span style='text-align:center;'><font color='red'>Error : {Math.Abs(errorResult) } %</font><br/></span>";
             }
 
             // Set the text
