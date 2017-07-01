@@ -108,10 +108,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Helpers\PathArea.cs" />
+    <Compile Include="Helpers\GestureRecognizerView.cs" />
     <Compile Include="Helpers\ZoomableImageView.cs" />
     <Compile Include="Helpers\CircleArea.cs" />
     <Compile Include="Helpers\BodyShapeViewPager.cs" />
     <Compile Include="Helpers\BitmapHelpers.cs" />
+    <Compile Include="Listeners\GestureListener.cs" />
     <Compile Include="Listeners\SideMoveRepeatListener.cs" />
     <Compile Include="Listeners\FrontMoveRepeatListener.cs" />
     <Compile Include="Listeners\EditTextRepeatListener.cs" />

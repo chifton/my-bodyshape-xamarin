@@ -3,7 +3,6 @@
 /**********************************************************/
 
 using System;
-
 using Android.App;
 using Android.Content;
 using AndroidNet = Android.Net;
@@ -13,9 +12,9 @@ using Android.Widget;
 using V4App = Android.Support.V4.App;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using Android.Graphics;
 using MyBodyShape.Android.Helpers;
 using Android.Text;
+using Android.Views;
 
 namespace MyBodyShape.Android.Fragments
 {
@@ -27,7 +26,7 @@ namespace MyBodyShape.Android.Fragments
         /// <summary>
         /// The fragment view.
         /// </summary>
-        private AndroidViews.View fragmentView;
+        private View fragmentView;
 
         /// <summary>
         /// The snaps results images directory path.
@@ -40,9 +39,9 @@ namespace MyBodyShape.Android.Fragments
         private TextView totalMassText;
 
         /// <summary>
-        /// The results image view.
+        /// The results linear layout.
         /// </summary>
-        private ImageView resultsSnap;
+        private LinearLayout resultsSnapLayouts;
 
         /// <summary>
         /// The OnCreate method.
@@ -65,7 +64,7 @@ namespace MyBodyShape.Android.Fragments
             if (fragmentView == null)
             {
                 fragmentView = inflater.Inflate(Resource.Layout.Results, container, false);
-                resultsSnap = fragmentView.FindViewById<ImageView>(Resource.Id.resultsSnap);
+                resultsSnapLayouts = fragmentView.FindViewById<LinearLayout>(Resource.Id.layoutResults);
                 totalMassText = fragmentView.FindViewById<TextView>(Resource.Id.totalMass);
                 snapsResultsDir = System.IO.Path.Combine(AndroidOS.Environment.ExternalStorageDirectory.AbsolutePath, AndroidOS.Environment.DirectoryDownloads);
             }
@@ -111,8 +110,15 @@ namespace MyBodyShape.Android.Fragments
                 Java.IO.File file = new Java.IO.File(resultsUri);
                 if (file.Exists())
                 {
-                    resultsSnap.SetScaleType(ImageView.ScaleType.FitCenter);
-                    resultsSnap.SetImageURI(AndroidNet.Uri.FromFile(new Java.IO.File(resultsUri)));
+                    var resultsSnapView = new GestureRecognizerView(this.Context, AndroidNet.Uri.FromFile(new Java.IO.File(resultsUri)), resultsSnapLayouts.Width, resultsSnapLayouts.Height);
+                    resultsSnapView.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent);
+                    resultsSnapView.Visibility = ViewStates.Visible;
+                    resultsSnapView.SetScaleType(ImageView.ScaleType.FitCenter);
+                    resultsSnapLayouts.AddView(resultsSnapView, 0);
+
+                    var viewPager = this.Activity.FindViewById<BodyShapeViewPager>(Resource.Id.bodyshapeViewPager);
+                    viewPager.SetSwipeEnabled(true);
+                    viewPager.SetCurrentItem(3, true);
                 }
                 else
                 {

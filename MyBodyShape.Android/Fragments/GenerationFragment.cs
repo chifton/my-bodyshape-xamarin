@@ -458,7 +458,6 @@ namespace MyBodyShape.Android.Fragments
 
                             // Results fragment
                             ((MainActivity)this.Activity).ResultsFragment.ShowResults((string) bodyResult["Ticket"]);
-                            viewPager.SetCurrentItem(3, true);
                         });
                     }
                     else

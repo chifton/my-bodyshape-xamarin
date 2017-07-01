@@ -1891,14 +1891,14 @@ namespace MyBodyShape.Android
 			// aapt resource value: 0x7f0b0072
 			public const int icon_group = 2131427442;
 			
-			// aapt resource value: 0x7f0b0083
-			public const int iconbodyshape = 2131427459;
-			
 			// aapt resource value: 0x7f0b0082
-			public const int iconhelp = 2131427458;
+			public const int iconbodyshape = 2131427458;
 			
-			// aapt resource value: 0x7f0b0085
-			public const int iconsign = 2131427461;
+			// aapt resource value: 0x7f0b0081
+			public const int iconhelp = 2131427457;
+			
+			// aapt resource value: 0x7f0b0084
+			public const int iconsign = 2131427460;
 			
 			// aapt resource value: 0x7f0b0020
 			public const int ifRoom = 2131427360;
@@ -1942,8 +1942,8 @@ namespace MyBodyShape.Android
 			// aapt resource value: 0x7f0b007d
 			public const int loadpicture2Button = 2131427453;
 			
-			// aapt resource value: 0x7f0b0084
-			public const int logobodyshape = 2131427460;
+			// aapt resource value: 0x7f0b0083
+			public const int logobodyshape = 2131427459;
 			
 			// aapt resource value: 0x7f0b0067
 			public const int media_actions = 2131427431;
@@ -1954,8 +1954,8 @@ namespace MyBodyShape.Android
 			// aapt resource value: 0x7f0b0015
 			public const int multiply = 2131427349;
 			
-			// aapt resource value: 0x7f0b0081
-			public const int nbSimulationsResults = 2131427457;
+			// aapt resource value: 0x7f0b0080
+			public const int nbSimulationsResults = 2131427456;
 			
 			// aapt resource value: 0x7f0b0021
 			public const int never = 2131427361;
@@ -1986,9 +1986,6 @@ namespace MyBodyShape.Android
 			
 			// aapt resource value: 0x7f0b0041
 			public const int radio = 2131427393;
-			
-			// aapt resource value: 0x7f0b007f
-			public const int resultsSnap = 2131427455;
 			
 			// aapt resource value: 0x7f0b006f
 			public const int right_icon = 2131427439;
@@ -2116,8 +2113,8 @@ namespace MyBodyShape.Android
 			// aapt resource value: 0x7f0b003a
 			public const int topPanel = 2131427386;
 			
-			// aapt resource value: 0x7f0b0080
-			public const int totalMass = 2131427456;
+			// aapt resource value: 0x7f0b007f
+			public const int totalMass = 2131427455;
 			
 			// aapt resource value: 0x7f0b0008
 			public const int up = 2131427336;
