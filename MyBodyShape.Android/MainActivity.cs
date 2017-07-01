@@ -51,6 +51,11 @@ namespace MyBodyShape.Android
         public Model3DFragment Model3DFragment { get; set; }
 
         /// <summary>
+        /// The feedback fragment.
+        /// </summary>
+        public FeedBackFragment FeedbackFragment { get; set; }
+
+        /// <summary>
         /// The onCreate method for the main activity.
         /// </summary>
         /// <param name="bundle">The activity bundle.</param>
@@ -80,13 +85,15 @@ namespace MyBodyShape.Android
             this.GenerationFragment = new GenerationFragment();
             this.ResultsFragment = new ResultsFragment();
             this.Model3DFragment = new Model3DFragment();
+            this.FeedbackFragment = new FeedBackFragment();
             var fragments = new V4App.Fragment[]
             {
                 this.FirstPictureFragment,
                 this.SecondPictureFragment,
                 this.GenerationFragment,
                 this.ResultsFragment,
-                this.Model3DFragment
+                this.Model3DFragment,
+                this.FeedbackFragment
             };
 
             // Titles
@@ -96,7 +103,8 @@ namespace MyBodyShape.Android
                 "Side Picture",
                 "Generate",
                 "Members weights",
-                "3D Bodyshape"
+                "3D Bodyshape",
+                "Your feedback"
             });
 
             // Tabs icons
@@ -115,12 +123,15 @@ namespace MyBodyShape.Android
             var rootResultsIcon = AndroidSupport.V4.Content.ContextCompat.GetDrawable(Application.Context, Resource.Drawable.results);
             Bitmap bitmapResults = ((BitmapDrawable)rootResultsIcon).Bitmap;
             var iconResults = new BitmapDrawable(Resources, Bitmap.CreateScaledBitmap(bitmapResults, 50, 50, true));
+            var rootFeedbackIcon = AndroidSupport.V4.Content.ContextCompat.GetDrawable(Application.Context, Resource.Drawable.calepin);
+            Bitmap bitmapFeedback = ((BitmapDrawable)rootFeedbackIcon).Bitmap;
+            var iconFeedback = new BitmapDrawable(Resources, Bitmap.CreateScaledBitmap(bitmapFeedback, 50, 50, true));
 
             // View pager and adapter
             var viewPager = FindViewById<BodyShapeViewPager>(Resource.Id.bodyshapeViewPager);
             viewPager.SetBackgroundColor(Color.Black);
 
-            viewPager.Adapter = new MainAdapter(base.SupportFragmentManager, fragments, titles, iconFront, iconSide, iconGeneration, icon3D, iconResults);
+            viewPager.Adapter = new MainAdapter(base.SupportFragmentManager, fragments, titles, iconFront, iconSide, iconGeneration, icon3D, iconResults, iconFeedback);
         }
 
         /// <summary>

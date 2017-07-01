@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:weightSum="100">
+  <Button
+                    android:background="@drawable/blue_button"
+                    android:id="@+id/feedBackButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="70dp"
+                    android:text="Send feedback"
+                    android:layout_weight="20"
+                    style="@style/button_text"/>
+  <EditText
+                android:layout_width="300dp"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:id="@+id/feedBackEditText"
+                android:text=""
+                android:textSize="12sp"
+                android:textColor="#000"
+                android:layout_weight="80" />
+</LinearLayout>

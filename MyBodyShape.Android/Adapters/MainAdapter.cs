@@ -23,7 +23,7 @@ namespace MyBodyShape.Android.Adapters
         /// The framents pages;
         /// </summary>
         public V4App.Fragment[] fragments { get; set; }
-
+        
         /// <summary>
         /// The tabs icons.
         /// </summary>
@@ -32,6 +32,7 @@ namespace MyBodyShape.Android.Adapters
         public Drawable GenerationIcon { get; set; }
         public Drawable D3Icon { get; set; }
         public Drawable ResultsIcon { get; set; }
+        public Drawable FeedbackIcon { get; set; }
 
         /// <summary>
         /// The fragments count.
@@ -46,7 +47,8 @@ namespace MyBodyShape.Android.Adapters
         /// </summary>
         /// <param name="fragmentManager">The fragment manager</param>
         /// <param name="fragments">The fragments</param>
-        public MainAdapter(V4App.FragmentManager fragmentManager, V4App.Fragment[] fragments, ICharSequence[] titles, Drawable frontIcon, Drawable sideIcon, Drawable generationIcon, Drawable d3Icon, Drawable resultsIcon) : base(fragmentManager)
+        public MainAdapter(V4App.FragmentManager fragmentManager, V4App.Fragment[] fragments, ICharSequence[] titles, Drawable frontIcon,
+            Drawable sideIcon, Drawable generationIcon, Drawable d3Icon, Drawable resultsIcon, Drawable feedbackIcon) : base(fragmentManager)
         {
             this.titles = titles;
             this.fragments = fragments;
@@ -55,6 +57,7 @@ namespace MyBodyShape.Android.Adapters
             this.GenerationIcon = generationIcon;
             this.D3Icon = d3Icon;
             this.ResultsIcon = resultsIcon;
+            this.FeedbackIcon = feedbackIcon;
         }
 
         /// <summary>
@@ -95,6 +98,10 @@ namespace MyBodyShape.Android.Adapters
 
                 case 4:
                     myDrawable = D3Icon;
+                    break;
+
+                case 5:
+                    myDrawable = FeedbackIcon;
                     break;
 
                 default:

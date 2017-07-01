@@ -100,6 +100,7 @@
   <ItemGroup>
     <Compile Include="Adapters\MainAdapter.cs" />
     <Compile Include="Fragments\GenerationFragment.cs" />
+    <Compile Include="Fragments\FeedBackFragment.cs" />
     <Compile Include="Fragments\Model3DFragment.cs" />
     <Compile Include="Fragments\ResultsFragment.cs" />
     <Compile Include="Fragments\SecondPictureFragment.cs" />
@@ -162,6 +163,9 @@
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout\Splash.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\Feedback.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
@@ -253,7 +257,9 @@
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\logosplash.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\calepin.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
