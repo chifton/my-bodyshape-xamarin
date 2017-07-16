@@ -1654,79 +1654,82 @@ namespace MyBodyShape.Android
 			public const int logosplash = 2130837598;
 			
 			// aapt resource value: 0x7f02005f
-			public const int next_button = 2130837599;
+			public const int magnifier = 2130837599;
 			
 			// aapt resource value: 0x7f020060
-			public const int notification_action_background = 2130837600;
+			public const int next_button = 2130837600;
 			
 			// aapt resource value: 0x7f020061
-			public const int notification_bg = 2130837601;
+			public const int notification_action_background = 2130837601;
 			
 			// aapt resource value: 0x7f020062
-			public const int notification_bg_low = 2130837602;
+			public const int notification_bg = 2130837602;
 			
 			// aapt resource value: 0x7f020063
-			public const int notification_bg_low_normal = 2130837603;
+			public const int notification_bg_low = 2130837603;
 			
 			// aapt resource value: 0x7f020064
-			public const int notification_bg_low_pressed = 2130837604;
+			public const int notification_bg_low_normal = 2130837604;
 			
 			// aapt resource value: 0x7f020065
-			public const int notification_bg_normal = 2130837605;
+			public const int notification_bg_low_pressed = 2130837605;
 			
 			// aapt resource value: 0x7f020066
-			public const int notification_bg_normal_pressed = 2130837606;
+			public const int notification_bg_normal = 2130837606;
 			
 			// aapt resource value: 0x7f020067
-			public const int notification_icon_background = 2130837607;
-			
-			// aapt resource value: 0x7f020076
-			public const int notification_template_icon_bg = 2130837622;
-			
-			// aapt resource value: 0x7f020077
-			public const int notification_template_icon_low_bg = 2130837623;
+			public const int notification_bg_normal_pressed = 2130837607;
 			
 			// aapt resource value: 0x7f020068
-			public const int notification_tile_bg = 2130837608;
+			public const int notification_icon_background = 2130837608;
+			
+			// aapt resource value: 0x7f020077
+			public const int notification_template_icon_bg = 2130837623;
+			
+			// aapt resource value: 0x7f020078
+			public const int notification_template_icon_low_bg = 2130837624;
 			
 			// aapt resource value: 0x7f020069
-			public const int notify_panel_notification_icon_bg = 2130837609;
+			public const int notification_tile_bg = 2130837609;
 			
 			// aapt resource value: 0x7f02006a
-			public const int pivotleft = 2130837610;
+			public const int notify_panel_notification_icon_bg = 2130837610;
 			
 			// aapt resource value: 0x7f02006b
-			public const int pivotright = 2130837611;
+			public const int pivotleft = 2130837611;
 			
 			// aapt resource value: 0x7f02006c
-			public const int previous_button = 2130837612;
+			public const int pivotright = 2130837612;
 			
 			// aapt resource value: 0x7f02006d
-			public const int results = 2130837613;
+			public const int previous_button = 2130837613;
 			
 			// aapt resource value: 0x7f02006e
-			public const int rotate = 2130837614;
+			public const int results = 2130837614;
 			
 			// aapt resource value: 0x7f02006f
-			public const int rounded_border_edittext = 2130837615;
+			public const int rotate = 2130837615;
 			
 			// aapt resource value: 0x7f020070
-			public const int rubis = 2130837616;
+			public const int rounded_border_edittext = 2130837616;
 			
 			// aapt resource value: 0x7f020071
-			public const int signin = 2130837617;
+			public const int rubis = 2130837617;
 			
 			// aapt resource value: 0x7f020072
-			public const int splashscreen = 2130837618;
+			public const int signin = 2130837618;
 			
 			// aapt resource value: 0x7f020073
-			public const int top_button = 2130837619;
+			public const int splashscreen = 2130837619;
 			
 			// aapt resource value: 0x7f020074
-			public const int zoomin = 2130837620;
+			public const int top_button = 2130837620;
 			
 			// aapt resource value: 0x7f020075
-			public const int zoomout = 2130837621;
+			public const int zoomin = 2130837621;
+			
+			// aapt resource value: 0x7f020076
+			public const int zoomout = 2130837622;
 			
 			static Drawable()
 			{
@@ -1900,14 +1903,14 @@ namespace MyBodyShape.Android
 			// aapt resource value: 0x7f0b0074
 			public const int icon_group = 2131427444;
 			
+			// aapt resource value: 0x7f0b0085
+			public const int iconbodyshape = 2131427461;
+			
 			// aapt resource value: 0x7f0b0084
-			public const int iconbodyshape = 2131427460;
+			public const int iconhelp = 2131427460;
 			
-			// aapt resource value: 0x7f0b0083
-			public const int iconhelp = 2131427459;
-			
-			// aapt resource value: 0x7f0b0086
-			public const int iconsign = 2131427462;
+			// aapt resource value: 0x7f0b0087
+			public const int iconsign = 2131427463;
 			
 			// aapt resource value: 0x7f0b0020
 			public const int ifRoom = 2131427360;
@@ -1951,8 +1954,8 @@ namespace MyBodyShape.Android
 			// aapt resource value: 0x7f0b007f
 			public const int loadpicture2Button = 2131427455;
 			
-			// aapt resource value: 0x7f0b0085
-			public const int logobodyshape = 2131427461;
+			// aapt resource value: 0x7f0b0086
+			public const int logobodyshape = 2131427462;
 			
 			// aapt resource value: 0x7f0b0069
 			public const int media_actions = 2131427433;
@@ -1963,8 +1966,8 @@ namespace MyBodyShape.Android
 			// aapt resource value: 0x7f0b0015
 			public const int multiply = 2131427349;
 			
-			// aapt resource value: 0x7f0b0082
-			public const int nbSimulationsResults = 2131427458;
+			// aapt resource value: 0x7f0b0083
+			public const int nbSimulationsResults = 2131427459;
 			
 			// aapt resource value: 0x7f0b0021
 			public const int never = 2131427361;
@@ -2061,6 +2064,9 @@ namespace MyBodyShape.Android
 			
 			// aapt resource value: 0x7f0b0030
 			public const int spacer = 2131427376;
+			
+			// aapt resource value: 0x7f0b0082
+			public const int splashLayout = 2131427458;
 			
 			// aapt resource value: 0x7f0b0007
 			public const int split_action_bar = 2131427335;

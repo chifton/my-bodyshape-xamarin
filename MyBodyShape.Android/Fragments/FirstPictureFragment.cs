@@ -50,6 +50,11 @@ namespace MyBodyShape.Android.Fragments
     public class FirstPictureFragment : V4App.Fragment
     {
         /// <summary>
+        /// The zoom radius.
+        /// </summary>
+        private const int ZOOM_RADIUS = 500;
+
+        /// <summary>
         /// The fragment view.
         /// </summary>
         private View fragmentView;
@@ -210,6 +215,11 @@ namespace MyBodyShape.Android.Fragments
         private const int webSiteHeight = 596;
 
         /// <summary>
+        /// The zoom box check box.
+        /// </summary>
+        private static CheckBox zoomCheckBox;
+
+        /// <summary>
         /// The constants.
         /// </summary>
         private const int REQUEST_CAMERA_PERMISSION = 1010;
@@ -223,6 +233,8 @@ namespace MyBodyShape.Android.Fragments
         private const int UNZOOM_BUTTON_ID = 1005;
         private const int LEFT_PIVOT_BUTTON_ID = 1006;
         private const int RIGHT_PIVOT_BUTTON_ID = 1007;
+        private const int ZOOM_CHECKBOX_ID = 4000;
+        private const int ZOOM_CHECKBOX_TEXT_ID = 4001;
 
         /// <summary>
         /// The shared preferences.
@@ -578,6 +590,23 @@ namespace MyBodyShape.Android.Fragments
                             rightPivotButton.Id = RIGHT_PIVOT_BUTTON_ID;
                             rightPivotButton.Click += OnRightPivotImage;
 
+                            ImageButton zoomMagnifierIcon = new ImageButton(this.Context);
+                            var zoomTextViewParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
+                            zoomMagnifierIcon.LayoutParameters = zoomTextViewParams;
+                            zoomMagnifierIcon.SetScaleType(ImageView.ScaleType.Center);
+                            zoomMagnifierIcon.SetAdjustViewBounds(true);
+                            zoomMagnifierIcon.SetBackgroundResource(Resource.Drawable.magnifier);
+                            zoomMagnifierIcon.SetY(calculatedDrawTop + 9 * buttonWidthHeight);
+                            zoomMagnifierIcon.SetX(0);
+                            zoomMagnifierIcon.Id = ZOOM_CHECKBOX_TEXT_ID;
+                            
+                            zoomCheckBox = new CheckBox(this.Context);
+                            var zoomCheckBoxParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
+                            zoomCheckBox.LayoutParameters = zoomCheckBoxParams;
+                            zoomCheckBox.SetY(calculatedDrawTop + 9 * buttonWidthHeight);
+                            zoomCheckBox.SetX(buttonWidthHeight);
+                            zoomCheckBox.Id = ZOOM_CHECKBOX_ID;
+                            
                             buttonDictionnary.Add("left", leftButton);
                             buttonDictionnary.Add("right", rightButton);
                             buttonDictionnary.Add("top", topButton);
@@ -595,7 +624,9 @@ namespace MyBodyShape.Android.Fragments
                             frameLayout.AddView(buttonDictionnary["unzoom"]);
                             frameLayout.AddView(buttonDictionnary["leftpivot"]);
                             frameLayout.AddView(buttonDictionnary["rightpivot"]);
-
+                            frameLayout.AddView(zoomMagnifierIcon);
+                            frameLayout.AddView(zoomCheckBox);
+                            
                             // First size coordinates
                             currentX = 0;
                             currentY = 0;
@@ -959,7 +990,7 @@ namespace MyBodyShape.Android.Fragments
                         pointToDraw.Key));
                 }
             }
-
+            
             // Draw paths
             foreach (var pathToDraw in pathData)
             {
@@ -994,7 +1025,7 @@ namespace MyBodyShape.Android.Fragments
             tempCanvas.DrawCircle(xPos, yPos, rootRadius, tempPaint);
             return new CircleArea(id, xPos, yPos, color);
         }
-
+        
         /// <summary>
         /// The draw target method.
         /// </summary>
@@ -1307,9 +1338,12 @@ namespace MyBodyShape.Android.Fragments
                     // Zoom
                     circleCenter.X = (int)currentCircle.PositionX;
                     circleCenter.Y = (int)currentCircle.PositionY;
-                    bufferCircles = this.GetNearestCircles(circleCenter.X, circleCenter.Y, 400);
+                    bufferCircles = this.GetNearestCircles(circleCenter.X, circleCenter.Y, ZOOM_RADIUS);
                     this.twinCircles = this.GetTwinCircles(currentCircle.Id);
-                    //imageView.EnableZoom(zoomPoint, circleCenter, bufferCircles, currentCircle);
+                    if(zoomCheckBox.Checked)
+                    {
+                        imageView.EnableZoom(zoomPoint, circleCenter, bufferCircles, currentCircle, (double)imageView.Width / tempCanvas.Width, (double)imageView.Height / tempCanvas.Height);
+                    }
                     viewPager.SetSwipeEnabled(false);
                 }
             }
@@ -1318,12 +1352,19 @@ namespace MyBodyShape.Android.Fragments
                 if (currentCircle != null)
                 {
                     // Redraw
-                    currentCircle.UpdatePosition(x, y);
-                    foreach (var twiny in this.twinCircles)
+                    if(zoomCheckBox.Checked)
                     {
-                        circlesList.Where(b => b.Id == twiny.Id).FirstOrDefault()?.UpdatePosition(x, y);
+                        imageView.MovePivotPoint(eventX, eventY);
                     }
-                    this.ReDrawAll(currentX, currentY, scaleIndicator, false, true, null);
+                    else
+                    {
+                        currentCircle.UpdatePosition(x, y);
+                        foreach (var twiny in this.twinCircles)
+                        {
+                            circlesList.Where(b => b.Id == twiny.Id).FirstOrDefault()?.UpdatePosition(x, y);
+                        }
+                        this.ReDrawAll(currentX, currentY, scaleIndicator, false, true, null);
+                    }
                 }
             }
             else if (e.Event.Action == MotionEventActions.Up)
@@ -1331,14 +1372,32 @@ namespace MyBodyShape.Android.Fragments
                 // UnZoom
                 if (currentCircle != null)
                 {
-                    if (imageView.Distances == null)
+                    if (zoomCheckBox.Checked)
                     {
-                        //imageView.DisableZoom();
+                        if (imageView.Distances == null)
+                        {
+                            var newPivotPoint = imageView.GetNewPivotPosition();
+                            if (newPivotPoint != null)
+                            {
+                                // Update pivot position.
+                                var halfHeightNewPivot = Math.Round((double)viewer.Height / 2);
+                                var sideConditionNewPivot = newPivotPoint.Y >= halfHeightNewPivot;
+                                var diffRatioHeightNewPivot = Math.Abs(newPivotPoint.Y - halfHeightNewPivot) / (viewer.Height / 2);
+                                var heightSideBoolNewPivot = sideConditionNewPivot ? 1 : -1;
+                                var newPivotX = (int)Math.Round((double)newPivotPoint.X / widthRatio);
+                                var newPivotY = (int)Math.Round((newPivotPoint.Y + calculatedDrawTop * heightSideBoolNewPivot * diffRatioHeightNewPivot) / heightRatio);
+                                currentCircle.PositionX = newPivotX;
+                                currentCircle.PositionY = newPivotY;
+                            }
+
+                            imageView.DisableZoom();
+                        }
                     }
+                    
                     this.ReDrawAll(currentX, currentY, scaleIndicator, false, false, imageView.Distances);
                     this.CachePositions("frontpositions");
                 }
-
+                
                 currentCircle = null;
                 bufferCircles = new List<CircleArea>();
                 twinCircles = new List<CircleArea>();

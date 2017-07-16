@@ -50,6 +50,11 @@ namespace MyBodyShape.Android.Fragments
     public class SecondPictureFragment : V4App.Fragment
     {
         /// <summary>
+        /// The zoom radius.
+        /// </summary>
+        private const int ZOOM_RADIUS = 500;
+
+        /// <summary>
         /// The fragment view.
         /// </summary>
         private View fragmentView;
@@ -205,6 +210,11 @@ namespace MyBodyShape.Android.Fragments
         private const int webSiteHeight = 596;
 
         /// <summary>
+        /// The zoom box check box.
+        /// </summary>
+        private static CheckBox zoomCheckBox;
+
+        /// <summary>
         /// The constants.
         /// </summary>
         private const int REQUEST_CAMERA_PERMISSION = 2010;
@@ -219,6 +229,8 @@ namespace MyBodyShape.Android.Fragments
         private const int LEFT_PIVOT_BUTTON_ID = 2006;
         private const int RIGHT_PIVOT_BUTTON_ID = 2007;
         private const int ROTATE_BUTTON_ID = 2008;
+        private const int ZOOM_CHECKBOX_ID = 5000;
+        private const int ZOOM_CHECKBOX_TEXT_ID = 5001;
 
         /// <summary>
         /// The shared preferences.
@@ -587,6 +599,23 @@ namespace MyBodyShape.Android.Fragments
                                 rotateButton.Id = ROTATE_BUTTON_ID;
                                 rotateButton.Click += OnRotateImage;
 
+                                ImageButton zoomMagnifierIcon = new ImageButton(this.Context);
+                                var zoomTextViewParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
+                                zoomMagnifierIcon.LayoutParameters = zoomTextViewParams;
+                                zoomMagnifierIcon.SetScaleType(ImageView.ScaleType.Center);
+                                zoomMagnifierIcon.SetAdjustViewBounds(true);
+                                zoomMagnifierIcon.SetBackgroundResource(Resource.Drawable.magnifier);
+                                zoomMagnifierIcon.SetY(calculatedDrawTop + 10 * buttonWidthHeight);
+                                zoomMagnifierIcon.SetX(0);
+                                zoomMagnifierIcon.Id = ZOOM_CHECKBOX_TEXT_ID;
+
+                                zoomCheckBox = new CheckBox(this.Context);
+                                var zoomCheckBoxParams = new FrameLayout.LayoutParams(buttonWidthHeight, buttonWidthHeight);
+                                zoomCheckBox.LayoutParameters = zoomCheckBoxParams;
+                                zoomCheckBox.SetY(calculatedDrawTop + 10 * buttonWidthHeight);
+                                zoomCheckBox.SetX(buttonWidthHeight);
+                                zoomCheckBox.Id = ZOOM_CHECKBOX_ID;
+
                                 buttonDictionnary.Add("left", leftButton);
                                 buttonDictionnary.Add("right", rightButton);
                                 buttonDictionnary.Add("top", topButton);
@@ -606,6 +635,8 @@ namespace MyBodyShape.Android.Fragments
                                 frameLayout.AddView(buttonDictionnary["leftpivot"]);
                                 frameLayout.AddView(buttonDictionnary["rightpivot"]);
                                 frameLayout.AddView(buttonDictionnary["rotate"]);
+                                frameLayout.AddView(zoomMagnifierIcon);
+                                frameLayout.AddView(zoomCheckBox);
 
                                 // First size coordinates
                                 currentX = 0;
@@ -1359,9 +1390,12 @@ namespace MyBodyShape.Android.Fragments
                     // Zoom
                     circleCenter.X = (int) currentCircle.PositionX;
                     circleCenter.Y = (int)currentCircle.PositionY;
-                    bufferCircles = this.GetNearestCircles(circleCenter.X, circleCenter.Y, 400);
+                    bufferCircles = this.GetNearestCircles(circleCenter.X, circleCenter.Y, ZOOM_RADIUS);
                     this.twinCircles = this.GetTwinCircles(currentCircle.Id);
-                    //imageView.EnableZoom(zoomPoint, circleCenter, bufferCircles, currentCircle);
+                    if (zoomCheckBox.Checked)
+                    {
+                        imageView.EnableZoom(zoomPoint, circleCenter, bufferCircles, currentCircle, (double)imageView.Width / tempCanvas.Width, (double)imageView.Height / tempCanvas.Height);
+                    }
                     viewPager.SetSwipeEnabled(false);
                 }                
             }
@@ -1370,12 +1404,19 @@ namespace MyBodyShape.Android.Fragments
                 if (currentCircle != null)
                 {
                     // Redraw
-                    currentCircle.UpdatePosition(x, y);
-                    foreach (var twiny in this.twinCircles)
+                    if (zoomCheckBox.Checked)
                     {
-                        circlesList.Where(b => b.Id == twiny.Id).FirstOrDefault()?.UpdatePosition(x, y);
+                        imageView.MovePivotPoint(eventX, eventY);
                     }
-                    this.ReDrawAll(currentX, currentY, scaleIndicator, false, true, null);
+                    else
+                    {
+                        currentCircle.UpdatePosition(x, y);
+                        foreach (var twiny in this.twinCircles)
+                        {
+                            circlesList.Where(b => b.Id == twiny.Id).FirstOrDefault()?.UpdatePosition(x, y);
+                        }
+                        this.ReDrawAll(currentX, currentY, scaleIndicator, false, true, null);
+                    }        
                 }
             }
             else if (e.Event.Action == MotionEventActions.Up)
@@ -1383,10 +1424,28 @@ namespace MyBodyShape.Android.Fragments
                 // UnZoom
                 if (currentCircle != null)
                 {
-                    if (imageView.Distances == null)
+                    if (zoomCheckBox.Checked)
                     {
-                        //imageView.DisableZoom();
+                        if (imageView.Distances == null)
+                        {
+                            var newPivotPoint = imageView.GetNewPivotPosition();
+                            if (newPivotPoint != null)
+                            {
+                                // Update pivot position.
+                                var halfHeightNewPivot = Math.Round((double)viewer.Height / 2);
+                                var sideConditionNewPivot = newPivotPoint.Y >= halfHeightNewPivot;
+                                var diffRatioHeightNewPivot = Math.Abs(newPivotPoint.Y - halfHeightNewPivot) / (viewer.Height / 2);
+                                var heightSideBoolNewPivot = sideConditionNewPivot ? 1 : -1;
+                                var newPivotX = (int)Math.Round((double)newPivotPoint.X / widthRatio);
+                                var newPivotY = (int)Math.Round((newPivotPoint.Y + calculatedDrawTop * heightSideBoolNewPivot * diffRatioHeightNewPivot) / heightRatio);
+                                currentCircle.PositionX = newPivotX;
+                                currentCircle.PositionY = newPivotY;
+                            }
+
+                            imageView.DisableZoom();
+                        }
                     }
+
                     this.ReDrawAll(currentX, currentY, scaleIndicator, false, false, imageView.Distances);
                     this.CachePositions("sidepositions");
                 }

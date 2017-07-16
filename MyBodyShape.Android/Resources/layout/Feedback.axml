@@ -16,7 +16,7 @@
   <EditText
                 android:layout_width="300dp"
                 android:layout_height="match_parent"
-                android:gravity="center_horizontal"
+                android:gravity="left"
                 android:layout_marginTop="20dp"
                 android:id="@+id/feedBackEditText"
                 android:text=""

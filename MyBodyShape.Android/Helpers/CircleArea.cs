@@ -24,7 +24,7 @@ namespace MyBodyShape.Android.Helpers
             this.Id = identifier;
             this.Color = color;
         }
-
+        
         /// <summary>
         /// The circle area identifier.
         /// </summary>
@@ -54,6 +54,5 @@ namespace MyBodyShape.Android.Helpers
             this.PositionX = x;
             this.PositionY = y;
         }
-
     }
 }
