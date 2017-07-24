@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="mybodyshape.android.beta01" android:versionCode="1" android:versionName="1.0" android:installLocation="auto">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="mybodyshape.android.beta01" android:versionCode="2" android:versionName="1" android:installLocation="auto">
 	<application android:icon="@drawable/icon" android:label="MyBodyShape.Android" android:largeHeap="true" android:theme="@style/CustomTheme">
 		<provider android:name="android.support.v4.content.FileProvider" android:authorities="${applicationId}.provider" android:exported="false" android:grantUriPermissions="true">
 			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/provider_paths" />
