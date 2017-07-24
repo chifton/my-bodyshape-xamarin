@@ -56,6 +56,11 @@ namespace MyBodyShape.Android
         public FeedBackFragment FeedbackFragment { get; set; }
 
         /// <summary>
+        /// The private policy fragment.
+        /// </summary>
+        public PrivacyPolicyFragment PrivacyPolicyFragment { get; set; }
+
+        /// <summary>
         /// The onCreate method for the main activity.
         /// </summary>
         /// <param name="bundle">The activity bundle.</param>
@@ -86,6 +91,7 @@ namespace MyBodyShape.Android
             this.ResultsFragment = new ResultsFragment();
             this.Model3DFragment = new Model3DFragment();
             this.FeedbackFragment = new FeedBackFragment();
+            this.PrivacyPolicyFragment = new PrivacyPolicyFragment();
             var fragments = new V4App.Fragment[]
             {
                 this.FirstPictureFragment,
@@ -93,7 +99,8 @@ namespace MyBodyShape.Android
                 this.GenerationFragment,
                 this.ResultsFragment,
                 this.Model3DFragment,
-                this.FeedbackFragment
+                this.FeedbackFragment,
+                this.PrivacyPolicyFragment
             };
 
             // Titles
@@ -104,7 +111,8 @@ namespace MyBodyShape.Android
                 "Generate",
                 "Members weights",
                 "3D Bodyshape",
-                "Your feedback"
+                "Your feedback",
+                "Privacy policy"
             });
 
             // Tabs icons
@@ -126,12 +134,15 @@ namespace MyBodyShape.Android
             var rootFeedbackIcon = AndroidSupport.V4.Content.ContextCompat.GetDrawable(Application.Context, Resource.Drawable.calepin);
             Bitmap bitmapFeedback = ((BitmapDrawable)rootFeedbackIcon).Bitmap;
             var iconFeedback = new BitmapDrawable(Resources, Bitmap.CreateScaledBitmap(bitmapFeedback, 50, 50, true));
-
+            var rootPrivatePolicyIcon = AndroidSupport.V4.Content.ContextCompat.GetDrawable(Application.Context, Resource.Drawable.justice);
+            Bitmap bitmapPrivatePolicy = ((BitmapDrawable)rootPrivatePolicyIcon).Bitmap;
+            var iconPrivatePolicy = new BitmapDrawable(Resources, Bitmap.CreateScaledBitmap(bitmapPrivatePolicy, 50, 50, true));
+            
             // View pager and adapter
             var viewPager = FindViewById<BodyShapeViewPager>(Resource.Id.bodyshapeViewPager);
             viewPager.SetBackgroundColor(Color.Black);
 
-            viewPager.Adapter = new MainAdapter(base.SupportFragmentManager, fragments, titles, iconFront, iconSide, iconGeneration, icon3D, iconResults, iconFeedback);
+            viewPager.Adapter = new MainAdapter(base.SupportFragmentManager, fragments, titles, iconFront, iconSide, iconGeneration, icon3D, iconResults, iconFeedback, iconPrivatePolicy);
         }
 
         /// <summary>
