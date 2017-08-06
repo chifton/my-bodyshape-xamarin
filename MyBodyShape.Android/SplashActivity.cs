@@ -57,6 +57,21 @@ namespace MyBodyShape.Android
             base.AttachBaseContext(CalligraphyContextWrapper.Wrap(@base));
         }
 
+        protected override void OnStart()
+        {
+            base.OnStart();
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+        }
+
+        protected override void OnStop()
+        {
+            base.OnStop();
+        }
+
         /// <summary>
         /// The OnResume method.
         /// </summary>
