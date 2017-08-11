@@ -1906,14 +1906,14 @@ namespace MyBodyShape.Android
 			// aapt resource value: 0x7f0b0074
 			public const int icon_group = 2131427444;
 			
+			// aapt resource value: 0x7f0b0087
+			public const int iconbodyshape = 2131427463;
+			
 			// aapt resource value: 0x7f0b0086
-			public const int iconbodyshape = 2131427462;
+			public const int iconhelp = 2131427462;
 			
-			// aapt resource value: 0x7f0b0085
-			public const int iconhelp = 2131427461;
-			
-			// aapt resource value: 0x7f0b0088
-			public const int iconsign = 2131427464;
+			// aapt resource value: 0x7f0b0089
+			public const int iconsign = 2131427465;
 			
 			// aapt resource value: 0x7f0b0020
 			public const int ifRoom = 2131427360;
@@ -1957,8 +1957,8 @@ namespace MyBodyShape.Android
 			// aapt resource value: 0x7f0b007f
 			public const int loadpicture2Button = 2131427455;
 			
-			// aapt resource value: 0x7f0b0087
-			public const int logobodyshape = 2131427463;
+			// aapt resource value: 0x7f0b0088
+			public const int logobodyshape = 2131427464;
 			
 			// aapt resource value: 0x7f0b0069
 			public const int media_actions = 2131427433;
@@ -1969,8 +1969,8 @@ namespace MyBodyShape.Android
 			// aapt resource value: 0x7f0b0015
 			public const int multiply = 2131427349;
 			
-			// aapt resource value: 0x7f0b0084
-			public const int nbSimulationsResults = 2131427460;
+			// aapt resource value: 0x7f0b0085
+			public const int nbSimulationsResults = 2131427461;
 			
 			// aapt resource value: 0x7f0b0021
 			public const int never = 2131427361;
@@ -2010,6 +2010,9 @@ namespace MyBodyShape.Android
 			
 			// aapt resource value: 0x7f0b006d
 			public const int right_side = 2131427437;
+			
+			// aapt resource value: 0x7f0b0084
+			public const int rubiksCubeSplash = 2131427460;
 			
 			// aapt resource value: 0x7f0b0016
 			public const int screen = 2131427350;

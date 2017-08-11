@@ -81,21 +81,16 @@ namespace MyBodyShape.Android
 
             SetContentView(Resource.Layout.Splash);
             nbSimulationsTextView = FindViewById<TextView>(Resource.Id.nbSimulationsResults);
-            var splashLayout = FindViewById<FrameLayout>(Resource.Id.splashLayout);
-
+            nbSimulationsTextView.Bottom = 20;
+            var splashLayout = FindViewById<RelativeLayout>(Resource.Id.splashLayout);
+            
             // Rubik's Cuke.
-            WebView webView = new WebView(this);
-            var webLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent);
-            webView.Top = 500;
-            webView.SetX(0);
-            //webLayoutParams.AddRule(LayoutRules.AlignParentBottom, 1);
-            //webLayoutParams.TopMargin = splashLayout.Height - webView.Height - 50;
+            var webView = FindViewById<WebView>(Resource.Id.rubiksCubeSplash);
             webView.Visibility = ViewStates.Visible;
             webView.LoadUrl(string.Format("file:///android_asset/RubiksCube.html"));
             webView.SetBackgroundColor(Color.ParseColor("#000000"));
             webView.SetLayerType(LayerType.Software, null);
-            splashLayout.AddView(webView);
-
+            
             Task startupWork = new Task(() => { StartupBodyShapeApp(); });
             startupWork.Start();
         }
