@@ -152,6 +152,8 @@ namespace MyBodyShape.Android
         {
             // Empty total memory
             GC.Collect();
+
+            base.OnDestroy();
         }
     }
 }
