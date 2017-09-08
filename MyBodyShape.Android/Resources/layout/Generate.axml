@@ -21,6 +21,7 @@
             android:gravity="center"
             android:id="@+id/layoutGenerateCenter">
               <TextView
+                android:id="@+id/textViewHeight"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="Height (cm)"
@@ -56,6 +57,7 @@
                    style="@style/button_text" />
               </LinearLayout>
               <TextView
+                android:id="@+id/textViewWeight"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:text="Weight (kg)"

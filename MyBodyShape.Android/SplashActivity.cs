@@ -7,7 +7,7 @@ using AndroidViews = Android.Views;
 using Android.OS;
 using Android.Content.PM;
 using System.Threading.Tasks;
-using Android.Content;
+using AndroidContent = Android.Content;
 using Android.Support.V7.App;
 using System.Net.Http;
 using System;
@@ -27,6 +27,11 @@ namespace MyBodyShape.Android
     [AndroidApp.Activity(Label = "My BodyShape", Theme = "@style/splash_style", MainLauncher = true, NoHistory = true, ScreenOrientation = ScreenOrientation.Portrait)]
     public class SplashActivity : AppCompatActivity
     {
+        /// <summary>
+        /// The shared preferences.
+        /// </summary>
+        private AndroidContent.ISharedPreferences prefs;
+
         /// <summary>
         /// The text view of simulations total number.
         /// </summary>
@@ -52,7 +57,7 @@ namespace MyBodyShape.Android
         /// The attach base context method.
         /// </summary>
         /// <param name="base"></param>
-        protected override void AttachBaseContext(Context @base)
+        protected override void AttachBaseContext(AndroidContent.Context @base)
         {
             base.AttachBaseContext(CalligraphyContextWrapper.Wrap(@base));
         }
@@ -90,7 +95,10 @@ namespace MyBodyShape.Android
             webView.LoadUrl(string.Format("file:///android_asset/RubiksCube.html"));
             webView.SetBackgroundColor(Color.ParseColor("#000000"));
             webView.SetLayerType(LayerType.Software, null);
-            
+
+            // Caching
+            prefs = AndroidApp.Application.Context.GetSharedPreferences("bodyshape", AndroidContent.FileCreationMode.Private);
+
             Task startupWork = new Task(() => { StartupBodyShapeApp(); });
             startupWork.Start();
         }
@@ -128,10 +136,20 @@ namespace MyBodyShape.Android
                     var numberSimulations = Convert.ToInt32(numberSimulationsResult);
                     this.RunOnUiThread(() =>
                     {
-                        nbSimulationsTextView.Text = $"Already { numberSimulations } bodyshape simulations !!!";
+                        nbSimulationsTextView.Text = string.Format(Languages.Resources.Res_SimulationsNumber, numberSimulations);
                     });
                     await Task.Delay(3000);
-                    StartActivity(new Intent(AndroidApp.Application.Context, typeof(MainActivity)));
+
+                    // Check if language data is stored
+                    var language = this.prefs.GetString("language", null);
+                    if (language != null)
+                    {
+                        StartActivity(new AndroidContent.Intent(AndroidApp.Application.Context, typeof(MainActivity)));
+                    }
+                    else
+                    {
+                        StartActivity(new AndroidContent.Intent(AndroidApp.Application.Context, typeof(LanguageActivity)));
+                    }               
                 }
                 else
                 {

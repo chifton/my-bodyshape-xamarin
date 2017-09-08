@@ -85,6 +85,7 @@ namespace MyBodyShape.Android.Fragments
                 fragmentView = inflater.Inflate(Resource.Layout.Feedback, container, false);
                 feedbackEditText = fragmentView.FindViewById<EditText>(Resource.Id.feedBackEditText);
                 feedBackButton = fragmentView.FindViewById<Button>(Resource.Id.feedBackButton);
+                feedBackButton.Text = Languages.Resources.Res_Android_FeedbackButton;
                 viewPager = this.Activity.FindViewById<BodyShapeViewPager>(Resource.Id.bodyshapeViewPager);
                 feedBackButton.Click += OnFeedBackButton_Click;
 

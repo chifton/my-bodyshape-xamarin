@@ -5,7 +5,7 @@
         android:background="#000000"
         android:layout_weight="1"
         android:gravity="center">
-                <ImageView
+  <ImageView
       android:id="@+id/iconhelp"
       android:src="@drawable/help"
       android:layout_width="35dip"
@@ -35,12 +35,25 @@
         android:scaleType="centerInside"
         android:gravity="center"/>
                             </LinearLayout>
-            <ImageView
-      android:id="@+id/iconsign"
+  <LinearLayout
+android:layout_height="35dip"
+android:layout_width="fill_parent"
+android:orientation="horizontal"
+android:gravity="right">
+    <ImageView
+        android:id="@+id/iconsign"
       android:src="@drawable/signin"
+      android:layout_width="35dip"
+      android:layout_height="35dip"
+      android:layout_gravity="right"
+      android:layout_marginRight="5dip"/>
+    <ImageView
+      android:id="@+id/iconlanguage"
+      android:src="@drawable/earth"
       android:layout_width="35dip"
       android:layout_height="35dip"
       android:layout_alignParentRight="true"
       android:layout_gravity="right"
       android:layout_marginRight="10dip"/>
+  </LinearLayout>
 </RelativeLayout>

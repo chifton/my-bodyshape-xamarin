@@ -280,7 +280,9 @@ namespace MyBodyShape.Android.Fragments
             {
                 fragmentView = inflater.Inflate(Resource.Layout.Picture2, container, false);
                 takePictureButton = fragmentView.FindViewById<Button>(Resource.Id.takepicture2Button);
+                takePictureButton.Text = Languages.Resources.Res_Android_TakePictureButton;
                 loadPictureButton = fragmentView.FindViewById<Button>(Resource.Id.loadpicture2Button);
+                loadPictureButton.Text = Languages.Resources.Res_Android_LoadPictureButton;
                 takePictureButton.Click += OnTakePicture2Button_Click;
                 loadPictureButton.Click += OnLoadPicture2Button_Click;
             }
@@ -312,7 +314,7 @@ namespace MyBodyShape.Android.Fragments
                 else
                 {
                     var message = new AlertDialog.Builder(this.Activity);
-                    message.SetMessage("Please accept the camera permission for taking a picture.");
+                    message.SetMessage(Languages.Resources.Res_Android_CameraPermission);
                     message.Show();
                 }
             }
@@ -325,7 +327,7 @@ namespace MyBodyShape.Android.Fragments
                 else
                 {
                     var message = new AlertDialog.Builder(this.Activity);
-                    message.SetMessage("Please allow MyBodyShape to store your new pictures.");
+                    message.SetMessage(Languages.Resources.Res_Android_StorePictures);
                     message.Show();
                 }
             }
@@ -338,7 +340,7 @@ namespace MyBodyShape.Android.Fragments
                 else
                 {
                     var message = new AlertDialog.Builder(this.Activity);
-                    message.SetMessage("Please allow MyBodyShape to read your pictures.");
+                    message.SetMessage(Languages.Resources.Res_Android_ReadPictures);
                     message.Show();
                 }
             }
@@ -454,7 +456,7 @@ namespace MyBodyShape.Android.Fragments
                                 else
                                 {
                                     var message = new AlertDialog.Builder(this.Activity);
-                                    message.SetMessage("No picture was found.");
+                                    message.SetMessage(Languages.Resources.Res_Android_PictureNotFound);
                                     message.Show();
                                 }
                             }
@@ -672,7 +674,7 @@ namespace MyBodyShape.Android.Fragments
                         else
                         {
                             var message = new AlertDialog.Builder(this.Activity);
-                            message.SetMessage("An error occured during taking your pictures. Try again later.");
+                            message.SetMessage(Languages.Resources.Res_Android_ErrorTakePictures);
                             message.Show();
                         }
                     }
@@ -681,7 +683,7 @@ namespace MyBodyShape.Android.Fragments
             catch (Exception)
             {
                 var message = new AlertDialog.Builder(this.Activity);
-                message.SetMessage("An error occured during taking your pictures. Try again later.");
+                message.SetMessage(Languages.Resources.Res_Android_ErrorTakePictures);
                 message.SetCancelable(false);
                 message.SetPositiveButton("OK", (okSender, okE) =>
                 {
@@ -728,7 +730,7 @@ namespace MyBodyShape.Android.Fragments
             else
             {
                 var message = new AlertDialog.Builder(this.Activity);
-                message.SetMessage("Your mobile device has no app for taking pictures.");
+                message.SetMessage(Languages.Resources.Res_Android_NoPictureApp);
                 message.Show();
             }
         }
@@ -783,7 +785,7 @@ namespace MyBodyShape.Android.Fragments
             AndroidContent.Intent intent = new AndroidContent.Intent();
             intent.SetType("image/*");
             intent.SetAction(AndroidContent.Intent.ActionGetContent);
-            StartActivityForResult(AndroidContent.Intent.CreateChooser(intent, "Select Picture"), loadPictureCode);
+            StartActivityForResult(AndroidContent.Intent.CreateChooser(intent, Languages.Resources.Res_Android_SelectPictureTitle), loadPictureCode);
         }
 
         /// <summary>

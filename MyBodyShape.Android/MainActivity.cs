@@ -14,8 +14,10 @@ using Android.Graphics;
 using Android.Content;
 using AndroidSupport = Android.Support;
 using AndroidViews = Android.Views;
+using AndroidWidgets = Android.Widget;
 using System;
 using Android.Graphics.Drawables;
+using System.Threading;
 
 namespace MyBodyShape.Android
 {
@@ -74,16 +76,39 @@ namespace MyBodyShape.Android
             // Custom activity
             Window.SetFeatureInt(AndroidViews.WindowFeatures.CustomTitle, Resource.Layout.window_title);
 
-            // Clear all old data
+            // Get the language
+            var storedLanguage = string.Empty;
             ISharedPreferences prefs = Application.Context.GetSharedPreferences("bodyshape", FileCreationMode.Private);
             ISharedPreferences resultsPrefs = Application.Context.GetSharedPreferences("bodyshaperesults", FileCreationMode.Private);
+            Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+            Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-US");
+            Languages.Resources.Culture = new System.Globalization.CultureInfo("en-US");
+            var language = prefs.GetString("language", null);
+            if (language != null)
+            {
+                storedLanguage = language;
+            }
+
+            // Clear all old data except language
             ISharedPreferencesEditor editor = prefs.Edit();
             ISharedPreferencesEditor resultsEditor = resultsPrefs.Edit();
             editor.Clear();
             resultsEditor.Clear();
             editor.Commit();
             resultsEditor.Commit();
+            
+            // Restore stored language
+            if (!string.IsNullOrEmpty(storedLanguage))
+            {
+                Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo(language);
+                Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(language);
+                Languages.Resources.Culture = new System.Globalization.CultureInfo(language);
 
+                // Store for future launch
+                editor.PutString("language", storedLanguage);
+                editor.Commit();
+            }
+            
             // Fragments
             this.FirstPictureFragment = new FirstPictureFragment();
             this.SecondPictureFragment = new SecondPictureFragment();
@@ -106,13 +131,13 @@ namespace MyBodyShape.Android
             // Titles
             var titles = CharSequence.ArrayFromStringArray(new[]
             {
-                "Front Picture",
-                "Side Picture",
-                "Generate",
-                "Members weights",
-                "3D Bodyshape",
-                "Your feedback",
-                "Privacy policy"
+                Languages.Resources.Res_Android_FrontTitle,
+                Languages.Resources.Res_Android_SideTitle,
+                Languages.Resources.Res_Android_Generate,
+                Languages.Resources.Res_Android_MemberWeights,
+                Languages.Resources.Res_Android_3dBodyShape,
+                Languages.Resources.Res_Android_Feedback,
+                Languages.Resources.Res_Android_Privacy
             });
 
             // Tabs icons
@@ -143,6 +168,38 @@ namespace MyBodyShape.Android
             viewPager.SetBackgroundColor(Color.Black);
 
             viewPager.Adapter = new MainAdapter(base.SupportFragmentManager, fragments, titles, iconFront, iconSide, iconGeneration, icon3D, iconResults, iconFeedback, iconPrivatePolicy);
+
+            // Top tabs events
+            var languageButton = FindViewById<AndroidWidgets.ImageView>(Resource.Id.iconlanguage);
+            languageButton.Click += LanguageButton_Click;
+            var loginButton = FindViewById<AndroidWidgets.ImageView>(Resource.Id.iconsign);
+            loginButton.Click += LoginButton_Click;
+            var helpButton = FindViewById<AndroidWidgets.ImageView>(Resource.Id.iconhelp);
+            helpButton.Click += HelpButton_Click;
+        }
+
+        /// <summary>
+        /// The help button click.
+        /// </summary>
+        private void HelpButton_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// The login button click.
+        /// </summary>
+        private void LoginButton_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// The languageg button click.
+        /// </summary>
+        private void LanguageButton_Click(object sender, EventArgs e)
+        {
+            StartActivity(new Intent(Application.Context, typeof(LanguageActivity)));
         }
 
         /// <summary>

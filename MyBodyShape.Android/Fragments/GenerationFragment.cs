@@ -126,6 +126,11 @@ namespace MyBodyShape.Android.Fragments
             {
                 fragmentView = inflater.Inflate(Resource.Layout.Generate, container, false);
 
+                var textViewHeight = fragmentView.FindViewById<TextView>(Resource.Id.textViewHeight);
+                textViewHeight.Text = Languages.Resources.Res_Android_Height;
+                var textViewWeight = fragmentView.FindViewById<TextView>(Resource.Id.textViewWeight);
+                textViewWeight.Text = Languages.Resources.Res_Android_Weight;
+
                 minusHeightButton = fragmentView.FindViewById<Button>(Resource.Id.height_btn_minus);
                 plusHeightButton = fragmentView.FindViewById<Button>(Resource.Id.height_btn_plus);
                 heightTextEdit = fragmentView.FindViewById<EditText>(Resource.Id.heightText);
@@ -146,6 +151,7 @@ namespace MyBodyShape.Android.Fragments
                 weightTextEdit.KeyListener = null;
 
                 generateButton = fragmentView.FindViewById<Button>(Resource.Id.generateButton);
+                generateButton.Text = Languages.Resources.Res_Android_GenerateButton;
                 generateButton.Click += OnGenerateButton_Click;
 
                 // Extract server url

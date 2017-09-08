@@ -65,7 +65,8 @@ namespace MyBodyShape.Android.Fragments
                 var webLayoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent);
                 webView.Visibility = ViewStates.Visible;
                 webView.Settings.JavaScriptEnabled = true;
-                webView.LoadUrl(serverUrl + "/Static/PrivacyPolicy.html");
+                var languageUrlPrivatePolicy = Languages.Resources.Culture.Name == "en-US" ? "PrivacyPolicy.html" : "PrivacyPolicy_Fr.html";
+                webView.LoadUrl(serverUrl + "/Static/" + languageUrlPrivatePolicy);
                 webView.SetBackgroundColor(Color.ParseColor("#000000"));
                 webView.SetLayerType(LayerType.Software, null);
                 privacyPolicyLayout.AddView(webView);
