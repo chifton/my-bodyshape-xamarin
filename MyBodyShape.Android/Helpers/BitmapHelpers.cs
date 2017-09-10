@@ -65,22 +65,6 @@ namespace MyBodyShape.Android.Helpers
         /// </summary>
         public static Bitmap LoadInGalleryAndResizeBitmap(this System.IO.Stream fileName, int width, int height, Bitmap bitmap)
         {
-            //using (SystemIO.MemoryStream outStream = new SystemIO.MemoryStream())
-            //{
-            //    using (ImageFactory imageFactory = new ImageFactory(preserveExifData: true))
-            //    {
-            //        imageFactory.Load(fileName)
-            //                    //.Resize(new ResizeLayer(new Size(0, height), ResizeMode.Pad))
-            //                    .Quality(100)
-            //                    .Save(outStream);
-            //    }
-
-            //    using (var fileOutStream = System.IO.File.Create(resizedImagePath))
-            //    {
-            //        outStream.CopyTo(fileOutStream);
-            //    }
-            //}
-
             // Source dimensions
             BitmapFactory.Options options = new BitmapFactory.Options { InJustDecodeBounds = true };
             BitmapFactory.DecodeStream(fileName, new Rect(), options);
@@ -117,7 +101,7 @@ namespace MyBodyShape.Android.Helpers
                 case "1":
                     break;
                 default:
-                    mtx.PreRotate(90);
+                    //mtx.PreRotate(90);
                     resizedBitmap = Bitmap.CreateBitmap(resizedBitmap, 0, 0, resizedBitmap.Width, resizedBitmap.Height, mtx, false);
                     mtx.Dispose();
                     mtx = null;

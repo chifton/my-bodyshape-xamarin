@@ -950,28 +950,31 @@ namespace MyBodyShape.Android.Fragments
             var supermanData = JsonConvert.DeserializeObject<Dictionary<string, string>>(supermanJsonStreamString);
 
             // Initialization
+            double myPhoneRatio = (double) 5 / 600;
+            double myPhonePathRatio = (double)20 / 600;
+            double myPhoneTargetRatio = (double) 10 / 600;
             circlesList = new List<CircleArea>();
             pathList = new List<PathArea>();
             supermanList = new List<string[]>();
             tempPaint = new Paint(PaintFlags.AntiAlias)
             {
-                StrokeWidth = 5
+                StrokeWidth = (int)myPhoneRatio * imageView.Drawable.IntrinsicHeight
             };
             tempPathPaint = new Paint(PaintFlags.AntiAlias)
             {
-                StrokeWidth = 20
+                StrokeWidth = (int)myPhonePathRatio * imageView.Drawable.IntrinsicHeight
             };
             tempPathPaint.SetStyle(Paint.Style.Stroke);
             tempTargetPaint = new Paint(PaintFlags.AntiAlias)
             {
-                StrokeWidth = 10,
+                StrokeWidth = (int)myPhoneTargetRatio * imageView.Drawable.IntrinsicHeight,
                 Color = Color.White
             };
             tempTargetPaint.SetStyle(Paint.Style.Stroke);
 
             CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
             ci.NumberFormat.CurrencyDecimalSeparator = ".";
-            var heightWebSiteRatio = (double)tempBitmap.Height / webSiteHeight;
+            var heightWebSiteRatio = (double) imageView.Drawable.IntrinsicHeight / webSiteHeight;
             var centerBitmap = (tempBitmap.Width - rootRadius) / 2;
             var headInfo = positionData.Where(x => x.Key == "head_u1_1").FirstOrDefault().Value.Split(';');
             var headHeight = (float)(float.Parse(headInfo[1], NumberStyles.Any, ci) * heightWebSiteRatio);
