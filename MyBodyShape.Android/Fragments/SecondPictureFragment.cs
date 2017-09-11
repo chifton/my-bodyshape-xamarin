@@ -476,7 +476,7 @@ namespace MyBodyShape.Android.Fragments
                                 imageView.Touch += OnBodyShapeTouchEvent;
 
                                 // Draw front skeleton
-                                this.DrawSideSkeleton();
+                                this.DrawSideSkeleton(requestCode == takePictureCode);
 
                                 // Buttons dimensions calculations
                                 var buttonWidthHeight = (int)height / 18;
@@ -974,7 +974,7 @@ namespace MyBodyShape.Android.Fragments
         /// <summary>
         /// The draw skeleton method.
         /// </summary>
-        private void DrawSideSkeleton()
+        private void DrawSideSkeleton(bool isTakingPicture)
         {
             // Extract root example positions
             var jsonStream = new System.IO.StreamReader(this.Activity.Assets.Open("positions.json"));
@@ -995,21 +995,24 @@ namespace MyBodyShape.Android.Fragments
             double myPhoneRatio = (double) 5 / 600;
             double myPhonePathRatio = (double) 20 / 600;
             double myPhoneTargetRatio = (double) 10 / 600;
+            double myPhoneTakeRatio = (double)5 / 4032;
+            double myPhonePathTakeRatio = (double)20 / 4032;
+            double myPhoneTargetTakeRatio = (double)10 / 4032;
             circlesList = new List<CircleArea>();
             pathList = new List<PathArea>();
             supermanList = new List<string[]>();
             tempPaint = new Paint(PaintFlags.AntiAlias)
             {
-                StrokeWidth = (int)myPhoneRatio * imageView.Drawable.IntrinsicHeight
+                StrokeWidth = (float)((isTakingPicture ? myPhoneTakeRatio : myPhoneRatio) * imageView.Drawable.IntrinsicHeight)
             };
             tempPathPaint = new Paint(PaintFlags.AntiAlias)
             {
-                StrokeWidth = (int)myPhonePathRatio * imageView.Drawable.IntrinsicHeight
+                StrokeWidth = (float)((isTakingPicture ? myPhonePathTakeRatio : myPhonePathRatio) * imageView.Drawable.IntrinsicHeight)
             };
             tempPathPaint.SetStyle(Paint.Style.Stroke);
             tempTargetPaint = new Paint(PaintFlags.AntiAlias)
             {
-                StrokeWidth = (int)myPhoneTargetRatio * imageView.Drawable.IntrinsicHeight,
+                StrokeWidth = (float)((isTakingPicture ? myPhoneTargetTakeRatio : myPhoneTargetRatio) * imageView.Drawable.IntrinsicHeight),
                 Color = Color.White
             };
             tempTargetPaint.SetStyle(Paint.Style.Stroke);
